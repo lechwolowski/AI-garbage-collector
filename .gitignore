@@ -1,3 +1,4 @@
 *.DS_Store
-AI-env
+env
 .vscode
+__pycache__
