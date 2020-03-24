@@ -1,8 +1,16 @@
 import pygame
+from models.Grass import Grass
+from config import WINDOW_HEIGHT, WINDOW_WIDTH
 
 pygame.init()
 
-screen = pygame.display.set_mode((320, 200))
+display_group = pygame.sprite.Group()
+
+WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
+draw_items = [[Grass(x, y) for x in range(16)] for y in range(10)]
+
+# todo layers to display inside display loop
 
 # Game Loop
 running = True
@@ -20,3 +28,13 @@ while running:
                 print("Up")
             if event.key == pygame.K_DOWN:
                 print("Down")
+
+        for line in draw_items:
+            for item in line:
+                display_group.add(item)
+
+        # display_group.update()
+        # draw sprite group - everything that was added to display_group
+        display_group.draw(WINDOW)
+
+        pygame.display.flip()
