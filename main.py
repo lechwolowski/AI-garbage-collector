@@ -1,6 +1,6 @@
 import pygame
 from models.Grass import Grass
-from models.GC import GC
+from models.Garbage_Collector import GC
 from config import WINDOW_HEIGHT, WINDOW_WIDTH
 
 pygame.init()
