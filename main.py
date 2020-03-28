@@ -1,6 +1,6 @@
 import pygame
 from models.Grass import Grass
-from models.GC import GC
+from models.Garbage_Collector import Garbage_Collector
 from models.Road import Road
 from models.House import House
 from models.Pond import Pond
@@ -18,9 +18,7 @@ WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 draw_items = [[Grass(x, y) for x in range(16)] for y in range(10)]
 
-
-# todo layers to display inside display loop
-gc = GC(2, 2)
+gc = Garbage_Collector()
 
 # Game Loop
 running = True
