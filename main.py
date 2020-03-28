@@ -1,7 +1,14 @@
 import pygame
 from models.Grass import Grass
 from models.Garbage_Collector import Garbage_Collector
+from models.Road import Road
+from models.House import House
+from models.Pond import Pond
+from models.Tree import Tree
+from models.Factory import Factory
+from models.Dump import Dump
 from config import WINDOW_HEIGHT, WINDOW_WIDTH
+
 
 pygame.init()
 
