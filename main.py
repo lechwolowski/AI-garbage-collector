@@ -1,7 +1,14 @@
 import pygame
 from models.Grass import Grass
 from models.GC import GC
+from models.Road import Road
+from models.House import House
+from models.Pond import Pond
+from models.Tree import Tree
+from models.Factory import Factory
+from models.Dump import Dump
 from config import WINDOW_HEIGHT, WINDOW_WIDTH
+
 
 pygame.init()
 
@@ -10,6 +17,7 @@ display_group = pygame.sprite.Group()
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 draw_items = [[Grass(x, y) for x in range(16)] for y in range(10)]
+
 
 # todo layers to display inside display loop
 gc = GC(2, 2)
