@@ -2,7 +2,7 @@ import pygame
 from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 
 
-class GC(pygame.sprite.Sprite):
+class Garbage_Collector(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
