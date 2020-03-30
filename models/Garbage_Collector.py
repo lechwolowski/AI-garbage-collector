@@ -33,27 +33,37 @@ class Garbage_Collector(pygame.sprite.Sprite):
     def set_rect(self):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+        self.image = pygame.transform.rotate(
+            pygame.transform.scale(pygame.image.load(
+                "Resources/white.png"), (CELL_SIZE, CELL_SIZE)
+            ),
+            self.rotation
+        )
 
     def move_up(self):
         if self.row > 0:
             if self.road_positions[self.row - 1][self.col]:
+                self.rotation = 0
                 self.row -= 1
                 self.set_rect()
 
     def move_down(self):
         if self.row < MAP_HEIGHT - 1:
             if self.road_positions[self.row + 1][self.col]:
+                self.rotation = 180
                 self.row += 1
                 self.set_rect()
 
     def move_left(self):
         if self.col > 0:
             if self.road_positions[self.row][self.col - 1]:
+                self.rotation = 90
                 self.col -= 1
                 self.set_rect()
 
     def move_right(self):
         if self.col < MAP_WIDTH - 1:
             if self.road_positions[self.row][self.col + 1]:
+                self.rotation = 270
                 self.col += 1
                 self.set_rect()
