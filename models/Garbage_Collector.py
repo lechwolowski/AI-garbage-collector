@@ -28,42 +28,51 @@ class Garbage_Collector(pygame.sprite.Sprite):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.image = pygame.transform.scale(pygame.image.load(
-            "Resources/Images/white.png"), (CELL_SIZE, CELL_SIZE))
+            "Resources/Images/Garbage_Collector.png"), (CELL_SIZE, CELL_SIZE))
 
-    def set_rect(self):
+    def set_rect(self, mirror):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-        self.image = pygame.transform.rotate(
-            pygame.transform.scale(pygame.image.load(
-                "Resources/Images/white.png"), (CELL_SIZE, CELL_SIZE)
-            ),
-            self.rotation
-        )
+        if mirror:
+            self.image = pygame.transform.flip(pygame.transform.rotate(
+                pygame.transform.scale(pygame.image.load(
+                    "Resources/Images/Garbage_Collector.png"), (CELL_SIZE, CELL_SIZE)
+                ),
+                self.rotation
+            ), True, False)
+        else:
+            self.image = pygame.transform.rotate(
+                pygame.transform.scale(pygame.image.load(
+                    "Resources/Images/Garbage_Collector.png"), (CELL_SIZE, CELL_SIZE)
+                ),
+                self.rotation
+            )
 
     def move_up(self):
         if self.row > 0:
             if self.road_positions[self.row - 1][self.col]:
-                self.rotation = 0
+                self.rotation = 90
                 self.row -= 1
-                self.set_rect()
+                self.set_rect(False)
 
     def move_down(self):
         if self.row < MAP_HEIGHT - 1:
             if self.road_positions[self.row + 1][self.col]:
-                self.rotation = 180
+                self.rotation = 270
                 self.row += 1
-                self.set_rect()
+                self.set_rect(False)
 
     def move_left(self):
         if self.col > 0:
             if self.road_positions[self.row][self.col - 1]:
-                self.rotation = 90
+                pygame.transform.flip
+                self.rotation = 0
                 self.col -= 1
-                self.set_rect()
+                self.set_rect(True)
 
     def move_right(self):
         if self.col < MAP_WIDTH - 1:
             if self.road_positions[self.row][self.col + 1]:
-                self.rotation = 270
+                self.rotation = 0
                 self.col += 1
-                self.set_rect()
+                self.set_rect(False)
