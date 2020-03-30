@@ -24,6 +24,8 @@ for line in draw_items:
 
 gc = Garbage_Collector()
 
+display_group.add(gc)
+
 # Game Loop
 running = True
 while running:
@@ -40,8 +42,6 @@ while running:
                 gc.move_up()
             if event.key == pygame.K_DOWN:
                 gc.move_down()
-
-        display_group.add(gc)
 
         display_group.draw(WINDOW)
 
