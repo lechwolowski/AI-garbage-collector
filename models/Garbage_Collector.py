@@ -28,14 +28,14 @@ class Garbage_Collector(pygame.sprite.Sprite):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.image = pygame.transform.scale(pygame.image.load(
-            "Resources/white.png"), (CELL_SIZE, CELL_SIZE))
+            "Resources/Images/white.png"), (CELL_SIZE, CELL_SIZE))
 
     def set_rect(self):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.image = pygame.transform.rotate(
             pygame.transform.scale(pygame.image.load(
-                "Resources/white.png"), (CELL_SIZE, CELL_SIZE)
+                "Resources/Images/white.png"), (CELL_SIZE, CELL_SIZE)
             ),
             self.rotation
         )
