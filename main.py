@@ -26,6 +26,8 @@ gc = Garbage_Collector()
 
 display_group.add(gc)
 
+clock = pygame.time.Clock()
+
 # Game Loop
 running = True
 while running:
@@ -43,6 +45,8 @@ while running:
             if event.key == pygame.K_DOWN:
                 gc.move_down()
 
-        display_group.draw(WINDOW)
+    display_group.draw(WINDOW)
 
-        pygame.display.flip()
+    pygame.display.update(gc)
+
+    clock.tick(30)
