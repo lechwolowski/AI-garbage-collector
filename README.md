@@ -1,51 +1,18 @@
 # SZI2020Project
 
-## Klasy składowych elementów gry
+## Instalacja i uruchomienie
 
-1. Droga
-2. Dom
-3. Fabryka
-4. Wysypisko
-5. Trawa
-6. Drzewa
-7. Staw
-8. Śmieciarka
+Wymagania:
 
-## Mapa
+```
+Python: 3.7.7
+```
 
-Macierz postaci: <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
+macOS / Linux
 
-reprezentująca mapę gry.
-w miejsce liczby klucz z listy:
-
-1. droga
-2. dom
-3. fabryka
-4. wysypisko
-5. trawa
-6. drzewa
-7. staw
-8. śmieciarka
-
-## Obrazki
-
-1. droga
-2. dom
-3. fabryka
-4. wysypisko
-5. trawa
-6. drzewa
-7. staw
-8. śmieciarka
-
-## Poruszanie Śmieciarki
+```
+python -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+python main.py
+```
