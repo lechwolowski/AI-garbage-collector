@@ -9,14 +9,14 @@ class Garbage_Collector(pygame.sprite.Sprite):
         self.road_positions = {row_index: {
             col_index: True for col_index in range(16)} for row_index in range(10)}
 
-        for row_index in self.road_positions:
-            for col_index in self.road_positions[row_index]:
-                self.road_positions[row_index][0] = False
-                self.road_positions[row_index][2] = False
-                self.road_positions[row_index][3] = False
-                self.road_positions[row_index][5] = False
-                self.road_positions[row_index][7] = False
-                self.road_positions[row_index][8] = False
+        # for row_index in self.road_positions:
+        #     for col_index in self.road_positions[row_index]:
+        #         self.road_positions[row_index][0] = False
+        #         self.road_positions[row_index][2] = False
+        #         self.road_positions[row_index][3] = False
+        #         self.road_positions[row_index][5] = False
+        #         self.road_positions[row_index][7] = False
+        #         self.road_positions[row_index][8] = False
 
         gc_initial_position = {"row": randint(0, 9), "col": randint(0, 15)}
         while not self.road_positions[gc_initial_position["row"]][gc_initial_position["col"]]:
