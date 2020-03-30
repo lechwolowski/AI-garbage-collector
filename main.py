@@ -1,13 +1,7 @@
 import pygame
-from models.Grass import Grass
 from models.Garbage_Collector import Garbage_Collector
-from models.Road import Road
-from models.House import House
-from models.Pond import Pond
-from models.Tree import Tree
-from models.Factory import Factory
-from models.Dump import Dump
 from config import WINDOW_HEIGHT, WINDOW_WIDTH
+from helpler import Render_Element
 
 
 pygame.init()
@@ -16,7 +10,7 @@ WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 display_group = pygame.sprite.Group()
 
-draw_items = [[Grass(x, y) for x in range(16)] for y in range(10)]
+draw_items = [[Render_Element(x, y) for x in range(16)] for y in range(10)]
 
 for line in draw_items:
     for item in line:
