@@ -12,11 +12,15 @@ from config import WINDOW_HEIGHT, WINDOW_WIDTH
 
 pygame.init()
 
-display_group = pygame.sprite.Group()
-
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
+display_group = pygame.sprite.Group()
+
 draw_items = [[Grass(x, y) for x in range(16)] for y in range(10)]
+
+for line in draw_items:
+    for item in line:
+        display_group.add(item)
 
 gc = Garbage_Collector()
 
@@ -37,14 +41,8 @@ while running:
             if event.key == pygame.K_DOWN:
                 gc.move_down()
 
-        for line in draw_items:
-            for item in line:
-                display_group.add(item)
-
         display_group.add(gc)
 
-        # display_group.update()
-        # draw sprite group - everything that was added to display_group
         display_group.draw(WINDOW)
 
         pygame.display.flip()
