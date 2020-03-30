@@ -8,4 +8,4 @@ class Road (pygame.sprite.Sprite):
         self.rect = pygame.Rect(
             x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.image = pygame.transform.scale(pygame.image.load(
-            "Resources/road.jpg"), (CELL_SIZE, CELL_SIZE))
+            "Resources/Images/road.jpg"), (CELL_SIZE, CELL_SIZE))

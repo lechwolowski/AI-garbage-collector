@@ -8,4 +8,4 @@ class Tree (pygame.sprite.Sprite):
         self.rect = pygame.Rect(
             x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.image = pygame.transform.scale(pygame.image.load(
-            "Resources/tree.jpg"), (CELL_SIZE, CELL_SIZE))
+            "Resources/Images/tree.jpg"), (CELL_SIZE, CELL_SIZE))
