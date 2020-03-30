@@ -47,6 +47,6 @@ while running:
 
     display_group.draw(WINDOW)
 
-    pygame.display.update(gc)
+    pygame.display.flip()
 
     clock.tick(30)
