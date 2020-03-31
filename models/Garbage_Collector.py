@@ -3,7 +3,10 @@ from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from random import randint
 from config import MAP
 from models.House import House
-
+from models.Trash_Glass import Trash_Glass
+from models.Trash_Paper import Trash_Paper
+from models.Trash_Plastic import Trash_Plastic
+from models.Trash_Mixed import Trash_Mixed
 
 class Garbage_Collector(pygame.sprite.Sprite):
     def __init__(self):
