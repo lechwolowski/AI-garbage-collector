@@ -29,7 +29,7 @@ def refresh_screen():
     display_group.draw(WINDOW)
     display_group.draw(WINDOW)
 
-    pygame.display.flip()
+    pygame.display.update()
 
 
 refresh_screen()
