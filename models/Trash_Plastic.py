@@ -1,9 +1,8 @@
 import pygame
-from models.Trash import Trash
 from config import CELL_SIZE
 
-'''
-class Trash_Plastic (pygame.sprite.Sprite, Trash):
+
+class Trash_Plastic (pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.rect = pygame.Rect(
@@ -11,10 +10,11 @@ class Trash_Plastic (pygame.sprite.Sprite, Trash):
         self.image = pygame.transform.scale(pygame.image.load(
             "Resources/Images/trash-plastic.png"), (CELL_SIZE, CELL_SIZE))
         self.trash = 0
-'''
-class Trash_Plastic (pygame.sprite.Sprite, Trash):
-    def __init__(self, x, y):
-        super().__init__(self,x,y)    
-        self.image = pygame.transform.scale(pygame.image.load(
-            "Resources/Images/trash-plastic.png"), (CELL_SIZE, CELL_SIZE))
-        
+        self.limit = 100
+    
+    def put_trash(self):
+        if self.trash < self.limit:
+            self.trash += 1
+            return True
+        else:
+            return False
