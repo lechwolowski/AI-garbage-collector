@@ -1,8 +1,13 @@
+from platform import system
 CELL_SIZE = 64
 WINDOW_HEIGHT = 10 * CELL_SIZE
 WINDOW_WIDTH = 16 * CELL_SIZE
 MAP_HEIGHT = 10
 MAP_WIDTH = 16
+if system() == "Windows":
+    FONT = "arial.ttf"
+elif system() == "Darwin":
+    FONT = "FiraCode-Bold.otf"
 
 
 MAP = {
