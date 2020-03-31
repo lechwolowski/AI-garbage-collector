@@ -1,5 +1,5 @@
 import pygame
-from config import CELL_SIZE
+from config import CELL_SIZE, FONT
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
@@ -20,7 +20,7 @@ class House (pygame.sprite.Sprite):
         img = Image.open("Resources/Images/house.jpg")
         img = img.resize((CELL_SIZE, CELL_SIZE))
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype("FiraCode-Bold.otf", 16)
+        font = ImageFont.truetype(FONT, 16)
         draw.text((20, 20), str(self.glass), (0, 0, 0), font=font)
         data, size, mode = img.tobytes(), img.size, img.mode
         self.image = pygame.image.frombuffer(data, size, mode)
