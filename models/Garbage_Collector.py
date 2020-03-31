@@ -17,7 +17,6 @@ class Garbage_Collector(pygame.sprite.Sprite):
 
         gc_initial_position = {"row": randint(0, 9), "col": randint(0, 15)}
         while not self.road_positions[gc_initial_position["row"]][gc_initial_position["col"]]:
-            # print(gc_initial_position)
             gc_initial_position = {"row": randint(0, 9), "col": randint(0, 15)}
 
         self.col = gc_initial_position["col"]
@@ -119,3 +118,41 @@ class Garbage_Collector(pygame.sprite.Sprite):
                                              ][field["col"]].get_plastic()
                         if plastic:
                             self.plastic += 1
+            
+                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Mixed):
+
+                    mixed = True
+                    while mixed and self.mixed > 0:
+                        print(
+                            {"mixed": draw_items[field["row"]][field["col"]].mixed})
+                        mixed = draw_items[field["row"]
+                                           ][field["col"]].get_mixed()
+                        if mixed:
+                            self.mixed += 1
+                
+                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Mixed):
+                    paper = True
+                    while paper and self.paper > 0:
+                        paper = draw_items[field["row"]
+                                           ][field["col"]].get_paper()
+                        if paper:
+                            self.paper += 1
+                
+                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Paper):
+                    glass = True
+                    while glass and self.glass > 0:
+                        glass = draw_items[field["row"]
+                                           ][field["col"]].get_glass()
+                        if glass:
+                            self.glass += 1
+                
+                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Mixed):
+                    plastic = True
+                    while plastic and self.plastic > 0:
+                        plastic = draw_items[field["row"]
+                                             ][field["col"]].get_plastic()
+                        if plastic:
+                            self.plastic += 1            
+
+
+
