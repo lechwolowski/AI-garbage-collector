@@ -49,33 +49,32 @@ class Garbage_Collector(pygame.sprite.Sprite):
             )
 
     def move_up(self):
+        self.rotation = 90
         if self.row > 0:
             if self.road_positions[self.row - 1][self.col]:
-                self.rotation = 90
                 self.row -= 1
-                self.set_rect(False)
+        self.set_rect(False)
 
     def move_down(self):
+        self.rotation = 270
         if self.row < MAP_HEIGHT - 1:
             if self.road_positions[self.row + 1][self.col]:
-                self.rotation = 270
                 self.row += 1
-                self.set_rect(False)
+        self.set_rect(False)
 
     def move_left(self):
+        self.rotation = 0
         if self.col > 0:
             if self.road_positions[self.row][self.col - 1]:
-                pygame.transform.flip
-                self.rotation = 0
                 self.col -= 1
-                self.set_rect(True)
+        self.set_rect(True)
 
     def move_right(self):
+        self.rotation = 0
         if self.col < MAP_WIDTH - 1:
             if self.road_positions[self.row][self.col + 1]:
-                self.rotation = 0
                 self.col += 1
-                self.set_rect(False)
+        self.set_rect(False)
 
     def trash_flow(self, draw_items):
         to_check = [
