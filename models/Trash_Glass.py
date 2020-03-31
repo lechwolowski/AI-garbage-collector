@@ -10,12 +10,6 @@ class Trash_Glass (pygame.sprite.Sprite):
         self.image = pygame.transform.scale(pygame.image.load(
             "Resources/Images/trash-glass.png"), (CELL_SIZE, CELL_SIZE))
         self.trash = 0
-        self.limit = 100
-    
+
     def put_trash(self):
-        if self.trash < self.limit:
-            self.trash += 1
-            return True
-        else:
-            return False
-    
+        self.trash += 1
