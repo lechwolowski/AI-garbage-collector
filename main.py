@@ -38,6 +38,8 @@ while running:
                 gc.move_up()
             if event.key == pygame.K_DOWN:
                 gc.move_down()
+            if event.key == pygame.K_SPACE:
+                gc.trash_flow(draw_items)
 
     display_group.draw(WINDOW)
 

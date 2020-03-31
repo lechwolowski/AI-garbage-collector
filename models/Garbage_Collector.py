@@ -2,6 +2,7 @@ import pygame
 from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from random import randint
 from config import MAP
+from models.House import House
 
 
 class Garbage_Collector(pygame.sprite.Sprite):
@@ -22,6 +23,11 @@ class Garbage_Collector(pygame.sprite.Sprite):
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.image = pygame.transform.scale(pygame.image.load(
             "Resources/Images/garbage-collector.png"), (CELL_SIZE, CELL_SIZE))
+
+        self.mixed = 0
+        self.paper = 0
+        self.glass = 0
+        self.plastic = 0
 
     def set_rect(self, mirror):
         self.rect = pygame.Rect(
@@ -69,3 +75,16 @@ class Garbage_Collector(pygame.sprite.Sprite):
                 self.rotation = 0
                 self.col += 1
                 self.set_rect(False)
+
+    def trash_flow(self, draw_items):
+        to_check = [
+            {"col": self.col - 1, "row": self.row},
+            {"col": self.col + 1, "row": self.row},
+            {"col": self.col, "row": self.row - 1},
+            {"col": self.col, "row": self.row + 1},
+        ]
+        for field in to_check:
+            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
+                if isinstance(draw_items[field["row"]][field["col"]], House):
+                    print(draw_items[field["row"]][field["col"]].trash)
+                    print(draw_items[field["row"]][field["col"]].get_trash())
