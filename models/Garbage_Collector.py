@@ -3,6 +3,10 @@ from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from random import randint
 from config import MAP
 from models.House import House
+from models.Trash_Glass import Trash_Glass
+from models.Trash_Paper import Trash_Paper
+from models.Trash_Plastic import Trash_Plastic
+from models.Trash_Mixed import Trash_Mixed
 
 
 class Garbage_Collector(pygame.sprite.Sprite):
@@ -14,7 +18,6 @@ class Garbage_Collector(pygame.sprite.Sprite):
 
         gc_initial_position = {"row": randint(0, 9), "col": randint(0, 15)}
         while not self.road_positions[gc_initial_position["row"]][gc_initial_position["col"]]:
-            # print(gc_initial_position)
             gc_initial_position = {"row": randint(0, 9), "col": randint(0, 15)}
 
         self.col = gc_initial_position["col"]
@@ -85,6 +88,7 @@ class Garbage_Collector(pygame.sprite.Sprite):
         ]
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
+
                 if isinstance(draw_items[field["row"]][field["col"]], House):
 
                     mixed = True
@@ -116,3 +120,25 @@ class Garbage_Collector(pygame.sprite.Sprite):
                                              ][field["col"]].get_plastic()
                         if plastic:
                             self.plastic += 1
+
+                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Mixed):
+                    while self.mixed > 0:
+                        print(
+                            {"mixed": draw_items[field["row"]][field["col"]].mixed})
+                        draw_items[field["row"]][field["col"]].put_trash()
+                        self.mixed -= 1
+
+                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Paper):
+                    while self.paper > 0:
+                        draw_items[field["row"]][field["col"]].put_trash()
+                        self.paper -= 1
+
+                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Glass):
+                    while self.glass > 0:
+                        draw_items[field["row"]][field["col"]].put_trash()
+                        self.glass -= 1
+
+                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Plastic):
+                    while self.plastic > 0:
+                        draw_items[field["row"]][field["col"]].put_trash()
+                        self.plastic -= 1

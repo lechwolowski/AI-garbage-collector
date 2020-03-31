@@ -9,3 +9,7 @@ class Trash_Paper (pygame.sprite.Sprite):
             x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.image = pygame.transform.scale(pygame.image.load(
             "Resources/Images/trash-paper.png"), (CELL_SIZE, CELL_SIZE))
+        self.trash = 0
+
+    def put_trash(self):
+        self.trash += 1
