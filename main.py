@@ -22,6 +22,17 @@ display_group.add(gc)
 
 clock = pygame.time.Clock()
 
+
+def refresh_screen():
+    display_group.draw(WINDOW)
+    display_group.draw(WINDOW)
+    display_group.draw(WINDOW)
+    display_group.draw(WINDOW)
+
+    pygame.display.flip()
+
+
+refresh_screen()
 # Game Loop
 running = True
 while running:
@@ -41,8 +52,6 @@ while running:
             if event.key == pygame.K_SPACE:
                 gc.trash_flow(draw_items)
 
-    display_group.draw(WINDOW)
-
-    pygame.display.flip()
+            refresh_screen()
 
     clock.tick(30)
