@@ -5,6 +5,7 @@ from models.House import House
 from models.Trash_Glass import Trash_Glass
 from models.Trash_Paper import Trash_Paper
 from models.Trash_Plastic import Trash_Plastic
+from models.Trash_Mixed import Trash_Mixed
 
 
 def Render_Element(x, y):
@@ -21,3 +22,5 @@ def Render_Element(x, y):
         return Trash_Paper(x, y)
     elif item == "Plastic":
         return Trash_Plastic(x, y)
+    elif item == "Mixed":
+        return Trash_Mixed(x, y)

@@ -123,8 +123,6 @@ class Garbage_Collector(pygame.sprite.Sprite):
 
                 elif isinstance(draw_items[field["row"]][field["col"]], Trash_Mixed):
                     while self.mixed > 0:
-                        print(
-                            {"mixed": draw_items[field["row"]][field["col"]].mixed})
                         draw_items[field["row"]][field["col"]].put_trash()
                         self.mixed -= 1
 
