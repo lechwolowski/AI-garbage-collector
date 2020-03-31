@@ -28,6 +28,7 @@ class Garbage_Collector(pygame.sprite.Sprite):
         self.paper = 0
         self.glass = 0
         self.plastic = 0
+        self.limit = 10
 
     def set_rect(self, mirror):
         self.rect = pygame.Rect(
@@ -86,5 +87,33 @@ class Garbage_Collector(pygame.sprite.Sprite):
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
                 if isinstance(draw_items[field["row"]][field["col"]], House):
-                    print(draw_items[field["row"]][field["col"]].trash)
-                    print(draw_items[field["row"]][field["col"]].get_trash())
+
+                    mixed = True
+                    while mixed and self.mixed < self.limit:
+                        print(
+                            {"mixed": draw_items[field["row"]][field["col"]].mixed})
+                        mixed = draw_items[field["row"]
+                                           ][field["col"]].get_mixed()
+                        if mixed:
+                            self.mixed += 1
+
+                    paper = True
+                    while paper and self.paper < self.limit:
+                        paper = draw_items[field["row"]
+                                           ][field["col"]].get_paper()
+                        if paper:
+                            self.paper += 1
+
+                    glass = True
+                    while glass and self.glass < self.limit:
+                        glass = draw_items[field["row"]
+                                           ][field["col"]].get_glass()
+                        if glass:
+                            self.glass += 1
+
+                    plastic = True
+                    while plastic and self.plastic < self.limit:
+                        plastic = draw_items[field["row"]
+                                             ][field["col"]].get_plastic()
+                        if plastic:
+                            self.plastic += 1
