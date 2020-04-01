@@ -9,6 +9,10 @@ if system() == "Windows":
 elif system() == "Darwin":
     FONT = "FiraCode-Bold.otf"
 
+BLACK = (0, 0, 0)
+BLUE = (0, 77, 147)
+GREEN = (11, 131, 44)
+YELLOW = (224, 125, 16)
 
 MAP = {
     0: {0: "Glass", 1: "Road", 2: "Road", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "House",
