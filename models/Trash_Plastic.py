@@ -1,15 +1,25 @@
 import pygame
-from config import CELL_SIZE
+from config import CELL_SIZE, FONT, BLACK, BLUE, GREEN, YELLOW, TRASH_PLASTIC_IMAGE
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
+from models.Numbers import Numbers
 
 
-class Trash_Plastic (pygame.sprite.Sprite):
+class Trash_Plastic (Numbers):
     def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.rect = pygame.Rect(
-            x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-        self.image = pygame.transform.scale(pygame.image.load(
-            "Resources/Images/trash-plastic.png"), (CELL_SIZE, CELL_SIZE))
+        Numbers.__init__(self, x, y)
         self.trash = 0
+        self.text_update()
+        self.img_update(TRASH_PLASTIC_IMAGE, self.texts)
+
+    def text_update(self):
+        self.texts = [
+            {"quantity": str(self.trash), "color": YELLOW,
+             "position": (30, 30)},
+        ]
 
     def put_trash(self):
         self.trash += 1
+        self.text_update()
+        self.img_update(TRASH_PLASTIC_IMAGE, self.texts)

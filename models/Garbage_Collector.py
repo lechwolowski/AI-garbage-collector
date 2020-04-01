@@ -1,17 +1,19 @@
 import pygame
-from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
+from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, FONT, BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE
 from random import randint
-from config import MAP
 from models.House import House
 from models.Trash_Glass import Trash_Glass
 from models.Trash_Paper import Trash_Paper
 from models.Trash_Plastic import Trash_Plastic
 from models.Trash_Mixed import Trash_Mixed
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
+from models.Numbers import Numbers
 
 
-class Garbage_Collector(pygame.sprite.Sprite):
+class Garbage_Collector(Numbers):
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
         self.road_positions = {row_index: {
             col_index: (True if MAP[row_index][col_index] == "Road" else False)
             for col_index in MAP[row_index]} for row_index in MAP}
@@ -22,10 +24,6 @@ class Garbage_Collector(pygame.sprite.Sprite):
 
         self.col = gc_initial_position["col"]
         self.row = gc_initial_position["row"]
-        self.rect = pygame.Rect(
-            self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-        self.image = pygame.transform.scale(pygame.image.load(
-            "Resources/Images/garbage-collector.png"), (CELL_SIZE, CELL_SIZE))
 
         self.mixed = 0
         self.paper = 0
@@ -33,23 +31,32 @@ class Garbage_Collector(pygame.sprite.Sprite):
         self.plastic = 0
         self.limit = 10
 
+        Numbers.__init__(self, self.col, self.row)
+        self.text_update()
+        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts)
+
+    def text_update(self):
+        self.texts = [
+            {"quantity": str(self.mixed), "color": BLACK,
+                "position": (5, 0)},
+            {"quantity": str(self.paper), "color": BLUE,
+                "position": (20, 0)},
+            {"quantity": str(self.glass), "color": GREEN,
+                "position": (34, 0)},
+            {"quantity": str(self.plastic), "color": YELLOW,
+                "position": (49, 0)}
+        ]
+
     def set_rect(self, mirror):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+        self.text_update()
+        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts)
         if mirror:
-            self.image = pygame.transform.flip(pygame.transform.rotate(
-                pygame.transform.scale(pygame.image.load(
-                    "Resources/Images/garbage-collector.png"), (CELL_SIZE, CELL_SIZE)
-                ),
-                self.rotation
-            ), True, False)
+            self.image = pygame.transform.flip(
+                pygame.transform.rotate(self.image, self.rotation), True, False)
         else:
-            self.image = pygame.transform.rotate(
-                pygame.transform.scale(pygame.image.load(
-                    "Resources/Images/garbage-collector.png"), (CELL_SIZE, CELL_SIZE)
-                ),
-                self.rotation
-            )
+            self.image = pygame.transform.rotate(self.image, self.rotation)
 
     def move_up(self):
         self.rotation = 90
@@ -97,6 +104,9 @@ class Garbage_Collector(pygame.sprite.Sprite):
                                            ][field["col"]].get_mixed()
                         if mixed:
                             self.mixed += 1
+                            self.text_update()
+                            self.img_update(
+                                GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                     paper = True
                     while paper and self.paper < self.limit:
@@ -104,6 +114,9 @@ class Garbage_Collector(pygame.sprite.Sprite):
                                            ][field["col"]].get_paper()
                         if paper:
                             self.paper += 1
+                            self.text_update()
+                            self.img_update(
+                                GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                     glass = True
                     while glass and self.glass < self.limit:
@@ -111,6 +124,9 @@ class Garbage_Collector(pygame.sprite.Sprite):
                                            ][field["col"]].get_glass()
                         if glass:
                             self.glass += 1
+                            self.text_update()
+                            self.img_update(
+                                GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                     plastic = True
                     while plastic and self.plastic < self.limit:
@@ -118,23 +134,35 @@ class Garbage_Collector(pygame.sprite.Sprite):
                                              ][field["col"]].get_plastic()
                         if plastic:
                             self.plastic += 1
+                            self.text_update()
+                            self.img_update(
+                                GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                 elif isinstance(draw_items[field["row"]][field["col"]], Trash_Mixed):
                     while self.mixed > 0:
                         draw_items[field["row"]][field["col"]].put_trash()
                         self.mixed -= 1
+                        self.text_update()
+                        self.img_update(
+                            GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                 elif isinstance(draw_items[field["row"]][field["col"]], Trash_Paper):
                     while self.paper > 0:
                         draw_items[field["row"]][field["col"]].put_trash()
                         self.paper -= 1
+                        self.img_update(
+                            GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                 elif isinstance(draw_items[field["row"]][field["col"]], Trash_Glass):
                     while self.glass > 0:
                         draw_items[field["row"]][field["col"]].put_trash()
                         self.glass -= 1
+                        self.img_update(
+                            GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                 elif isinstance(draw_items[field["row"]][field["col"]], Trash_Plastic):
                     while self.plastic > 0:
                         draw_items[field["row"]][field["col"]].put_trash()
                         self.plastic -= 1
+                        self.img_update(
+                            GARBAGE_COLLECTOR_IMAGE, self.texts)
