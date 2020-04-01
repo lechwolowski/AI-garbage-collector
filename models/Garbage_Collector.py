@@ -30,11 +30,12 @@ class Garbage_Collector(Numbers):
         self.glass = 0
         self.plastic = 0
         self.limit = 10
+        self.rotation = 0
         self.mirror = False
 
         Numbers.__init__(self, self.col, self.row)
         self.text_update()
-        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts)
+        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts, self.rotation)
 
     def text_update(self):
         self.texts = [
@@ -52,12 +53,8 @@ class Garbage_Collector(Numbers):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.text_update()
-        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts)
-        if self.mirror:
-            self.image = pygame.transform.flip(
-                pygame.transform.rotate(self.image, self.rotation), True, False)
-        else:
-            self.image = pygame.transform.rotate(self.image, self.rotation)
+        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts,
+                        self.rotation, self.mirror)
 
     def move_up(self):
         self.rotation = 90

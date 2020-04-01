@@ -11,9 +11,11 @@ class Numbers (pygame.sprite.Sprite):
         self.rect = pygame.Rect(
             x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
 
-    def img_update(self, image, texts):
+    def img_update(self, image, texts, rotation=0, mirror=False):
         img = Image.open(f"Resources/Images/{image}")
         img = img.resize((CELL_SIZE, CELL_SIZE))
+        img = img.rotate(rotation)
+        img = img.transpose(method=Image.FLIP_LEFT_RIGHT) if mirror else img
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype(FONT, 16)
 
