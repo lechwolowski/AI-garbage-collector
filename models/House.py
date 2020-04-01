@@ -1,5 +1,5 @@
 import pygame
-from config import CELL_SIZE, FONT
+from config import CELL_SIZE, FONT, BLACK, BLUE, GREEN, YELLOW
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
@@ -21,7 +21,17 @@ class House (pygame.sprite.Sprite):
         img = img.resize((CELL_SIZE, CELL_SIZE))
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype(FONT, 16)
-        draw.text((20, 20), str(self.glass), (0, 0, 0), font=font)
+        texts = [
+            {"quantity": str(self.mixed), "color": BLACK},
+            {"quantity": str(self.paper), "color": BLUE},
+            {"quantity": str(self.glass), "color": GREEN},
+            {"quantity": str(self.plastic), "color": YELLOW}
+        ]
+        position = 4
+        for txt in texts:
+            draw.text((position, 0), txt["quantity"],
+                      txt["color"], font=font)
+            position += 15
         data, size, mode = img.tobytes(), img.size, img.mode
         self.image = pygame.image.frombuffer(data, size, mode)
 
