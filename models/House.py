@@ -1,45 +1,24 @@
 import pygame
-from config import CELL_SIZE, FONT, BLACK, BLUE, GREEN, YELLOW
+from config import CELL_SIZE, FONT, BLACK, BLUE, GREEN, YELLOW, HOUSE_IMAGE
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
+from models.Numbers import Numbers
 
 
-class House (pygame.sprite.Sprite):
+class House (Numbers):
     def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
+        Numbers.__init__(self, x, y)
         self.mixed = 5
         self.paper = 5
         self.glass = 5
         self.plastic = 5
-        self.rect = pygame.Rect(
-            x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-        self.img_update()
-
-    def img_update(self):
-        img = Image.open("Resources/Images/house.jpg")
-        img = img.resize((CELL_SIZE, CELL_SIZE))
-        draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype(FONT, 16)
-        texts = [
-            {"quantity": str(self.mixed), "color": BLACK},
-            {"quantity": str(self.paper), "color": BLUE},
-            {"quantity": str(self.glass), "color": GREEN},
-            {"quantity": str(self.plastic), "color": YELLOW}
-        ]
-        step = CELL_SIZE / 4 - 1
-        position = 4
-        for txt in texts:
-            draw.text((position, 0), txt["quantity"],
-                      txt["color"], font=font)
-            position += step
-        data, size, mode = img.tobytes(), img.size, img.mode
-        self.image = pygame.image.frombuffer(data, size, mode)
+        self.img_update(HOUSE_IMAGE)
 
     def get_mixed(self):
         if self.mixed > 0:
             self.mixed -= 1
-            self.img_update()
+            self.img_update(HOUSE_IMAGE)
             return True
         else:
             return False
@@ -47,7 +26,7 @@ class House (pygame.sprite.Sprite):
     def get_paper(self):
         if self.paper > 0:
             self.paper -= 1
-            self.img_update()
+            self.img_update(HOUSE_IMAGE)
             return True
         else:
             return False
@@ -55,7 +34,7 @@ class House (pygame.sprite.Sprite):
     def get_glass(self):
         if self.glass > 0:
             self.glass -= 1
-            self.img_update()
+            self.img_update(HOUSE_IMAGE)
             return True
         else:
             return False
@@ -63,7 +42,7 @@ class House (pygame.sprite.Sprite):
     def get_plastic(self):
         if self.plastic > 0:
             self.plastic -= 1
-            self.img_update()
+            self.img_update(HOUSE_IMAGE)
             return True
         else:
             return False

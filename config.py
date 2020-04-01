@@ -14,6 +14,8 @@ BLUE = (0, 77, 147)
 GREEN = (11, 131, 44)
 YELLOW = (224, 125, 16)
 
+HOUSE_IMAGE = "house.jpg"
+
 MAP = {
     0: {0: "Glass", 1: "Road", 2: "Road", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "House",
         8: "Road", 9: "House", 10: "House", 11: "Road", 12: "Road", 13: "Road", 14: "Road", 15: "Paper"},
