@@ -93,8 +93,6 @@ class Garbage_Collector(pygame.sprite.Sprite):
 
                     mixed = True
                     while mixed and self.mixed < self.limit:
-                        print(
-                            {"mixed": draw_items[field["row"]][field["col"]].mixed})
                         mixed = draw_items[field["row"]
                                            ][field["col"]].get_mixed()
                         if mixed:
