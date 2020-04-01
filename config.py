@@ -15,6 +15,11 @@ GREEN = (11, 131, 44)
 YELLOW = (224, 125, 16)
 
 HOUSE_IMAGE = "house.jpg"
+TRASH_GLASS_IMAGE = "trash-glass.png"
+TRASH_MIXED_IMAGE = "trash-mixed.png"
+TRASH_PAPER_IMAGE = "trash-paper.png"
+TRASH_PLASTIC_IMAGE = "trash-plastic.png"
+GARBAGE_COLLECTOR_IMAGE = "garbage-collector.png"
 
 MAP = {
     0: {0: "Glass", 1: "Road", 2: "Road", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "House",
