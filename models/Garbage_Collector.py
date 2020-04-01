@@ -30,6 +30,7 @@ class Garbage_Collector(Numbers):
         self.glass = 0
         self.plastic = 0
         self.limit = 10
+        self.mirror = False
 
         Numbers.__init__(self, self.col, self.row)
         self.text_update()
@@ -47,12 +48,12 @@ class Garbage_Collector(Numbers):
                 "position": (49, 0)}
         ]
 
-    def set_rect(self, mirror):
+    def set_rect(self):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.text_update()
         self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts)
-        if mirror:
+        if self.mirror:
             self.image = pygame.transform.flip(
                 pygame.transform.rotate(self.image, self.rotation), True, False)
         else:
@@ -60,31 +61,35 @@ class Garbage_Collector(Numbers):
 
     def move_up(self):
         self.rotation = 90
+        self.mirror = False
         if self.row > 0:
             if self.road_positions[self.row - 1][self.col]:
                 self.row -= 1
-        self.set_rect(False)
+        self.set_rect()
 
     def move_down(self):
         self.rotation = 270
+        self.mirror = False
         if self.row < MAP_HEIGHT - 1:
             if self.road_positions[self.row + 1][self.col]:
                 self.row += 1
-        self.set_rect(False)
+        self.set_rect()
 
     def move_left(self):
         self.rotation = 0
+        self.mirror = True
         if self.col > 0:
             if self.road_positions[self.row][self.col - 1]:
                 self.col -= 1
-        self.set_rect(True)
+        self.set_rect()
 
     def move_right(self):
         self.rotation = 0
+        self.mirror = False
         if self.col < MAP_WIDTH - 1:
             if self.road_positions[self.row][self.col + 1]:
                 self.col += 1
-        self.set_rect(False)
+        self.set_rect()
 
     def trash_flow(self, draw_items):
         to_check = [
@@ -104,9 +109,6 @@ class Garbage_Collector(Numbers):
                                            ][field["col"]].get_mixed()
                         if mixed:
                             self.mixed += 1
-                            self.text_update()
-                            self.img_update(
-                                GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                     paper = True
                     while paper and self.paper < self.limit:
@@ -114,9 +116,6 @@ class Garbage_Collector(Numbers):
                                            ][field["col"]].get_paper()
                         if paper:
                             self.paper += 1
-                            self.text_update()
-                            self.img_update(
-                                GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                     glass = True
                     while glass and self.glass < self.limit:
@@ -124,9 +123,6 @@ class Garbage_Collector(Numbers):
                                            ][field["col"]].get_glass()
                         if glass:
                             self.glass += 1
-                            self.text_update()
-                            self.img_update(
-                                GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                     plastic = True
                     while plastic and self.plastic < self.limit:
@@ -134,35 +130,25 @@ class Garbage_Collector(Numbers):
                                              ][field["col"]].get_plastic()
                         if plastic:
                             self.plastic += 1
-                            self.text_update()
-                            self.img_update(
-                                GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                 elif isinstance(draw_items[field["row"]][field["col"]], Trash_Mixed):
                     while self.mixed > 0:
                         draw_items[field["row"]][field["col"]].put_trash()
                         self.mixed -= 1
-                        self.text_update()
-                        self.img_update(
-                            GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                 elif isinstance(draw_items[field["row"]][field["col"]], Trash_Paper):
                     while self.paper > 0:
                         draw_items[field["row"]][field["col"]].put_trash()
                         self.paper -= 1
-                        self.img_update(
-                            GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                 elif isinstance(draw_items[field["row"]][field["col"]], Trash_Glass):
                     while self.glass > 0:
                         draw_items[field["row"]][field["col"]].put_trash()
                         self.glass -= 1
-                        self.img_update(
-                            GARBAGE_COLLECTOR_IMAGE, self.texts)
 
                 elif isinstance(draw_items[field["row"]][field["col"]], Trash_Plastic):
                     while self.plastic > 0:
                         draw_items[field["row"]][field["col"]].put_trash()
                         self.plastic -= 1
-                        self.img_update(
-                            GARBAGE_COLLECTOR_IMAGE, self.texts)
+
+                self.set_rect()
