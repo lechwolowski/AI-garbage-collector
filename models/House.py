@@ -13,12 +13,23 @@ class House (Numbers):
         self.paper = 5
         self.glass = 5
         self.plastic = 5
-        self.img_update(HOUSE_IMAGE)
+        self.text_update()
+        self.img_update(HOUSE_IMAGE, self.texts)
+
+    def text_update(self):
+        self.texts = [
+            {"quantity": str(self.mixed), "color": BLACK, "position": (5, 0)},
+            {"quantity": str(self.paper), "color": BLUE, "position": (20, 0)},
+            {"quantity": str(self.glass), "color": GREEN, "position": (34, 0)},
+            {"quantity": str(self.plastic), "color": YELLOW,
+             "position": (49, 0)}
+        ]
 
     def get_mixed(self):
         if self.mixed > 0:
             self.mixed -= 1
-            self.img_update(HOUSE_IMAGE)
+            self.text_update()
+            self.img_update(HOUSE_IMAGE, self.texts)
             return True
         else:
             return False
@@ -26,7 +37,8 @@ class House (Numbers):
     def get_paper(self):
         if self.paper > 0:
             self.paper -= 1
-            self.img_update(HOUSE_IMAGE)
+            self.text_update()
+            self.img_update(HOUSE_IMAGE, self.texts)
             return True
         else:
             return False
@@ -34,7 +46,8 @@ class House (Numbers):
     def get_glass(self):
         if self.glass > 0:
             self.glass -= 1
-            self.img_update(HOUSE_IMAGE)
+            self.text_update()
+            self.img_update(HOUSE_IMAGE, self.texts)
             return True
         else:
             return False
@@ -42,7 +55,8 @@ class House (Numbers):
     def get_plastic(self):
         if self.plastic > 0:
             self.plastic -= 1
-            self.img_update(HOUSE_IMAGE)
+            self.text_update()
+            self.img_update(HOUSE_IMAGE, self.texts)
             return True
         else:
             return False
