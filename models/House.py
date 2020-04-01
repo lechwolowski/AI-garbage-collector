@@ -27,11 +27,12 @@ class House (pygame.sprite.Sprite):
             {"quantity": str(self.glass), "color": GREEN},
             {"quantity": str(self.plastic), "color": YELLOW}
         ]
+        step = CELL_SIZE / 4 - 1
         position = 4
         for txt in texts:
             draw.text((position, 0), txt["quantity"],
                       txt["color"], font=font)
-            position += 15
+            position += step
         data, size, mode = img.tobytes(), img.size, img.mode
         self.image = pygame.image.frombuffer(data, size, mode)
 
