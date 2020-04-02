@@ -42,7 +42,6 @@ class Garbage_Collector(Numbers):
                   str(self.mixed), font=font)
         self.img_save(draw, img)
 
-    # def update(self):
     #     self.texts = [
     #         {"quantity": str(self.mixed), "color": BLACK,
     #             "position": (5, 0)},
@@ -58,8 +57,6 @@ class Garbage_Collector(Numbers):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.update()
-        # self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts,
-        # self.rotation, self.mirror)
 
     def move_up(self):
         self.rotation = 90
