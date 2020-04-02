@@ -13,23 +13,23 @@ class House (Numbers):
         self.paper = 5
         self.glass = 5
         self.plastic = 5
-        self.text_update()
-        self.img_update(HOUSE_IMAGE, self.texts)
+        self.update()
 
-    def text_update(self):
-        self.texts = [
-            {"quantity": str(self.mixed), "color": BLACK, "position": (5, 0)},
-            {"quantity": str(self.paper), "color": BLUE, "position": (20, 0)},
-            {"quantity": str(self.glass), "color": GREEN, "position": (34, 0)},
-            {"quantity": str(self.plastic), "color": YELLOW,
-             "position": (49, 0)}
-        ]
+    def update(self):
+        draw, font, img = self.img_load(HOUSE_IMAGE, 32)
+        font = ImageFont.truetype(FONT, 14)
+        w, h = draw.textsize(str(self.mixed), font=font)
+        draw.text((4, 0), str(self.mixed), BLACK, font=font)
+        draw.text((19, 0), str(self.paper), BLUE, font=font)
+        draw.text((35, 0), str(self.glass), GREEN, font=font)
+        draw.text((49, 0), str(self.plastic), YELLOW, font=font)
+        self.img_save(draw, img)
 
     def get_mixed(self):
         if self.mixed > 0:
             self.mixed -= 1
-            self.text_update()
-            self.img_update(HOUSE_IMAGE, self.texts)
+            self.update()
+
             return True
         else:
             return False
@@ -37,8 +37,8 @@ class House (Numbers):
     def get_paper(self):
         if self.paper > 0:
             self.paper -= 1
-            self.text_update()
-            self.img_update(HOUSE_IMAGE, self.texts)
+            self.update()
+
             return True
         else:
             return False
@@ -46,8 +46,8 @@ class House (Numbers):
     def get_glass(self):
         if self.glass > 0:
             self.glass -= 1
-            self.text_update()
-            self.img_update(HOUSE_IMAGE, self.texts)
+            self.update()
+
             return True
         else:
             return False
@@ -55,8 +55,8 @@ class House (Numbers):
     def get_plastic(self):
         if self.plastic > 0:
             self.plastic -= 1
-            self.text_update()
-            self.img_update(HOUSE_IMAGE, self.texts)
+            self.update()
+
             return True
         else:
             return False

@@ -2,14 +2,11 @@ import pygame
 from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, FONT, BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE
 from random import randint
 from models.House import House
-from models.Trash_Glass import Trash_Glass
-from models.Trash_Paper import Trash_Paper
-from models.Trash_Plastic import Trash_Plastic
-from models.Trash_Mixed import Trash_Mixed
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 from models.Numbers import Numbers
+from models.Trash import Trash
 
 
 class Garbage_Collector(Numbers):
@@ -34,27 +31,23 @@ class Garbage_Collector(Numbers):
         self.mirror = False
 
         Numbers.__init__(self, self.col, self.row)
-        self.text_update()
-        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts, self.rotation)
+        self.update()
 
-    def text_update(self):
-        self.texts = [
-            {"quantity": str(self.mixed), "color": BLACK,
-                "position": (5, 0)},
-            {"quantity": str(self.paper), "color": BLUE,
-                "position": (20, 0)},
-            {"quantity": str(self.glass), "color": GREEN,
-                "position": (34, 0)},
-            {"quantity": str(self.plastic), "color": YELLOW,
-                "position": (49, 0)}
-        ]
+    def update(self):
+        draw, font, img = self.img_load(
+            GARBAGE_COLLECTOR_IMAGE, 32, self.rotation, self.mirror)
+        font = ImageFont.truetype(FONT, 14)
+        w, h = draw.textsize(str(self.mixed), font=font)
+        draw.text((4, 0), str(self.mixed), BLACK, font=font)
+        draw.text((19, 0), str(self.paper), BLUE, font=font)
+        draw.text((35, 0), str(self.glass), GREEN, font=font)
+        draw.text((49, 0), str(self.plastic), YELLOW, font=font)
+        self.img_save(draw, img)
 
     def set_rect(self):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-        self.text_update()
-        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts,
-                        self.rotation, self.mirror)
+        self.update()
 
     def move_up(self):
         self.rotation = 90
@@ -98,54 +91,49 @@ class Garbage_Collector(Numbers):
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
 
-                if isinstance(draw_items[field["row"]][field["col"]], House):
+                item = draw_items[field["row"]][field["col"]]
+                if isinstance(item, House):
 
                     mixed = True
                     while mixed and self.mixed < self.limit:
-                        mixed = draw_items[field["row"]
-                                           ][field["col"]].get_mixed()
+                        mixed = item.get_mixed()
                         if mixed:
                             self.mixed += 1
 
                     paper = True
                     while paper and self.paper < self.limit:
-                        paper = draw_items[field["row"]
-                                           ][field["col"]].get_paper()
+                        paper = item.get_paper()
                         if paper:
                             self.paper += 1
 
                     glass = True
                     while glass and self.glass < self.limit:
-                        glass = draw_items[field["row"]
-                                           ][field["col"]].get_glass()
+                        glass = item.get_glass()
                         if glass:
                             self.glass += 1
 
                     plastic = True
                     while plastic and self.plastic < self.limit:
-                        plastic = draw_items[field["row"]
-                                             ][field["col"]].get_plastic()
+                        plastic = item.get_plastic()
                         if plastic:
                             self.plastic += 1
 
-                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Mixed):
-                    while self.mixed > 0:
-                        draw_items[field["row"]][field["col"]].put_trash()
-                        self.mixed -= 1
-
-                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Paper):
-                    while self.paper > 0:
-                        draw_items[field["row"]][field["col"]].put_trash()
-                        self.paper -= 1
-
-                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Glass):
-                    while self.glass > 0:
-                        draw_items[field["row"]][field["col"]].put_trash()
-                        self.glass -= 1
-
-                elif isinstance(draw_items[field["row"]][field["col"]], Trash_Plastic):
-                    while self.plastic > 0:
-                        draw_items[field["row"]][field["col"]].put_trash()
-                        self.plastic -= 1
+                elif isinstance(item, Trash):
+                    if item.trash_type == "Mixed":
+                        while self.mixed > 0:
+                            item.put_trash()
+                            self.mixed -= 1
+                    elif item.trash_type == "Paper":
+                        while self.paper > 0:
+                            item.put_trash()
+                            self.paper -= 1
+                    elif item.trash_type == "Glass":
+                        while self.glass > 0:
+                            item.put_trash()
+                            self.glass -= 1
+                    elif item.trash_type == "Plastic":
+                        while self.plastic > 0:
+                            item.put_trash()
+                            self.plastic -= 1
 
                 self.set_rect()

@@ -1,7 +1,9 @@
 import pygame
 from models.Garbage_Collector import Garbage_Collector
-from config import WINDOW_HEIGHT, WINDOW_WIDTH
+from config import WINDOW_HEIGHT, WINDOW_WIDTH, TRASH_GLASS_IMAGE
 from helpler import Render_Element
+# from knowledge import Knowledge
+from models.Trash import Trash
 
 
 pygame.init()
@@ -32,6 +34,8 @@ def refresh_screen():
     pygame.display.update()
 
 
+pygame.display.update()
+# know = Knowledge(draw_items, gc)
 refresh_screen()
 # Game Loop
 running = True
@@ -51,7 +55,10 @@ while running:
                 gc.move_down()
             if event.key == pygame.K_SPACE:
                 gc.trash_flow(draw_items)
+            # know.show()
 
             refresh_screen()
+
+            pygame.display.update()
 
     clock.tick(30)
