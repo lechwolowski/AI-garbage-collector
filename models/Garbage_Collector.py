@@ -2,10 +2,6 @@ import pygame
 from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, FONT, BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE
 from random import randint
 from models.House import House
-from models.Trash_Glass import Trash_Glass
-from models.Trash_Paper import Trash_Paper
-from models.Trash_Plastic import Trash_Plastic
-from models.Trash_Mixed import Trash_Mixed
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
@@ -35,7 +31,7 @@ class Garbage_Collector(Numbers):
 
         Numbers.__init__(self, self.col, self.row)
         self.text_update()
-        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts, self.rotation)
+        # self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts, self.rotation)
 
     def text_update(self):
         self.texts = [
@@ -53,8 +49,8 @@ class Garbage_Collector(Numbers):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.text_update()
-        self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts,
-                        self.rotation, self.mirror)
+        # self.img_update(GARBAGE_COLLECTOR_IMAGE, self.texts,
+        # self.rotation, self.mirror)
 
     def move_up(self):
         self.rotation = 90
