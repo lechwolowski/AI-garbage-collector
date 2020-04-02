@@ -1,5 +1,6 @@
 import pygame
 from config import CELL_SIZE, FONT, BLACK, BLUE, GREEN, YELLOW, HOUSE_IMAGE
+from random import randint
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
@@ -9,10 +10,10 @@ from models.Numbers import Numbers
 class House (Numbers):
     def __init__(self, x, y):
         Numbers.__init__(self, x, y)
-        self.mixed = 5
-        self.paper = 5
-        self.glass = 5
-        self.plastic = 5
+        self.mixed = randint(0, 2)
+        self.paper = randint(0, 2)
+        self.glass = randint(0, 2)
+        self.plastic = randint(0, 2)
         self.update()
 
     def update(self):
