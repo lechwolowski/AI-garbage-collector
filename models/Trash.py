@@ -7,10 +7,10 @@ from models.Numbers import Numbers
 
 
 class Trash (Numbers):
-    def __init__(self, x, y, trash_type, image_name):
+    def __init__(self, x, y, trash_type):
         Numbers.__init__(self, x, y)
         self.trash_type = trash_type
-        self.image_name = image_name
+        self.image_name = f"trash-{trash_type.lower()}.png"
         self.trash = 0
         self.update()
 
