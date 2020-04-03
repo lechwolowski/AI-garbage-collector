@@ -35,14 +35,15 @@ class Garbage_Collector(Numbers):
 
     def update(self):
         draw, font, img = self.img_load(
-            GARBAGE_COLLECTOR_IMAGE, 32, self.rotation, self.mirror)
+            GARBAGE_COLLECTOR_IMAGE, 32)
         font = ImageFont.truetype(FONT, 14)
         w, h = draw.textsize(str(self.mixed), font=font)
-        draw.text((4, 0), str(self.mixed), BLACK, font=font)
-        draw.text((19, 0), str(self.paper), BLUE, font=font)
-        draw.text((35, 0), str(self.glass), GREEN, font=font)
-        draw.text((49, 0), str(self.plastic), YELLOW, font=font)
-        self.img_save(draw, img)
+        # draw.text((4, 0), str(self.mixed), BLACK, font=font)
+        # draw.text((19, 0), str(self.paper), BLUE, font=font)
+        # draw.text((35, 0), str(self.glass), GREEN, font=font)
+        # draw.text((49, 0), str(self.plastic), YELLOW, font=font)
+        draw.line((30, 12) + (30, 40), (BLACK), 5)
+        self.img_save(draw, img, self.rotation, self.mirror)
 
     def set_rect(self):
         self.rect = pygame.Rect(
