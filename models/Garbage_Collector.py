@@ -36,14 +36,23 @@ class Garbage_Collector(Numbers):
     def update(self):
         draw, font, img = self.img_load(
             GARBAGE_COLLECTOR_IMAGE, 32)
-        font = ImageFont.truetype(FONT, 14)
-        w, h = draw.textsize(str(self.mixed), font=font)
-        # draw.text((4, 0), str(self.mixed), BLACK, font=font)
-        # draw.text((19, 0), str(self.paper), BLUE, font=font)
-        # draw.text((35, 0), str(self.glass), GREEN, font=font)
-        # draw.text((49, 0), str(self.plastic), YELLOW, font=font)
-        draw.line((30, 12) + (30, 40), (BLACK), 5)
+        draw.line((6, 12) + (6, 40), (BLACK), 10)
+        draw.line((17, 12) + (17, 40), (BLACK), 10)
+        draw.line((28, 12) + (28, 40), (BLACK), 10)
+        draw.line((39, 12) + (39, 40), (BLACK), 10)
+        draw.line((6, self.get_fill(12, 40, self.mixed)) +
+                  (6, 40), (128, 128, 128), 10)
+        draw.line((17, self.get_fill(12, 40, self.paper)) +
+                  (17, 40), (BLUE), 10)
+        draw.line((28, self.get_fill(12, 40, self.glass)) +
+                  (28, 40), (GREEN), 10)
+        draw.line((39, self.get_fill(12, 40, self.plastic)) +
+                  (39, 40), (YELLOW), 10)
         self.img_save(draw, img, self.rotation, self.mirror)
+
+    def get_fill(self, base, full_val, trash):
+        addable_range = full_val - base
+        return full_val - ((trash / self.limit) * addable_range)
 
     def set_rect(self):
         self.rect = pygame.Rect(
