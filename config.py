@@ -14,7 +14,7 @@ BLUE = (0, 77, 147)
 GREEN = (11, 131, 44)
 YELLOW = (224, 125, 16)
 
-HOUSE_IMAGE = "house.jpg"
+HOUSE_IMAGE = "house.png"
 TRASH_GLASS_IMAGE = "trash-glass.png"
 TRASH_MIXED_IMAGE = "trash-mixed.png"
 TRASH_PAPER_IMAGE = "trash-paper.png"
