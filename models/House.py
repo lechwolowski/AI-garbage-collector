@@ -20,10 +20,10 @@ class House (Numbers):
         draw, font, img = self.img_load(HOUSE_IMAGE, 32)
         font = ImageFont.truetype(FONT, 14)
         w, h = draw.textsize(str(self.mixed), font=font)
-        draw.text((4, 0), str(self.mixed), BLACK, font=font)
-        draw.text((19, 0), str(self.paper), BLUE, font=font)
-        draw.text((35, 0), str(self.glass), GREEN, font=font)
-        draw.text((49, 0), str(self.plastic), YELLOW, font=font)
+        draw.text((19, 25), str(self.mixed), BLACK, font=font)
+        draw.text((37, 25), str(self.paper), BLUE, font=font)
+        draw.text((19, 43), str(self.glass), GREEN, font=font)
+        draw.text((37, 43), str(self.plastic), YELLOW, font=font)
         self.img_save(draw, img)
 
     def get_mixed(self):
