@@ -4,4 +4,4 @@
 #     convert -background none $file Resources/Images/$BASE.png
 # done
 
-convert Resources/svg/$1.svg Resources/Images/$1.png
+convert -background none Resources/svg/$1.svg Resources/Images/$1.png
