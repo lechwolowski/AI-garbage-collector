@@ -7,6 +7,8 @@ from config import CELL_SIZE, BLACK, BLUE, GREEN, YELLOW, FONT
 
 class Numbers (pygame.sprite.Sprite):
     def __init__(self, x, y):
+        self.col = x
+        self.row = y
         pygame.sprite.Sprite.__init__(self)
         self.rect = pygame.Rect(
             x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)

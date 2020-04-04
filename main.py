@@ -55,6 +55,7 @@ while running:
                 gc.move_down()
             if event.key == pygame.K_SPACE:
                 gc.trash_flow(draw_items)
+                know.update()
                 know.show()
 
             refresh_screen()
