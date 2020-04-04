@@ -1,47 +1,53 @@
 from models.House import House
-# from models.Trash_Glass import Trash_Glass
-from models.Trash_Paper import Trash_Paper
-from models.Trash_Plastic import Trash_Plastic
-from models.Trash_Mixed import Trash_Mixed
+from models.Trash import Trash
 
 
 class Knowledge:
-    def __init__(self, items, gc):
-        self.num = items
+    def __init__(self, draw_items, gc):
+        self.draw_items = draw_items
         self.gc = gc
-        self.houses = []
-        for line in items:
+        self.update()
+
+    def add_to_dict(self, item, quantity, trash_quantity_variable):
+        if quantity in trash_quantity_variable:
+            trash_quantity_variable[quantity].append(
+                {"col": item.col, "row": item.row})
+        else:
+            trash_quantity_variable[quantity] = [
+                {"col": item.col, "row": item.row}]
+
+    def update(self):
+        self.houses_with_trash = []
+        self.mixed_trash_quantity_houses = {}
+        self.paper_trash_quantity_houses = {}
+        self.glass_trash_quantity_houses = {}
+        self.plastic_trash_quantity_houses = {}
+        self.trashes = {}
+        for line in self.draw_items:
             for item in line:
                 if isinstance(item, House):
-                    self.houses.append(item)
-                elif isinstance(item, Trash_Mixed):
-                    print(item.trash)
-                    self.Trash_Mixed = item
-                elif isinstance(item, Trash_Paper):
-                    print(item.trash)
-                    self.Trash_Paper = item
-                elif isinstance(item, Trash_Glass):
-                    print(item.trash)
-                    self.Trash_Glass = item
-                elif isinstance(item, Trash_Plastic):
-                    print(item.trash)
-                    self.Trash_Plastic = item
+                    if not item.mixed and not item.paper and not item.glass and not item.plastic:
+                        # print(item.col, item.row)
+                        pass
+                    elif item.mixed:
+                        self.add_to_dict(item, item.mixed,
+                                         self.mixed_trash_quantity_houses)
+                    elif item.paper:
+                        self.add_to_dict(item, item.paper,
+                                         self.paper_trash_quantity_houses)
+                    elif item.glass:
+                        self.add_to_dict(item, item.glass,
+                                         self.glass_trash_quantity_houses)
+                    elif item.plastic:
+                        self.add_to_dict(item, item.plastic,
+                                         self.plastic_trash_quantity_houses)
+                elif isinstance(item, Trash):
+                    self.trashes[item.trash_type] = {
+                        "col": item.col, "row": item.row, "trash": item.trash}
 
     def show(self):
-        print({"Trash": {"mixed": self.Trash_Mixed.trash, "glass": self.Trash_Glass.trash,
-                         "paper": self.Trash_Paper.trash, "plastic": self.Trash_Plastic.trash}},
+        print({"Trash": {"mixed": self.trashes["Mixed"], "glass": self.trashes["Paper"],
+                         "paper": self.trashes["Glass"], "plastic": self.trashes["Plastic"]}},
               {"Garbage Collector": {"mixed": self.gc.mixed, "glass": self.gc.glass,
                                      "paper": self.gc.paper, "plastic": self.gc.plastic}}
               )
-
-        print(self.houses)
-        for house in self.houses:
-            print(house.mixed)
-
-        # inst = Knowledge(5)
-
-        # numb = inst
-
-        # inst.update(2)
-
-        # print(inst.num, numb.num)
