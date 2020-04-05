@@ -4,13 +4,7 @@ WINDOW_HEIGHT = 10 * CELL_SIZE
 WINDOW_WIDTH = 16 * CELL_SIZE
 MAP_HEIGHT = 10
 MAP_WIDTH = 16
-if system() == "Windows":
-    FONT = "arial.ttf"
-elif system() == "Darwin":
-    FONT = "FiraCode-Bold.otf"
-else:
-    FONT = "Arial.ttf"
-
+FONT = "./Resources/JetBrainsMono-Regular.ttf"
 BLACK = (0, 0, 0)
 BLUE = (0, 77, 147)
 GREEN = (11, 131, 44)

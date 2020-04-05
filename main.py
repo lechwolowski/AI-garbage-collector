@@ -60,6 +60,4 @@ while running:
 
             refresh_screen()
 
-            pygame.display.update()
-
     clock.tick(30)
