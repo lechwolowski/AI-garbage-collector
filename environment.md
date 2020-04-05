@@ -41,7 +41,7 @@ MAP = {
 9: {0: "Mixed", 1: "Road", 2: "Road", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "House", 8: "Road", 9: "House", 10: "House", 11: "Road", 12: "Road", 13: "Road", 14: "Road", 15: "Plastic"},
 }
 
-są to nazwy klas w słowniku które w main.py są zamieniane na mapę gry
+Są to nazwy klas w słowniku, gdzie liczby to współrzędne. Każdy element jest w main.py zamieniany na odpowiednią komórkę.
 
 ## Instalacja i uruchomienie
 
