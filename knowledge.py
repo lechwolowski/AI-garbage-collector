@@ -17,7 +17,6 @@ class Knowledge:
                 {"col": item.col, "row": item.row}]
 
     def update(self):
-        self.houses_with_trash = []
         self.mixed_trash_quantity_houses = {}
         self.paper_trash_quantity_houses = {}
         self.glass_trash_quantity_houses = {}
@@ -29,16 +28,16 @@ class Knowledge:
                     if not item.mixed and not item.paper and not item.glass and not item.plastic:
                         # print(item.col, item.row)
                         pass
-                    elif item.mixed:
+                    if item.mixed:
                         self.add_to_dict(item, item.mixed,
                                          self.mixed_trash_quantity_houses)
-                    elif item.paper:
+                    if item.paper:
                         self.add_to_dict(item, item.paper,
                                          self.paper_trash_quantity_houses)
-                    elif item.glass:
+                    if item.glass:
                         self.add_to_dict(item, item.glass,
                                          self.glass_trash_quantity_houses)
-                    elif item.plastic:
+                    if item.plastic:
                         self.add_to_dict(item, item.plastic,
                                          self.plastic_trash_quantity_houses)
                 elif isinstance(item, Trash):
