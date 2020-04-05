@@ -12,7 +12,7 @@
 
 1. Mapa składa się z kwadratów
 2. Każdy kwadrat jest generowany dynamicznie zależnie od mapy
-3. Mapa jest zapisana w postaci macierzy w celu prostej modyfikacji
+3. Mapa jest zapisana w postaci słownika ze współrzędnymi w celu prostej modyfikacji
 4. Śmieciarka porusza się jedynie po kwadratach które są drogą
 5. Śmieciarka będąc obok budynku odbiera odpady
 6. Śmieciarka będąc obok śmietnika oddaje odpady
