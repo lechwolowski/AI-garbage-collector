@@ -2,7 +2,7 @@ import pygame
 from models.Garbage_Collector import Garbage_Collector
 from config import WINDOW_HEIGHT, WINDOW_WIDTH, TRASH_GLASS_IMAGE
 from helpler import Render_Element
-from knowledge import Knowledge
+from Knowledge import Knowledge
 from models.Trash import Trash
 
 
