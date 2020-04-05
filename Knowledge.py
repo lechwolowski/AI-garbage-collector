@@ -45,12 +45,8 @@ class Knowledge:
                         "col": item.col, "row": item.row, "trash": item.trash}
 
     def show(self):
-        print(self.mixed_trash_quantity_houses[2][0])
-        print(self.paper_trash_quantity_houses[2][0])
-        print(self.glass_trash_quantity_houses[2][0])
-        print(self.plastic_trash_quantity_houses[2][0])
-        # print({"Trash": {"mixed": self.trashes["Mixed"], "glass": self.trashes["Paper"],
-        #                  "paper": self.trashes["Glass"], "plastic": self.trashes["Plastic"]}},
-        #       {"Garbage Collector": {"mixed": self.gc.mixed, "glass": self.gc.glass,
-        #                              "paper": self.gc.paper, "plastic": self.gc.plastic}}
-        #       )
+        print({"Trash": {"mixed": self.trashes["Mixed"], "glass": self.trashes["Paper"],
+                         "paper": self.trashes["Glass"], "plastic": self.trashes["Plastic"]}},
+              {"Garbage Collector": {"mixed": self.gc.mixed, "glass": self.gc.glass,
+                                     "paper": self.gc.paper, "plastic": self.gc.plastic}}
+              )
