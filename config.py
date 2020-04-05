@@ -8,6 +8,8 @@ if system() == "Windows":
     FONT = "arial.ttf"
 elif system() == "Darwin":
     FONT = "FiraCode-Bold.otf"
+else:
+    FONT = "Arial.ttf"
 
 BLACK = (0, 0, 0)
 BLUE = (0, 77, 147)

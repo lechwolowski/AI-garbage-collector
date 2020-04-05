@@ -11,6 +11,13 @@ Python: 3.7.7
 macOS / Linux
 
 ```
+make install
+make start
+```
+
+or manually:
+
+```
 python -m venv env
 source env/bin/activate
 pip install -r requirements.txt
