@@ -18,34 +18,30 @@
 6. Śmieciarka będąc obok śmietnika oddaje odpady
 7. Obrazki do generowania kwadratów tworzymy sami
 
-## Klasy składowych elementów gry
+## Elementy z których gra jest zbudowana
 
-1. Droga
-2. Dom
-3. Fabryka
-4. Wysypisko
-5. Trawa
-6. Drzewa
-7. Staw
-8. Śmieciarka
+1. Road.py
+2. Garbage_Collector.py
+3. Grass.py
+4. House.py
+5. Trash.py
 
-## Mapa
+rozmieszczenie powyższych elementów na mapie definiujemy w pliku config.py w następujący sposób:
 
-Macierz postaci: <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 <br />
+MAP = {
+0: {0: "Glass", 1: "Road", 2: "Road", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "House", 8: "Road", 9: "House", 10: "House", 11: "Road", 12: "Road", 13: "Road", 14: "Road", 15: "Paper"},
+1: {0: "Grass", 1: "Road", 2: "Grass", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "House", 8: "Road", 9: "House", 10: "House", 11: "Road", 12: "House", 13: "House", 14: "Road", 15: "Grass"},
+2: {0: "House", 1: "Road", 2: "Grass", 3: "Road", 4: "Road", 5: "Road", 6: "Road", 7: "House", 8: "Road", 9: "House", 10: "House", 11: "Road", 12: "House", 13: "House", 14: "Road", 15: "House"},
+3: {0: "House", 1: "Road", 2: "Grass", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "Road", 8: "Road", 9: "Road", 10: "Road", 11: "Road", 12: "Road", 13: "Road", 14: "Road", 15: "House"},
+4: {0: "House", 1: "Road", 2: "Grass", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "Grass", 8: "Grass", 9: "Grass", 10: "Grass", 11: "Road", 12: "Grass", 13: "Grass", 14: "Road", 15: "House"},
+5: {0: "House", 1: "Road", 2: "Grass", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "Grass", 8: "Grass", 9: "Grass", 10: "Grass", 11: "Road", 12: "Grass", 13: "Grass", 14: "Road", 15: "House"},
+6: {0: "House", 1: "Road", 2: "Grass", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "Road", 8: "Road", 9: "Road", 10: "Road", 11: "Road", 12: "Road", 13: "Road", 14: "Road", 15: "House"},
+7: {0: "House", 1: "Road", 2: "Grass", 3: "Road", 4: "Road", 5: "Road", 6: "Road", 7: "House", 8: "Road", 9: "House", 10: "House", 11: "Road", 12: "House", 13: "House", 14: "Road", 15: "House"},
+8: {0: "Grass", 1: "Road", 2: "Grass", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "House", 8: "Road", 9: "House", 10: "House", 11: "Road", 12: "House", 13: "House", 14: "Road", 15: "Grass"},
+9: {0: "Mixed", 1: "Road", 2: "Road", 3: "Road", 4: "House", 5: "House", 6: "Road", 7: "House", 8: "Road", 9: "House", 10: "House", 11: "Road", 12: "Road", 13: "Road", 14: "Road", 15: "Plastic"},
+}
 
-reprezentująca mapę gry.
-
-mapa jest renderowana z tej macierzy w pliku main.py
+są to nazwy klas w słowniku które w main.py są zamieniane na mapę gry
 
 ## Instalacja i uruchomienie
 
