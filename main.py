@@ -26,10 +26,8 @@ clock = pygame.time.Clock()
 
 
 def refresh_screen():
-    display_group.draw(WINDOW)
-    display_group.draw(WINDOW)
-    display_group.draw(WINDOW)
-    display_group.draw(WINDOW)
+    for i in range(4):
+        display_group.draw(WINDOW)
 
     pygame.display.update()
 
