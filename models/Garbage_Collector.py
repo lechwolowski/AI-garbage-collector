@@ -101,7 +101,7 @@ class Garbage_Collector(Numbers):
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
 
-                item = draw_items[field["row"]][field["col"]]
+                item = draw_items[(field["col"], field["row"])]
                 if isinstance(item, House):
 
                     mixed = True

@@ -12,10 +12,11 @@ WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 display_group = pygame.sprite.Group()
 
-draw_items = [Render_Element(x, y) for x in range(16) for y in range(10)]
+draw_items = {(x, y): Render_Element(x, y)
+              for x in range(16) for y in range(10)}
 
 for item in draw_items:
-        display_group.add(item)
+    display_group.add(draw_items[item])
 
 gc = Garbage_Collector()
 

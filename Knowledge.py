@@ -22,27 +22,27 @@ class Knowledge:
         self.glass_trash_quantity_houses = {}
         self.plastic_trash_quantity_houses = {}
         self.trashes = {}
-        for line in self.draw_items:
-            for item in line:
-                if isinstance(item, House):
-                    if not item.mixed and not item.paper and not item.glass and not item.plastic:
-                        # print(item.col, item.row)
-                        pass
-                    if item.mixed:
-                        self.add_to_dict(item, item.mixed,
-                                         self.mixed_trash_quantity_houses)
-                    if item.paper:
-                        self.add_to_dict(item, item.paper,
-                                         self.paper_trash_quantity_houses)
-                    if item.glass:
-                        self.add_to_dict(item, item.glass,
-                                         self.glass_trash_quantity_houses)
-                    if item.plastic:
-                        self.add_to_dict(item, item.plastic,
-                                         self.plastic_trash_quantity_houses)
-                elif isinstance(item, Trash):
-                    self.trashes[item.trash_type] = {
-                        "col": item.col, "row": item.row, "trash": item.trash}
+        for item in self.draw_items:
+
+            if isinstance(self.draw_items[item], House):
+                if not self.draw_items[item].mixed and not self.draw_items[item].paper and not self.draw_items[item].glass and not self.draw_items[item].plastic:
+                    # print(self.draw_items[item].col, self.draw_items[item].row)
+                    pass
+                if self.draw_items[item].mixed:
+                    self.add_to_dict(self.draw_items[item], self.draw_items[item].mixed,
+                                     self.mixed_trash_quantity_houses)
+                if self.draw_items[item].paper:
+                    self.add_to_dict(self.draw_items[item], self.draw_items[item].paper,
+                                     self.paper_trash_quantity_houses)
+                if self.draw_items[item].glass:
+                    self.add_to_dict(self.draw_items[item], self.draw_items[item].glass,
+                                     self.glass_trash_quantity_houses)
+                if self.draw_items[item].plastic:
+                    self.add_to_dict(self.draw_items[item], self.draw_items[item].plastic,
+                                     self.plastic_trash_quantity_houses)
+            elif isinstance(self.draw_items[item], Trash):
+                self.trashes[self.draw_items[item].trash_type] = {
+                    "col": self.draw_items[item].col, "row": self.draw_items[item].row, "trash": self.draw_items[item].trash}
 
     def show(self):
         print({"Trash": {"mixed": self.trashes["Mixed"], "glass": self.trashes["Paper"],
