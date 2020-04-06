@@ -11,7 +11,7 @@
    inkscape:export-xdpi="65.024002"
    inkscape:export-filename="/Users/leszek/Projects/SZI2020Project/Resources/Images/trash-paper.png"
    sodipodi:docname="my-paper.svg"
-   inkscape:version="1.0beta2 (2b71d25, 2019-12-03)"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    id="svg24"
    version="1.1"
    viewBox="0 0 100 100"
@@ -22,15 +22,15 @@
   <sodipodi:namedview
      inkscape:document-rotation="0"
      inkscape:window-maximized="1"
-     inkscape:window-y="0"
-     inkscape:window-x="0"
-     inkscape:window-height="1058"
+     inkscape:window-y="-9"
+     inkscape:window-x="-9"
+     inkscape:window-height="1001"
      inkscape:window-width="1920"
      showgrid="false"
-     inkscape:current-layer="g855"
+     inkscape:current-layer="layer1"
      inkscape:document-units="mm"
      inkscape:cy="13.898782"
-     inkscape:cx="12.929372"
+     inkscape:cx="-419.21349"
      inkscape:zoom="0.7"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -46,7 +46,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -61,7 +61,10 @@
        height="103.56548"
        width="103.56548"
        id="rect26"
-       style="fill:#71c837;stroke-width:0.34196147" />
+       style="fill:#87de87;stroke-width:0.34196147;fill-opacity:1"
+       inkscape:export-filename="C:\Users\dawid\Desktop\SZI2020Project\Resources\Images\trash-paper.png"
+       inkscape:export-xdpi="62.7854"
+       inkscape:export-ydpi="62.7854" />
     <g
        id="g855"
        transform="matrix(0.2032791,0,0,0.2032791,7.1101858,194.14752)">
