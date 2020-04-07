@@ -64,6 +64,26 @@ plastic_trash_quantity_houses
 
 w tych 4 słownikach przechowujemy informację o danym typie śmieci
 
+## Grafika
+
+Całą grafikę stworzyliśmy w oparciu o format SVG w programie Inkscape. Format SVG jest formatem dwuwymiarowej grafiki wektorowej. Jego największą korzyścią jest fakt, iż można dostosowywać rozdzielczość wyeksportowanej z niej grafiki (w formacie .png) podczas rozwoju projektu.
+
+Grafika po utworzeniu w programie Inkscape, zostaje wyeksportowana do pliku .png, który następnie wczytujemy do aplikacji. 
+
+## Elementy grafiki z których gra jest zbudowana
+
+1. [garbage-collector.png](Resources/Images/garbage-collector.png)
+2. [house.png](Resources/Images/house.png)
+3. [road.png](Resources/Images/road.png)
+4. [trash-glass.png](Resources/Images/trash-glass.png)
+5. [trash-mixed.png](Resources/Images/trash-mixed.png)
+6. [trash-paper.png](Resources/Images/trash-paper.png)
+7. [trash-plastic.png](Resources/Images/trash-plastic.png)
+
+(kliknięcie otwiera dany plik)
+
+Część grafik była wzorowana, bądź pobrana z serwisu flaticon.com 
+
 ## Instalacja i uruchomienie
 
 Wymagania:
