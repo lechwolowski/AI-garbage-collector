@@ -3,3 +3,6 @@ install:
 
 start:
 	bash -c "source env/bin/activate && python main.py"
+
+ml:
+	bash -c "source env/bin/activate && python neural_network.py"
