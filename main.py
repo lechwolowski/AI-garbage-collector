@@ -1,6 +1,6 @@
 import pygame
 from models.Garbage_Collector import Garbage_Collector
-from config import WINDOW_HEIGHT, WINDOW_WIDTH, TRASH_GLASS_IMAGE
+from config import WINDOW_HEIGHT, WINDOW_WIDTH, TRASH_GLASS_IMAGE, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from helpler import Render_Element
 from Knowledge import Knowledge
 from models.Trash import Trash
@@ -26,13 +26,23 @@ clock = pygame.time.Clock()
 
 
 def refresh_screen():
-    for i in range(4):
-        display_group.draw(WINDOW)
-
+    col, row = gc.col, gc.row
+    for _ in range(4):
+        for i in range(-1, 2):
+            if row + i >= 0 and row + i < MAP_HEIGHT:
+                WINDOW.blit(draw_items[col, row + i].image,
+                            (col * CELL_SIZE, (row + i) * CELL_SIZE))
+            if col + i >= 0 and col + i < MAP_WIDTH:
+                WINDOW.blit(draw_items[col + i, row].image,
+                            ((col + i) * CELL_SIZE, row * CELL_SIZE))
+    for _ in range(4):
+        WINDOW.blit(gc.image, (col * CELL_SIZE, row * CELL_SIZE))
     pygame.display.update()
 
 
-pygame.display.update()
+for _ in range(4):
+    display_group.draw(WINDOW)
+pygame.display.flip()
 know = Knowledge(draw_items, gc)
 refresh_screen()
 # Game Loop
