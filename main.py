@@ -4,6 +4,7 @@ from config import WINDOW_HEIGHT, WINDOW_WIDTH, TRASH_GLASS_IMAGE, CELL_SIZE, MA
 from helpler import Render_Element
 from Knowledge import Knowledge
 from models.Trash import Trash
+from q_learning import Q_Learning
 
 
 pygame.init()
@@ -43,7 +44,8 @@ def refresh_screen():
 for _ in range(4):
     display_group.draw(WINDOW)
 pygame.display.flip()
-know = Knowledge(draw_items, gc)
+# know = Knowledge(draw_items, gc)
+ml = Q_Learning(gc)
 refresh_screen()
 # Game Loop
 running = True
@@ -63,8 +65,9 @@ while running:
                 gc.move_down()
             if event.key == pygame.K_SPACE:
                 gc.trash_flow(draw_items)
-                know.update()
-                know.show()
+                # know.update()
+                # know.show()
+                print(ml.mixed())
 
             refresh_screen()
 
