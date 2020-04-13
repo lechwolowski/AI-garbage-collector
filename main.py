@@ -7,25 +7,6 @@ from models.Trash import Trash
 from q_learning import Q_Learning
 
 
-pygame.init()
-
-WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-
-display_group = pygame.sprite.Group()
-
-draw_items = {(x, y): Render_Element(x, y)
-              for x in range(16) for y in range(10)}
-
-for item in draw_items:
-    display_group.add(draw_items[item])
-
-gc = Garbage_Collector()
-
-display_group.add(gc)
-
-clock = pygame.time.Clock()
-
-
 def refresh_screen():
     col, row = gc.col, gc.row
     for _ in range(4):
@@ -41,12 +22,35 @@ def refresh_screen():
     pygame.display.update()
 
 
-for _ in range(4):
-    display_group.draw(WINDOW)
-pygame.display.flip()
+def render_game():
+    for _ in range(4):
+        display_group.draw(WINDOW)
+    pygame.display.flip()
+
+
+pygame.init()
+WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
+display_group = pygame.sprite.Group()
+
+draw_items = {(x, y): Render_Element(x, y)
+              for x in range(16) for y in range(10)}
+
+for item in draw_items:
+    display_group.add(draw_items[item])
+
+gc = Garbage_Collector()
+
+display_group.add(gc)
+
+render_game()
+
+clock = pygame.time.Clock()
+
+
 # know = Knowledge(draw_items, gc)
-ml = Q_Learning(gc)
-refresh_screen()
+
+# refresh_screen()
 # Game Loop
 running = True
 while running:
@@ -65,9 +69,12 @@ while running:
                 gc.move_down()
             if event.key == pygame.K_SPACE:
                 gc.trash_flow(draw_items)
+                # print(ml.trash_flow())
                 # know.update()
                 # know.show()
-                print(ml.mixed())
+                print(ml.is_done())
+                print(draw_items[(0, 2)].mixed)
+            gc.render()
 
             refresh_screen()
 

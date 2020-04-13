@@ -50,57 +50,75 @@ class Garbage_Collector(Numbers):
                   (39, 40), (YELLOW), 10)
         self.img_save(draw, img, self.rotation, self.mirror)
 
+    def is_empty(self):
+        if self.mixed == 0 and self.glass == 0 and self.paper == 0 and self.plastic == 0:
+            return True
+        else:
+            return False
+
     def get_fill(self, base, full_val, trash):
         addable_range = full_val - base
         return full_val - ((trash / self.limit) * addable_range)
 
-    def set_rect(self):
+    def render(self):
         self.rect = pygame.Rect(
             self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         self.update()
 
     def move_up(self):
+        result = False
         self.rotation = 90
         self.mirror = False
         if self.row > 0:
             if self.road_positions[self.row - 1][self.col]:
                 self.row -= 1
-        self.set_rect()
+                result = True
+
+        return result
 
     def move_down(self):
+        result = False
         self.rotation = 270
         self.mirror = False
         if self.row < MAP_HEIGHT - 1:
             if self.road_positions[self.row + 1][self.col]:
                 self.row += 1
-        self.set_rect()
+                result = True
+
+        return result
 
     def move_left(self):
+        result = False
         self.rotation = 0
         self.mirror = True
         if self.col > 0:
             if self.road_positions[self.row][self.col - 1]:
                 self.col -= 1
-        self.set_rect()
+                result = True
+
+        return result
 
     def move_right(self):
+        result = False
         self.rotation = 0
         self.mirror = False
         if self.col < MAP_WIDTH - 1:
             if self.road_positions[self.row][self.col + 1]:
                 self.col += 1
-        self.set_rect()
+                result = True
 
-    def trash_flow(self, draw_items):
+        return result
+
+    def pick_trash(self, draw_items):
         to_check = [
             {"col": self.col - 1, "row": self.row},
             {"col": self.col + 1, "row": self.row},
             {"col": self.col, "row": self.row - 1},
             {"col": self.col, "row": self.row + 1},
         ]
+        transfered = 0
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
-
                 item = draw_items[(field["col"], field["row"])]
                 if isinstance(item, House):
 
@@ -109,41 +127,61 @@ class Garbage_Collector(Numbers):
                         mixed = item.get_mixed()
                         if mixed:
                             self.mixed += 1
+                            transfered += 1
 
                     paper = True
                     while paper and self.paper < self.limit:
                         paper = item.get_paper()
                         if paper:
                             self.paper += 1
+                            transfered += 1
 
                     glass = True
                     while glass and self.glass < self.limit:
                         glass = item.get_glass()
                         if glass:
                             self.glass += 1
+                            transfered += 1
 
                     plastic = True
                     while plastic and self.plastic < self.limit:
                         plastic = item.get_plastic()
                         if plastic:
                             self.plastic += 1
+                            transfered += 1
+        return transfered
 
-                elif isinstance(item, Trash):
+    def leave_trash(self, draw_items):
+        to_check = [
+            {"col": self.col - 1, "row": self.row},
+            {"col": self.col + 1, "row": self.row},
+            {"col": self.col, "row": self.row - 1},
+            {"col": self.col, "row": self.row + 1},
+        ]
+        transfered = 0
+        for field in to_check:
+            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
+                item = draw_items[(field["col"], field["row"])]
+                if isinstance(item, Trash):
                     if item.trash_type == "Mixed":
                         while self.mixed > 0:
                             item.put_trash()
                             self.mixed -= 1
+                            transfered += 1
                     elif item.trash_type == "Paper":
                         while self.paper > 0:
                             item.put_trash()
                             self.paper -= 1
+                            transfered += 1
                     elif item.trash_type == "Glass":
                         while self.glass > 0:
                             item.put_trash()
                             self.glass -= 1
+                            transfered += 1
                     elif item.trash_type == "Plastic":
                         while self.plastic > 0:
                             item.put_trash()
                             self.plastic -= 1
+                            transfered += 1
 
-                self.set_rect()
+        return transfered

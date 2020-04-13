@@ -26,6 +26,12 @@ class House (Numbers):
         draw.text((37, 42), str(self.plastic), YELLOW, font=font)
         self.img_save(draw, img)
 
+    def is_empty(self):
+        if self.mixed == 0 and self.glass == 0 and self.paper == 0 and self.plastic == 0:
+            return True
+        else:
+            return False
+
     def get_mixed(self):
         if self.mixed > 0:
             self.mixed -= 1
