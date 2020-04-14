@@ -2,16 +2,20 @@
 # print(tf.version)
 from os.path import isfile
 import numpy as np
+from time import time
 from models.House import House
 from random import randint
 from helpler import Render_Element
 from models.Garbage_Collector import Garbage_Collector
+from config import MAP_WIDTH, MAP_HEIGHT
+from models.Road import Road
 
 
 class Q_Learning:
-    def __init__(self):
-        super().__init__()
-        self.q_table = np.zeros((16 * 10 * 2 * 2 * 2 * 2, 6))
+    def __init__(self, gc=None, draw_items=None, q_table=None):
+        self.q_table = q_table
+        self.gc = gc
+        self.draw_items = draw_items
         self.actions = {
             0: self.move_up,
             1: self.move_down,
@@ -20,52 +24,22 @@ class Q_Learning:
             4: self.pick_trash,
             5: self.leave_trash
         }
-        self.set_raw_game()
 
-    def is_mixed_full(self):
-        if self.gc.mixed == self.gc.limit:
-            return True
-        else:
-            return False
-
-    def is_paper_full(self):
-        if self.gc.paper == self.gc.limit:
-            return True
-        else:
-            return False
-
-    def is_glass_full(self):
-        if self.gc.glass == self.gc.limit:
-            return True
-        else:
-            return False
-
-    def is_plastic_full(self):
-        if self.gc.plastic == self.gc.limit:
-            return True
-        else:
-            return False
-
-    def col(self): return self.gc.col
-    def row(self): return self.gc.row
-
-    def is_done(self):
-        if not self.gc.is_empty():
-            return False
-        for item in self.draw_items:
-            if isinstance(self.draw_items[item], House) and not self.draw_items[item].is_empty():
-                return False
-        return True
+    # Actions and Rewards
 
     def pick_trash(self):
-        return self.gc.pick_trash(self.draw_items) - 2
+        transfered = self.gc.pick_trash(self.draw_items)
+        if transfered == 0:
+            return -0.1
+        else:
+            return transfered * 10
 
     def leave_trash(self):
         transfered = self.gc.leave_trash(self.draw_items)
         if transfered == 0:
-            return - 10
+            return -0.1
         else:
-            return transfered * 10
+            return transfered * 100
 
     def move_up(self):
         if self.gc.move_up():
@@ -89,29 +63,81 @@ class Q_Learning:
         if self.gc.move_right():
             return -0.01
         else:
-            return -100
+            return - 100
+
+    # Table
+
+    def is_full(self, trash_type):
+        if getattr(self.gc, trash_type) == self.gc.limit:
+            return True
+        else:
+            return False
+
+    def is_empty(self, trash_type):
+        if getattr(self.gc, trash_type) == 0:
+            return True
+        else:
+            return False
+
+    def is_done(self):
+        if not self.gc.is_empty():
+            return False
+        for item in self.draw_items:
+            if isinstance(self.draw_items[item], House) and not self.draw_items[item].is_empty():
+                return False
+        return True
+
+    def houses_state(self):
+        self.houses = list(map(lambda item: self.draw_items[item], list(filter(lambda item: isinstance(
+            self.draw_items[item], House), self.draw_items))))
+        i = 0
+        summ = 0
+        for house in self.houses:
+            if house.is_empty():
+                summ += 2 ** i
+            i += 1
+
+        return summ
+
+    def gc_position(self):
+        roads = self.extract_roads()
+        return roads.index((self.gc.col, self.gc.row))
+
+    def extract_roads(self):
+        return list(filter(lambda item: isinstance(
+            self.draw_items[item], Road), self.draw_items))
 
     def set_state(self):
-        state = self.row() * 0x100 + \
-            self.col() * 0x10 + \
-            8 * self.is_mixed_full() + 4 * self.is_paper_full() + \
-            2 * self.is_glass_full() + self.is_plastic_full()
+        state = (self.gc_position() * 0x100 +
+                 (8 * self.is_full("mixed") + 4 * self.is_full("paper") +
+                  2 * self.is_full("glass") + self.is_full("plastic")) * 0x10 +
+                 8 * self.is_empty("mixed") + 4 * self.is_empty("paper") +
+                 2 * self.is_empty("glass") + self.is_empty("plastic")) * (2 ** 6) + \
+            self.houses_state()
         return state
+
+    # Generate new game
 
     def set_raw_game(self):
         self.draw_items = {(x, y): Render_Element(x, y)
-                           for x in range(16) for y in range(10)}
-        self.gc = Garbage_Collector()
+                           for x in range(MAP_WIDTH) for y in range(MAP_HEIGHT)}
+        self.gc = Garbage_Collector({"row": 1, "col": 1})
 
-    def run(self):
-        epsilon = 0.8
-        alpha = 0.8  # learning rate
-        gamma = 0.9
-        for run in range(1000):
+    def run(self, epochs=100, alpha=0.8, gamma=0.8, epsilon=0.8, epsilon_step=0.001):
+        self.set_raw_game()
+        if self.q_table is None:
+            self.q_table = np.zeros(
+                (len(self.extract_roads()) * 2**4 * 2**4 * 2**6 * 4, 6))
+        moves = 0
+        sums = 0
+        avg_sums = 0
+        tg0 = time()
+        t0 = time()
+        for run in range(epochs):
             done = False
             i = 0
             reward_sum = 0
-            while not done and i < 100000:
+            while not done and i < 10000:
                 state = self.set_state()
                 if np.random.uniform(0, 1) < epsilon:
                     action = randint(0, len(self.actions) - 1)
@@ -120,7 +146,6 @@ class Q_Learning:
                 reward = self.actions[action]()
                 reward_sum += reward
                 next_state = self.set_state()
-
                 old_value = self.q_table[state, action]
                 next_max = np.max(self.q_table[next_state])
 
@@ -130,11 +155,20 @@ class Q_Learning:
                 self.q_table[state, action] = new_value
                 if self.is_done():
                     done = True
-                    epsilon -= 0.001
+                    epsilon -= epsilon_step
 
-            print("run:", run, "moves:", i, "sum:",
-                  int(reward_sum), "average:", round(reward_sum / i, 2), "epsilon:", round(epsilon, 2))
+            moves += i
+            sums += reward_sum
+            avg_sums += reward_sum / i
+            if run % 50 == 49:
+                t1 = time()
+                print("runs:", run + 1, "avg_moves:", moves / 50, "sum:",
+                      int(sums / 50), "average:", round(avg_sums / 50, 2), "epsilon:", round(epsilon, 2), "time:", round((t1 - t0), 2))
+                moves, sums, avg_sums = 0, 0, 0
+                t0 = time()
             self.set_raw_game()
+        tg1 = time()
+        print("time of learning:", int((tg1 - tg0) / 60))
         saved = False
         num = 7
         while not saved and num < 1000:
@@ -144,23 +178,25 @@ class Q_Learning:
                 saved = True
             else:
                 num += 1
-        # self.gc.render()
-        # self.render_game()
 
     def test(self):
-        done = False
+        self.set_raw_game()
         i = 0
         reward_sum = 0
-        while not done and i < 100000:
+        while not self.is_done() and i < 100000:
             state = self.set_state()
             action = np.argmax(self.q_table[state])
             reward = self.actions[action]()
             reward_sum += reward
             i += 1
+
         print("moves:", i, "sum:", int(reward_sum), "average:",
               round(reward_sum / i, 2))
 
-
-ql = Q_Learning()
-ql.run()
-ql.test()
+    def play(self):
+        state = self.set_state()
+        action = np.argmax(self.q_table[state])
+        reward = self.actions[action]()
+        print(state, action, reward, np.argmax(
+            self.q_table[state]), self.q_table[state])
+        return self.is_done()

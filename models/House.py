@@ -10,10 +10,10 @@ from models.Numbers import Numbers
 class House (Numbers):
     def __init__(self, x, y):
         Numbers.__init__(self, x, y)
-        self.mixed = randint(0, 2)
-        self.paper = randint(0, 2)
-        self.glass = randint(0, 2)
-        self.plastic = randint(0, 2)
+        self.mixed = randint(0, 9)
+        self.paper = randint(0, 9)
+        self.glass = randint(0, 9)
+        self.plastic = randint(0, 9)
         self.update()
 
     def update(self):

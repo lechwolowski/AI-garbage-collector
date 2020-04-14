@@ -5,4 +5,7 @@ start:
 	bash -c "source env/bin/activate && python main.py"
 
 ql:
-	bash -c "source env/bin/activate && python q_learning.py"
+	bash -c "source env/bin/activate && python ql_runner.py"
+
+ql-test:
+	bash -c "source env/bin/activate && python ql_tester.py"

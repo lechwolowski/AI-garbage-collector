@@ -10,15 +10,12 @@ from models.Trash import Trash
 
 
 class Garbage_Collector(Numbers):
-    def __init__(self):
+    def __init__(self, gc_initial_position={"row": 1, "col": 1}):
         self.road_positions = {row_index: {
             col_index: (True if MAP[row_index][col_index] == "Road" else False)
             for col_index in MAP[row_index]} for row_index in MAP}
 
-        gc_initial_position = {"row": randint(0, 9), "col": randint(0, 15)}
-        while not self.road_positions[gc_initial_position["row"]][gc_initial_position["col"]]:
-            gc_initial_position = {"row": randint(0, 9), "col": randint(0, 15)}
-
+        gc_initial_position = self.random_starting_position()
         self.col = gc_initial_position["col"]
         self.row = gc_initial_position["row"]
 
@@ -32,6 +29,14 @@ class Garbage_Collector(Numbers):
 
         Numbers.__init__(self, self.col, self.row)
         self.update()
+
+    def random_starting_position(self):
+        gc_initial_position = {"row": randint(
+            0, MAP_HEIGHT - 1), "col": randint(0, MAP_WIDTH - 1)}
+        while not self.road_positions[gc_initial_position["row"]][gc_initial_position["col"]]:
+            gc_initial_position = {"row": randint(
+                0, MAP_HEIGHT - 1), "col": randint(0, MAP_WIDTH - 1)}
+        return gc_initial_position
 
     def update(self):
         draw, font, img = self.img_load(
@@ -116,11 +121,13 @@ class Garbage_Collector(Numbers):
             {"col": self.col, "row": self.row - 1},
             {"col": self.col, "row": self.row + 1},
         ]
+        houses_around = False
         transfered = 0
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
                 item = draw_items[(field["col"], field["row"])]
                 if isinstance(item, House):
+                    houses_around = True
 
                     mixed = True
                     while mixed and self.mixed < self.limit:
@@ -149,7 +156,10 @@ class Garbage_Collector(Numbers):
                         if plastic:
                             self.plastic += 1
                             transfered += 1
-        return transfered
+        if houses_around:
+            return transfered
+        else:
+            return -10
 
     def leave_trash(self, draw_items):
         to_check = [
@@ -159,10 +169,12 @@ class Garbage_Collector(Numbers):
             {"col": self.col, "row": self.row + 1},
         ]
         transfered = 0
+        trashes_around = False
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
                 item = draw_items[(field["col"], field["row"])]
                 if isinstance(item, Trash):
+                    trashes_around = True
                     if item.trash_type == "Mixed":
                         while self.mixed > 0:
                             item.put_trash()
@@ -184,4 +196,7 @@ class Garbage_Collector(Numbers):
                             self.plastic -= 1
                             transfered += 1
 
-        return transfered
+        if trashes_around:
+            return transfered
+        else:
+            return -10
