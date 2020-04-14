@@ -9,6 +9,7 @@ from helpler import Render_Element
 from models.Garbage_Collector import Garbage_Collector
 from config import MAP_WIDTH, MAP_HEIGHT
 from models.Road import Road
+from multiprocessing import Process, Queue, Lock
 
 
 class Q_Learning:
@@ -24,6 +25,7 @@ class Q_Learning:
             4: self.pick_trash,
             5: self.leave_trash
         }
+        self.runs = 0
 
     # Actions and Rewards
 
@@ -123,48 +125,86 @@ class Q_Learning:
                            for x in range(MAP_WIDTH) for y in range(MAP_HEIGHT)}
         self.gc = Garbage_Collector({"row": 1, "col": 1})
 
+    def one_game_loop(self, queue, lock, q_table, alpha, gamma, epsilon):
+        done = False
+        i = 0
+        reward_sum = 0
+        while not done and i < 10000:
+            state = self.set_state()
+            if np.random.uniform(0, 1) < epsilon:
+                action = randint(0, len(self.actions) - 1)
+            else:
+                lock.acquire()
+                action = np.argmax(q_table[state])
+                lock.release()
+            reward = self.actions[action]()
+            reward_sum += reward
+            next_state = self.set_state()
+            lock.acquire()
+            old_value = q_table[state, action]
+            next_max = np.max(q_table[next_state])
+            lock.release()
+            i += 1
+            new_value = (1 - alpha) * old_value + alpha * \
+                (reward + gamma * next_max)
+            lock.acquire()
+            q_table[state, action] = new_value
+            lock.release()
+            if self.is_done():
+                done = True
+        # queue.put((i, reward_sum))
+
     def run(self, epochs=100, alpha=0.8, gamma=0.8, epsilon=0.8, epsilon_step=0.001):
         self.set_raw_game()
         if self.q_table is None:
             self.q_table = np.zeros(
                 (len(self.extract_roads()) * 2**4 * 2**4 * 2**6 * 4, 6))
-        moves = 0
-        sums = 0
-        avg_sums = 0
+        # moves = 0
+        # sums = 0
+        # avg_sums = 0
         tg0 = time()
         t0 = time()
-        for run in range(epochs):
-            done = False
-            i = 0
-            reward_sum = 0
-            while not done and i < 10000:
-                state = self.set_state()
-                if np.random.uniform(0, 1) < epsilon:
-                    action = randint(0, len(self.actions) - 1)
-                else:
-                    action = np.argmax(self.q_table[state])
-                reward = self.actions[action]()
-                reward_sum += reward
-                next_state = self.set_state()
-                old_value = self.q_table[state, action]
-                next_max = np.max(self.q_table[next_state])
+        lock = Lock()
+        while self.runs < epochs:
 
-                i += 1
-                new_value = (1 - alpha) * old_value + alpha * \
-                    (reward + gamma * next_max)
-                self.q_table[state, action] = new_value
-                if self.is_done():
-                    done = True
-                    epsilon -= epsilon_step
+            q = Queue()
+            p = [Process(target=self.one_game_loop,
+                         args=(q, lock, self.q_table, 0.8, 0.8, 0.8)) for _ in range(8)]
+            for item in p:
+                item.start()
 
-            moves += i
-            sums += reward_sum
-            avg_sums += reward_sum / i
-            if run % 50 == 49:
+            # i, reward_sum = q.get()
+            # print(0)
+            # moves += i
+            # sums += reward_sum
+            # avg_sums += reward_sum / i
+            # i, reward_sum = q.get()
+            # print(1)
+            # moves += i
+            # sums += reward_sum
+            # avg_sums += reward_sum / i
+            # i, reward_sum = q.get()
+            # print(2)
+            # moves += i
+            # sums += reward_sum
+            # avg_sums += reward_sum / i
+            # i, reward_sum = q.get()
+            # print(3)
+            for pr in p:
+                pr.join()
+                self.runs += 1
+
+            # epsilon -= epsilon_step * 4
+            # moves += i
+            # sums += reward_sum
+            # avg_sums += reward_sum / i
+            if self.runs % 40 == 0 or self.runs == 0:
                 t1 = time()
-                print("runs:", run + 1, "avg_moves:", moves / 50, "sum:",
-                      int(sums / 50), "average:", round(avg_sums / 50, 2), "epsilon:", round(epsilon, 2), "time:", round((t1 - t0), 2))
-                moves, sums, avg_sums = 0, 0, 0
+                print("runs:", self.runs)
+                # , "avg_moves:", moves / 40, "sum:",
+                #       int(sums / 40), "average:", round(avg_sums / 40, 2), "epsilon:", round(epsilon, 2), "time:", round((t1 - t0), 2))
+                # moves, sums, avg_sums = 0, 0, 0
+                print((t1-t0)/40)
                 t0 = time()
             self.set_raw_game()
         tg1 = time()
