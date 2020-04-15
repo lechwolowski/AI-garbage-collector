@@ -9,7 +9,8 @@ from helpler import Render_Element
 from models.Garbage_Collector import Garbage_Collector
 from config import MAP_WIDTH, MAP_HEIGHT
 from models.Road import Road
-from multiprocessing import Process, Queue, Lock
+from multiprocessing import Process, Queue, Lock, Array
+from shared_ndarray import SharedNDArray
 
 
 class Q_Learning:
@@ -135,76 +136,82 @@ class Q_Learning:
                 action = randint(0, len(self.actions) - 1)
             else:
                 lock.acquire()
-                action = np.argmax(q_table[state])
+                action = np.argmax(q_table.array[state])
                 lock.release()
             reward = self.actions[action]()
             reward_sum += reward
             next_state = self.set_state()
             lock.acquire()
-            old_value = q_table[state, action]
-            next_max = np.max(q_table[next_state])
+            old_value = q_table.array[state, action]
+            next_max = np.max(q_table.array[next_state])
             lock.release()
             i += 1
             new_value = (1 - alpha) * old_value + alpha * \
                 (reward + gamma * next_max)
             lock.acquire()
-            q_table[state, action] = new_value
+            q_table.array[state, action] = new_value
             lock.release()
             if self.is_done():
                 done = True
-        # queue.put((i, reward_sum))
+        queue.put(i)
 
     def run(self, epochs=100, alpha=0.8, gamma=0.8, epsilon=0.8, epsilon_step=0.001):
         self.set_raw_game()
+        print_interval = 1000
         if self.q_table is None:
-            self.q_table = np.zeros(
+            # self.q_table = np.zeros(
+            #     (len(self.extract_roads()) * 2**4 * 2**4 * 2**6 * 4, 6))
+            self.q_table = SharedNDArray(
                 (len(self.extract_roads()) * 2**4 * 2**4 * 2**6 * 4, 6))
-        # moves = 0
-        # sums = 0
+        moves = 0
+        # reward_sum = 0
         # avg_sums = 0
         tg0 = time()
         t0 = time()
         lock = Lock()
         while self.runs < epochs:
-
             q = Queue()
             p = [Process(target=self.one_game_loop,
                          args=(q, lock, self.q_table, 0.8, 0.8, 0.8)) for _ in range(8)]
             for item in p:
                 item.start()
 
-            # i, reward_sum = q.get()
-            # print(0)
-            # moves += i
-            # sums += reward_sum
-            # avg_sums += reward_sum / i
-            # i, reward_sum = q.get()
-            # print(1)
-            # moves += i
-            # sums += reward_sum
-            # avg_sums += reward_sum / i
-            # i, reward_sum = q.get()
-            # print(2)
-            # moves += i
-            # sums += reward_sum
-            # avg_sums += reward_sum / i
-            # i, reward_sum = q.get()
-            # print(3)
+            for _ in p:
+                i = q.get()
+                moves += i
+                # sums += game_reward
+
+                # print(0)
+                # moves += i
+                # sums += reward_sum
+                # avg_sums += reward_sum / i
+                # i, reward_sum = q.get()
+                # print(1)
+                # moves += i
+                # sums += reward_sum
+                # avg_sums += reward_sum / i
+                # i, reward_sum = q.get()
+                # print(2)
+                # moves += i
+                # sums += reward_sum
+                # avg_sums += reward_sum / i
+                # i, reward_sum = q.get()
+                # print(3)
             for pr in p:
                 pr.join()
                 self.runs += 1
+                epsilon -= epsilon_step
 
-            # epsilon -= epsilon_step * 4
             # moves += i
             # sums += reward_sum
             # avg_sums += reward_sum / i
-            if self.runs % 40 == 0 or self.runs == 0:
+            if self.runs % print_interval == 0 or self.runs == 0:
                 t1 = time()
-                print("runs:", self.runs)
+                print("runs:", self.runs, "epsilon:", round(
+                    epsilon, 2), "avg_moves:", moves / print_interval, "time:", round((t1 - t0), 2))
                 # , "avg_moves:", moves / 40, "sum:",
                 #       int(sums / 40), "average:", round(avg_sums / 40, 2), "epsilon:", round(epsilon, 2), "time:", round((t1 - t0), 2))
-                # moves, sums, avg_sums = 0, 0, 0
-                print((t1-t0)/40)
+                moves = 0
                 t0 = time()
             self.set_raw_game()
         tg1 = time()
@@ -214,7 +221,7 @@ class Q_Learning:
         while not saved and num < 1000:
             if not isfile(f"runs/run_{str(num).zfill(3)}.csv"):
                 np.savetxt(f"runs/run_{str(num).zfill(3)}.csv",
-                           self.q_table, delimiter=",")
+                           self.q_table.array, delimiter=",")
                 saved = True
             else:
                 num += 1
