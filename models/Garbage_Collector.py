@@ -10,7 +10,7 @@ from models.Trash import Trash
 
 
 class Garbage_Collector(Numbers):
-    def __init__(self, gc_initial_position={"row": 1, "col": 1}):
+    def __init__(self, draw_items):
         self.road_positions = {row_index: {
             col_index: (True if MAP[row_index][col_index] == "Road" else False)
             for col_index in MAP[row_index]} for row_index in MAP}
@@ -26,6 +26,7 @@ class Garbage_Collector(Numbers):
         self.limit = 10
         self.rotation = 0
         self.mirror = False
+        self.draw_items = draw_items
 
         Numbers.__init__(self, self.col, self.row)
         self.update()
@@ -114,7 +115,7 @@ class Garbage_Collector(Numbers):
 
         return result
 
-    def pick_trash(self, draw_items):
+    def pick_trash(self):
         to_check = [
             {"col": self.col - 1, "row": self.row},
             {"col": self.col + 1, "row": self.row},
@@ -125,7 +126,7 @@ class Garbage_Collector(Numbers):
         transfered = 0
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
-                item = draw_items[(field["col"], field["row"])]
+                item = self.draw_items[(field["col"], field["row"])]
                 if isinstance(item, House):
                     houses_around = True
 
@@ -161,7 +162,7 @@ class Garbage_Collector(Numbers):
         else:
             return -10
 
-    def leave_trash(self, draw_items):
+    def leave_trash(self):
         to_check = [
             {"col": self.col - 1, "row": self.row},
             {"col": self.col + 1, "row": self.row},
@@ -172,7 +173,7 @@ class Garbage_Collector(Numbers):
         trashes_around = False
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
-                item = draw_items[(field["col"], field["row"])]
+                item = self.draw_items[(field["col"], field["row"])]
                 if isinstance(item, Trash):
                     trashes_around = True
                     if item.trash_type == "Mixed":
