@@ -9,8 +9,10 @@ class GC_Env:
     OBSERVATION_SPACE_VALUES = (2 + 1 * 4 + 6 * 4,)
     ACTION_SPACE_SIZE = 6
 
-    def __init__(self):
-        self.reset()
+    def reset(self):
+        self.draw_items = {(x, y): Render_Element(x, y)
+                           for x in range(MAP_WIDTH) for y in range(MAP_HEIGHT)}
+        self.gc = Garbage_Collector(self.draw_items)
         self.actions = {
             0: self.gc.move_up,
             1: self.gc.move_down,
@@ -19,12 +21,6 @@ class GC_Env:
             4: self.gc.pick_trash,
             5: self.gc.leave_trash
         }
-        self.runs = 0
-
-    def reset(self):
-        self.draw_items = {(x, y): Render_Element(x, y)
-                           for x in range(MAP_WIDTH) for y in range(MAP_HEIGHT)}
-        self.gc = Garbage_Collector(self.draw_items)
         houses = list(map(lambda item: self.draw_items[item], list(filter(lambda item: isinstance(
             self.draw_items[item], House), self.draw_items))))
         observation = [

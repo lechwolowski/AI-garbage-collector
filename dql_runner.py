@@ -1,9 +1,7 @@
-from Deep_Q_Learning.Deep_Q_Learning import DQNAgent
-from numpy import genfromtxt
-import os
-import csv
+import time
 import numpy as np
 from tqdm import tqdm
+from Deep_Q_Learning.Deep_Q_Learning import DQNAgent
 from Deep_Q_Learning.GC_Env import GC_Env
 
 DISCOUNT = 0.99
@@ -64,8 +62,8 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
         # Transform new continous state to new discrete state and count reward
         episode_reward += reward
 
-        if SHOW_PREVIEW and not episode % AGGREGATE_STATS_EVERY:
-            env.render()
+        # if SHOW_PREVIEW and not episode % AGGREGATE_STATS_EVERY:
+        #     env.render()
 
         # Every step we update replay memory and train main network
         agent.update_replay_memory(

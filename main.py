@@ -1,14 +1,12 @@
-import pygame
-import csv
-import os
 import time
-from models.Garbage_Collector import Garbage_Collector
-from config import WINDOW_HEIGHT, WINDOW_WIDTH, TRASH_GLASS_IMAGE, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
-from helpler import Render_Element
-from Knowledge import Knowledge
-from models.Trash import Trash
-from q_learning import Q_Learning
+import os
+import pygame
 from numpy import genfromtxt
+from models.Garbage_Collector import Garbage_Collector
+from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
+from helpler import Render_Element
+# from Knowledge import Knowledge
+from Deep_Q_Learning.q_learning import Q_Learning
 
 
 def refresh_screen():
@@ -43,7 +41,7 @@ draw_items = {(x, y): Render_Element(x, y)
 for item in draw_items:
     display_group.add(draw_items[item])
 
-gc = Garbage_Collector()
+gc = Garbage_Collector(draw_items)
 
 display_group.add(gc)
 
@@ -77,8 +75,8 @@ while running:
             if event.key == pygame.K_DOWN:
                 gc.move_down()
             if event.key == pygame.K_SPACE:
-                gc.pick_trash(draw_items)
-                gc.leave_trash(draw_items)
+                gc.pick_trash()
+                gc.leave_trash()
                 # print(ml.trash_flow())
                 # know.update()
                 # know.show()

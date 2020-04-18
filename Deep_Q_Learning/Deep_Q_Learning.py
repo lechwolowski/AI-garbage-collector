@@ -1,7 +1,7 @@
 import numpy as np
 from time import time
 import keras.backend.tensorflow_backend as backend
-from keras.models import Sequential, Model
+from keras.models import Sequential
 from keras.layers import Dense, Dropout, Input, Activation, Flatten
 from keras.optimizers import Adam
 from keras.callbacks import TensorBoard
@@ -163,4 +163,4 @@ class DQNAgent:
 
     # Queries main network for Q values given current observation space (environment state)
     def get_qs(self, state):
-        return self.model.predict(np.array(state).reshape(-1, *state.shape))[0]
+        return self.model.predict(np.array(state).reshape(-1, 30))
