@@ -11,4 +11,4 @@ ql-test:
 	bash -c "source env/bin/activate && python ql_tester.py"
 
 dql:
-	bash -c "source env/bin/activate && python dql.py"
+	bash -c "source env/bin/activate && python dql_runner.py"

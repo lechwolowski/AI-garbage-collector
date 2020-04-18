@@ -25,7 +25,7 @@ MIN_REWARD = -200  # For model save
 MEMORY_FRACTION = 0.20
 
 # Environment settings
-EPISODES = 20_0
+EPISODES = 20_000
 
 # Exploration settings
 epsilon = 1  # not a constant, going to be decayed
@@ -334,6 +334,8 @@ class DQNAgent:
         # Fit on all samples as one batch, log only on terminal state
         self.model.fit(np.array(X)/255, np.array(y), batch_size=MINIBATCH_SIZE, verbose=0,
                        shuffle=False, callbacks=[self.tensorboard] if terminal_state else None)
+
+        arr = np.array(X)/255
 
         # Update target network counter every episode
         if terminal_state:
