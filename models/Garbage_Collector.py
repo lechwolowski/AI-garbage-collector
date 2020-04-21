@@ -158,7 +158,7 @@ class Garbage_Collector(Numbers):
                             self.plastic += 1
                             transfered += 1
         if houses_around:
-            return transfered
+            return transfered * 10
         else:
             return -10
 
@@ -198,6 +198,6 @@ class Garbage_Collector(Numbers):
                             transfered += 1
 
         if trashes_around:
-            return transfered
+            return transfered * 100
         else:
             return -10

@@ -1,6 +1,7 @@
 import numpy as np
 from time import time
 import keras.backend.tensorflow_backend as backend
+from keras import backend as K
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Input, Activation, Flatten
 from keras.optimizers import Adam
@@ -16,7 +17,7 @@ REPLAY_MEMORY_SIZE = 50_000  # How many last steps to keep for model training
 MIN_REPLAY_MEMORY_SIZE = 1_000
 MINIBATCH_SIZE = 64  # How many steps (samples) to use for training
 UPDATE_TARGET_EVERY = 5  # Terminal states (end of episodes)
-MODEL_NAME = '2x256'
+MODEL_NAME = 'l-3_n-26-12-6-relu4l_adjusted_rewards'
 MIN_REWARD = -200  # For model save
 MEMORY_FRACTION = 0.20
 
@@ -31,6 +32,15 @@ MIN_EPSILON = 0.001
 #  Stats settings
 AGGREGATE_STATS_EVERY = 50  # episodes
 SHOW_PREVIEW = False
+
+# Further, whenever we call load_model(remember, we needed it for the target network), we will need to pass custom_objects={'huber_loss': huber_loss as an argument to tell Keras where to find huber_loss.
+def huber_loss(a, b, in_keras=True):
+    error = a - b
+    quadratic_term = error*error / 2
+    linear_term = abs(error) - 1/2
+    use_linear_term = (abs(error) > 1.0)
+    use_linear_term = K.cast(use_linear_term, 'float32')
+    return use_linear_term * linear_term + (1-use_linear_term) * quadratic_term
 
 
 # Own Tensorboard class
@@ -92,11 +102,12 @@ class DQNAgent:
 
     def create_model(self):
         model = Sequential([
-            Dense(32, input_shape=self.env.OBSERVATION_SPACE_VALUES),
-            Activation('relu'),
-            Dense(self.env.ACTION_SPACE_SIZE, activation='linear'),
+            Dense(26, input_shape=self.env.OBSERVATION_SPACE_VALUES, activation='relu'),
+            Dense(12, activation='relu'),
+            Dense(6, activation='relu'),
+            Dense(self.env.ACTION_SPACE_SIZE, activation='softmax'),
         ])
-        model.compile(loss="mse", optimizer=Adam(
+        model.compile(loss='mse', optimizer=Adam(
             lr=0.001), metrics=['accuracy'])
         return model
 
