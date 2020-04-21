@@ -5,8 +5,7 @@ from numpy import genfromtxt
 from models.Garbage_Collector import Garbage_Collector
 from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from helpler import Render_Element
-# from Knowledge import Knowledge
-from Deep_Q_Learning.q_learning import Q_Learning
+from GC_Env import GC_Env
 
 
 def refresh_screen():
@@ -35,13 +34,12 @@ WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 display_group = pygame.sprite.Group()
 
-draw_items = {(x, y): Render_Element(x, y)
-              for x in range(MAP_WIDTH) for y in range(MAP_HEIGHT)}
+env = GC_Env()
+
+_, draw_items, gc = env.reset()
 
 for item in draw_items:
     display_group.add(draw_items[item])
-
-gc = Garbage_Collector(draw_items)
 
 display_group.add(gc)
 
@@ -62,16 +60,16 @@ while running:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                gc.move_left()
+                env.step(2)
             if event.key == pygame.K_RIGHT:
-                gc.move_right()
+                env.step(3)
             if event.key == pygame.K_UP:
-                gc.move_up()
+                env.step(0)
             if event.key == pygame.K_DOWN:
-                gc.move_down()
+                env.step(1)
             if event.key == pygame.K_SPACE:
-                gc.pick_trash()
-                gc.leave_trash()
+                env.step(4)
+                env.step(5)
                 # know.update()
                 # know.show()
             gc.render()
