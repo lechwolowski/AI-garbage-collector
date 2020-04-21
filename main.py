@@ -1,28 +1,11 @@
+import time
+import os
 import pygame
+from numpy import genfromtxt
 from models.Garbage_Collector import Garbage_Collector
-from config import WINDOW_HEIGHT, WINDOW_WIDTH, TRASH_GLASS_IMAGE, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
+from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from helpler import Render_Element
-from Knowledge import Knowledge
-from models.Trash import Trash
-
-
-pygame.init()
-
-WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-
-display_group = pygame.sprite.Group()
-
-draw_items = {(x, y): Render_Element(x, y)
-              for x in range(16) for y in range(10)}
-
-for item in draw_items:
-    display_group.add(draw_items[item])
-
-gc = Garbage_Collector()
-
-display_group.add(gc)
-
-clock = pygame.time.Clock()
+from GC_Env import GC_Env
 
 
 def refresh_screen():
@@ -40,12 +23,35 @@ def refresh_screen():
     pygame.display.update()
 
 
-for _ in range(4):
-    display_group.draw(WINDOW)
-pygame.display.flip()
-know = Knowledge(draw_items, gc)
-refresh_screen()
+def render_game():
+    for _ in range(4):
+        display_group.draw(WINDOW)
+    pygame.display.flip()
+
+
+pygame.init()
+WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
+display_group = pygame.sprite.Group()
+
+env = GC_Env()
+
+_, draw_items, gc = env.reset()
+
+for item in draw_items:
+    display_group.add(draw_items[item])
+
+display_group.add(gc)
+
+render_game()
+
+clock = pygame.time.Clock()
+
+
+# know = Knowledge(draw_items, gc)
+
 # Game Loop
+run_ql = False
 running = True
 while running:
     for event in pygame.event.get():
@@ -54,17 +60,19 @@ while running:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                gc.move_left()
+                env.step(2)
             if event.key == pygame.K_RIGHT:
-                gc.move_right()
+                env.step(3)
             if event.key == pygame.K_UP:
-                gc.move_up()
+                env.step(0)
             if event.key == pygame.K_DOWN:
-                gc.move_down()
+                env.step(1)
             if event.key == pygame.K_SPACE:
-                gc.trash_flow(draw_items)
-                know.update()
-                know.show()
+                env.step(4)
+                env.step(5)
+                # know.update()
+                # know.show()
+            gc.render()
 
             refresh_screen()
 

@@ -3,3 +3,12 @@ install:
 
 start:
 	bash -c "source env/bin/activate && python main.py"
+
+ql:
+	bash -c "source env/bin/activate && python ql_runner.py"
+
+ql-test:
+	bash -c "source env/bin/activate && python ql_tester.py"
+
+dql:
+	bash -c "source env/bin/activate && python dql_runner.py"

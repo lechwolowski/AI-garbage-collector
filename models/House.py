@@ -10,10 +10,11 @@ from models.Numbers import Numbers
 class House (Numbers):
     def __init__(self, x, y):
         Numbers.__init__(self, x, y)
-        self.mixed = randint(0, 2)
-        self.paper = randint(0, 2)
-        self.glass = randint(0, 2)
-        self.plastic = randint(0, 2)
+        self.limit = 9
+        self.mixed = randint(0, self.limit)
+        self.paper = randint(0, self.limit)
+        self.glass = randint(0, self.limit)
+        self.plastic = randint(0, self.limit)
         self.update()
 
     def update(self):
@@ -25,6 +26,12 @@ class House (Numbers):
         draw.text((19, 42), str(self.glass), GREEN, font=font)
         draw.text((37, 42), str(self.plastic), YELLOW, font=font)
         self.img_save(draw, img)
+
+    def is_empty(self):
+        if self.mixed == 0 and self.glass == 0 and self.paper == 0 and self.plastic == 0:
+            return True
+        else:
+            return False
 
     def get_mixed(self):
         if self.mixed > 0:

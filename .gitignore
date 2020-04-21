@@ -1,5 +1,7 @@
 *.DS_Store
 env
+pyenv
 .vscode
 __pycache__
 .idea
+Deep_Q_Learning
