@@ -76,7 +76,7 @@ while running:
             if event.key == pygame.K_SPACE:
                 env.step(4)
                 env.step(5)
-                __a_star__.houses_with_trash()
+                __a_star__.best_move()
                 # know.update()
                 # know.show()
             gc.render()

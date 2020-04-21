@@ -176,22 +176,22 @@ class Garbage_Collector(Numbers):
                 item = self.draw_items[(field["col"], field["row"])]
                 if isinstance(item, Trash):
                     trashes_around = True
-                    if item.trash_type == "Mixed":
+                    if item.trash_type == "mixed":
                         while self.mixed > 0:
                             item.put_trash()
                             self.mixed -= 1
                             transfered += 1
-                    elif item.trash_type == "Paper":
+                    elif item.trash_type == "paper":
                         while self.paper > 0:
                             item.put_trash()
                             self.paper -= 1
                             transfered += 1
-                    elif item.trash_type == "Glass":
+                    elif item.trash_type == "glass":
                         while self.glass > 0:
                             item.put_trash()
                             self.glass -= 1
                             transfered += 1
-                    elif item.trash_type == "Plastic":
+                    elif item.trash_type == "plastic":
                         while self.plastic > 0:
                             item.put_trash()
                             self.plastic -= 1
