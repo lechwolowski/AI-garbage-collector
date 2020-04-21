@@ -52,11 +52,6 @@ clock = pygame.time.Clock()
 
 # know = Knowledge(draw_items, gc)
 
-# refresh_screen()
-q_table = genfromtxt(
-    f"runs/{sorted(os.listdir('runs'), reverse=True)[0]}", delimiter=',')
-ql = Q_Learning(gc, draw_items, q_table)
-
 # Game Loop
 run_ql = False
 running = True
@@ -77,21 +72,10 @@ while running:
             if event.key == pygame.K_SPACE:
                 gc.pick_trash()
                 gc.leave_trash()
-                # print(ml.trash_flow())
                 # know.update()
                 # know.show()
-                # print(ml.is_done())
-                # print(draw_items[(0, 2)].mixed)
-            if event.key == pygame.K_p:
-                run_ql = True
-                # print(ql.houses_state())
             gc.render()
 
             refresh_screen()
-    if run_ql:
-        run_ql = not ql.play()
-        time.sleep(0.3)
-        gc.render()
-        refresh_screen()
 
     clock.tick(30)
