@@ -79,7 +79,6 @@ while running:
                 # know.update()
                 # know.show()
             if event.key == pygame.K_a:
-                __a_star__.get_to_dest()
                 run_a = True
 
             gc.render()
