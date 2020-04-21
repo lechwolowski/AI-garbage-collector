@@ -6,6 +6,7 @@ from models.Garbage_Collector import Garbage_Collector
 from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from helpler import Render_Element
 from GC_Env import GC_Env
+from a_star import A_Star
 
 
 def refresh_screen():
@@ -38,6 +39,11 @@ env = GC_Env()
 
 _, draw_items, gc = env.reset()
 
+# Initialize A*
+
+__a_star__ = A_Star(draw_items, gc, env, refresh_screen)
+__a_star__.houses_with_trash()
+
 for item in draw_items:
     display_group.add(draw_items[item])
 
@@ -51,7 +57,7 @@ clock = pygame.time.Clock()
 # know = Knowledge(draw_items, gc)
 
 # Game Loop
-run_ql = False
+run_a = False
 running = True
 while running:
     for event in pygame.event.get():
@@ -72,8 +78,41 @@ while running:
                 env.step(5)
                 # know.update()
                 # know.show()
+            if event.key == pygame.K_a:
+                __a_star__.get_to_dest()
+                run_a = True
+
             gc.render()
 
             refresh_screen()
+    if run_a:
+        houses, trashes = __a_star__.houses_with_trash()
+        if len(houses) == 0 and gc.mixed == 0 and gc.paper == 0 and gc.glass == 0 and gc.plastic == 0:
+            run_a = False
+
+        else:
+            route = __a_star__.get_to_dest()
+            if len(route) > 0:
+                x, y = route[0]
+                if x - gc.col != 0:
+                    if x - gc.col < 0:
+                        env.step(2)
+                    else:
+                        env.step(3)
+                elif y - gc.row != 0:
+                    if y - gc.row < 0:
+                        env.step(0)
+                    else:
+                        env.step(1)
+
+                time.sleep(0.3)
+
+            elif len(route) == 0:
+                env.step(4)
+                env.step(5)
+
+        gc.render()
+
+        refresh_screen()
 
     clock.tick(30)

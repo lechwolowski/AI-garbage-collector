@@ -125,7 +125,7 @@ class Garbage_Collector(Numbers):
         houses_around = False
         transfered = 0
         for field in to_check:
-            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
+            if 0 <= field["row"] < MAP_HEIGHT and 0 <= field["col"] < MAP_WIDTH:
                 item = self.draw_items[(field["col"], field["row"])]
                 if isinstance(item, House):
                     houses_around = True
@@ -172,26 +172,26 @@ class Garbage_Collector(Numbers):
         transfered = 0
         trashes_around = False
         for field in to_check:
-            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
+            if 0 <= field["row"] < MAP_HEIGHT and 0 <= field["col"] < MAP_WIDTH:
                 item = self.draw_items[(field["col"], field["row"])]
                 if isinstance(item, Trash):
                     trashes_around = True
-                    if item.trash_type == "Mixed":
+                    if item.trash_type == "mixed":
                         while self.mixed > 0:
                             item.put_trash()
                             self.mixed -= 1
                             transfered += 1
-                    elif item.trash_type == "Paper":
+                    elif item.trash_type == "paper":
                         while self.paper > 0:
                             item.put_trash()
                             self.paper -= 1
                             transfered += 1
-                    elif item.trash_type == "Glass":
+                    elif item.trash_type == "glass":
                         while self.glass > 0:
                             item.put_trash()
                             self.glass -= 1
                             transfered += 1
-                    elif item.trash_type == "Plastic":
+                    elif item.trash_type == "plastic":
                         while self.plastic > 0:
                             item.put_trash()
                             self.plastic -= 1
