@@ -4,5 +4,4 @@ pyenv
 .vscode
 __pycache__
 .idea
-runs
 Deep_Q_Learning
