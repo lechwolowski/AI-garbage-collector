@@ -6,6 +6,7 @@ from models.Garbage_Collector import Garbage_Collector
 from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from helpler import Render_Element
 from GC_Env import GC_Env
+from a_star import A_Star
 
 
 def refresh_screen():
@@ -37,6 +38,11 @@ display_group = pygame.sprite.Group()
 env = GC_Env()
 
 _, draw_items, gc = env.reset()
+
+# Initialize A*
+
+__a_star__ = A_Star(draw_items, gc)
+__a_star__.houses_with_trash()
 
 for item in draw_items:
     display_group.add(draw_items[item])
@@ -70,6 +76,7 @@ while running:
             if event.key == pygame.K_SPACE:
                 env.step(4)
                 env.step(5)
+                __a_star__.houses_with_trash()
                 # know.update()
                 # know.show()
             gc.render()
