@@ -41,7 +41,7 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
 
     # Reset flag and start iterating until episode ends
     done = False
-    while not done:
+    while not done and step < 5000:
 
         # This part stays mostly the same, the change is to query a model for Q values
         if np.random.random() > epsilon:
@@ -59,10 +59,12 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
         # Every step we update replay memory and train main network
         agent.update_replay_memory(
             (current_state, action, reward, new_state, done))
-        agent.train(done, step)
+        agent.train(done or step >= 5000, step)
 
         current_state = new_state
         step += 1
+
+    agent.tensorboard.update_stats(steps=step, reward=episode_reward)
 
     # Append episode reward to a list and log stats (every given number of episodes)
     ep_rewards.append(episode_reward)
@@ -80,10 +82,10 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
                 f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
 
     if not episode % 1000:
-        agent.model.save(f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
+        agent.model.save(
+            f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
 
-    
-    plot_model(agent.model, to_file='model.png')
+    # plot_model(agent.model, to_file='model.png')
 
     # Decay epsilon
     if epsilon > MIN_EPSILON:

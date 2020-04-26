@@ -17,7 +17,7 @@ REPLAY_MEMORY_SIZE = 50_000  # How many last steps to keep for model training
 MIN_REPLAY_MEMORY_SIZE = 1_000
 MINIBATCH_SIZE = 256  # How many steps (samples) to use for training
 UPDATE_TARGET_EVERY = 5  # Terminal states (end of episodes)
-MODEL_NAME = 'more-input-neurons'
+MODEL_NAME = 'more-stats'
 
 
 # Own Tensorboard class

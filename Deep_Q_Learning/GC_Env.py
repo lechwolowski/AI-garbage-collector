@@ -38,7 +38,7 @@ class GC_Env:
         observation = np.append(observation, int(self.gc.plastic == 0))
         for house in houses:
             for item in ["mixed", "paper", "glass", "plastic"]:
-                observation = np.append(observation, getattr(house, item) / house.limit)
+                observation = np.append(observation, getattr(house, item) == house.limit)
 
         return observation
 
