@@ -3,16 +3,10 @@ import numpy as np
 from tqdm import tqdm
 from Deep_Q_Learning.Deep_Q_Learning import DQNAgent
 from Deep_Q_Learning.GC_Env import GC_Env
+from keras.utils import plot_model
+from keras.models import load_model
 
-DISCOUNT = 0.99
-REPLAY_MEMORY_SIZE = 50_000  # How many last steps to keep for model training
-# Minimum number of steps in a memory to start training
-MIN_REPLAY_MEMORY_SIZE = 1_000
-MINIBATCH_SIZE = 64  # How many steps (samples) to use for training
-UPDATE_TARGET_EVERY = 5  # Terminal states (end of episodes)
-MODEL_NAME = '2x256'
-MIN_REWARD = -200  # For model save
-MEMORY_FRACTION = 0.20
+MIN_REWARD = -2000  # For model save
 
 # Environment settings
 EPISODES = 20_000
@@ -24,14 +18,18 @@ MIN_EPSILON = 0.001
 
 #  Stats settings
 AGGREGATE_STATS_EVERY = 50  # episodes
-SHOW_PREVIEW = False
+
+MODEL_NAME = '10_moves'
 
 env = GC_Env()
 
 # For stats
 ep_rewards = [-200]
 
-agent = DQNAgent(env=env)
+model = load_model(
+    'trained_models\\10_moves__-17937.40max_-21538.44avg_-24378.00min__1587939352.model')
+
+agent = DQNAgent(env=env, model=model)
 
 for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
 
@@ -47,7 +45,7 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
 
     # Reset flag and start iterating until episode ends
     done = False
-    while not done:
+    while not done and step < 5000:
 
         # This part stays mostly the same, the change is to query a model for Q values
         if np.random.random() > epsilon:
@@ -62,16 +60,15 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
         # Transform new continous state to new discrete state and count reward
         episode_reward += reward
 
-        # if SHOW_PREVIEW and not episode % AGGREGATE_STATS_EVERY:
-        #     env.render()
-
         # Every step we update replay memory and train main network
         agent.update_replay_memory(
             (current_state, action, reward, new_state, done))
-        agent.train(done, step)
+        agent.train(done or step >= 5000, step)
 
         current_state = new_state
         step += 1
+
+    agent.tensorboard.update_stats(steps=step, reward=episode_reward)
 
     # Append episode reward to a list and log stats (every given number of episodes)
     ep_rewards.append(episode_reward)
@@ -86,7 +83,13 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
         # Save model, but only when min reward is greater or equal a set value
         if min_reward >= MIN_REWARD:
             agent.model.save(
-                f'models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
+                f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
+
+    if not episode % 1000:
+        agent.model.save(
+            f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
+
+    # plot_model(agent.model, to_file='model.png')
 
     # Decay epsilon
     if epsilon > MIN_EPSILON:

@@ -23,15 +23,25 @@ class GC_Env:
         }
         houses = list(map(lambda item: self.draw_items[item], list(filter(lambda item: isinstance(
             self.draw_items[item], House), self.draw_items))))
-        observation = [
-            self.gc.col/(MAP_WIDTH - 1),
-            self.gc.row / (MAP_HEIGHT - 1),
-            self.gc.mixed / self.gc.limit, self.gc.paper / self.gc.limit,
-            self.gc.glass / self.gc.limit, self.gc.plastic / self.gc.limit,
-        ]
+        observation = np.zeros((MAP_WIDTH + MAP_HEIGHT,))
+        observation[self.gc.col] = 1
+        observation[MAP_WIDTH + self.gc.row] = 1
+        observation = np.append(observation, int(
+            self.gc.mixed == self.gc.limit))
+        observation = np.append(observation, int(
+            self.gc.paper == self.gc.limit))
+        observation = np.append(observation, int(
+            self.gc.glass == self.gc.limit))
+        observation = np.append(observation, int(
+            self.gc.plastic == self.gc.limit))
+        observation = np.append(observation, int(self.gc.mixed == 0))
+        observation = np.append(observation, int(self.gc.paper == 0))
+        observation = np.append(observation, int(self.gc.glass == 0))
+        observation = np.append(observation, int(self.gc.plastic == 0))
         for house in houses:
             for item in ["mixed", "paper", "glass", "plastic"]:
-                observation.append(getattr(house, item) / house.limit)
+                observation = np.append(
+                    observation, getattr(house, item) == house.limit)
 
         return observation, self.draw_items, self.gc
 
@@ -40,16 +50,25 @@ class GC_Env:
         houses = list(map(lambda item: self.draw_items[item], list(filter(lambda item: isinstance(
             self.draw_items[item], House), self.draw_items))))
 
-        new_observation = [
-            self.gc.col/(MAP_WIDTH - 1),
-            self.gc.row / (MAP_HEIGHT - 1),
-            self.gc.mixed / self.gc.limit, self.gc.paper / self.gc.limit,
-            self.gc.glass / self.gc.limit, self.gc.plastic / self.gc.limit,
-        ]
+        new_observation = np.zeros((MAP_WIDTH + MAP_HEIGHT,))
+        new_observation[self.gc.col] = 1
+        new_observation[MAP_WIDTH + self.gc.row] = 1
+        new_observation = np.append(
+            new_observation, int(self.gc.mixed == self.gc.limit))
+        new_observation = np.append(
+            new_observation, int(self.gc.paper == self.gc.limit))
+        new_observation = np.append(
+            new_observation, int(self.gc.glass == self.gc.limit))
+        new_observation = np.append(
+            new_observation, int(self.gc.plastic == self.gc.limit))
+        new_observation = np.append(new_observation, int(self.gc.mixed == 0))
+        new_observation = np.append(new_observation, int(self.gc.paper == 0))
+        new_observation = np.append(new_observation, int(self.gc.glass == 0))
+        new_observation = np.append(new_observation, int(self.gc.plastic == 0))
         for house in houses:
             for item in ["mixed", "paper", "glass", "plastic"]:
-                new_observation.append(getattr(house, item) / house.limit)
-
+                new_observation = np.append(
+                    new_observation, int(getattr(house, item) == 0))
         if action_result == False:
             reward = -10
         elif action_result == True:
