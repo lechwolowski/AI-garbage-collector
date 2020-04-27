@@ -1,12 +1,23 @@
 import time
 import os
 import pygame
+import numpy as np
 from numpy import genfromtxt
 from models.Garbage_Collector import Garbage_Collector
 from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from helpler import Render_Element
 from GC_Env import GC_Env
 from a_star import A_Star
+from keras.models import load_model
+
+MOVES_DICT = {
+    0: "up",
+    1: "down",
+    2: "left",
+    3: "right",
+    4: "pick_trash",
+    5: "leave_trash"
+}
 
 
 def refresh_screen():
@@ -37,7 +48,7 @@ display_group = pygame.sprite.Group()
 
 env = GC_Env()
 
-_, draw_items, gc = env.reset()
+state, draw_items, gc = env.reset()
 
 # Initialize A*
 
@@ -55,7 +66,8 @@ clock = pygame.time.Clock()
 
 
 # know = Knowledge(draw_items, gc)
-
+model = load_model(
+    'trained_models\\10_moves__-17937.40max_-21538.44avg_-24378.00min__1587939352.model')
 # Game Loop
 run_a = False
 running = True
@@ -66,20 +78,25 @@ while running:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                env.step(2)
+                state, _, _ = env.step(2)
             if event.key == pygame.K_RIGHT:
-                env.step(3)
+                state, _, _ = env.step(3)
             if event.key == pygame.K_UP:
-                env.step(0)
+                state, _, _ = env.step(0)
             if event.key == pygame.K_DOWN:
-                env.step(1)
+                state, _, _ = env.step(1)
             if event.key == pygame.K_SPACE:
-                env.step(4)
-                env.step(5)
+                state, _, _ = env.step(4)
+                state, _, _ = env.step(5)
                 # know.update()
                 # know.show()
             if event.key == pygame.K_a:
                 run_a = True
+            if event.key == pygame.K_q:
+                prediction = model.predict(
+                    np.array(state).reshape(-1, *state.shape))
+
+                print(MOVES_DICT[np.argmax(prediction)])
 
             gc.render()
 
