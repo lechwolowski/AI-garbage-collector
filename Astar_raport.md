@@ -38,9 +38,7 @@ Cały algorytm A* zaimplemetnowany jest w pliku o nazwie [a_star.py](a_star.py).
 
 Na początku, dbamy o to, żeby wszystkie domy w których znajdują się śmieci, zostały umieszczone na liście o nazwie  <code>houses_with_trash</code>. W momencie, gdy śmieciarka zabierze wszystkie śmieci z danego domu, wtedy dom ten jest usuwany z tej listy.
 
-Najlepsza droga wybierana jest za pomocą zdefinowanej funkcji <code>best_move</code>. Sprawdza ona najpierw ile jest śmieci w danym domku (w sumie) i dzieli ten wynik przez odległość do tego domu.
-
-Nastęonie wystarczy przejść do danego domu, odebrać smieci i odwieźć je do wyspiska (tutaj trzeba skonczyc!)
+Najlepsza droga wybierana jest za pomocą zdefinowanej funkcji <code>best_move</code>. Sprawdza ona najpierw ile jest śmieci w danym domku (w sumie) i dzieli ten wynik przez odległość do tego domu. Funkcja ta też sprawdza, kiedy śmieciarka ma odwieźć śmieci do wysypiska (dzieje się tak, gdy w domach nie ma już śmieci, albo jeśli jest ona pełna).
  
 Dostanie się śmieciarki do drogi sąsiadującej z "najlepszym" domem (żeby odebrać śmieci) i do drogi sąsiadującej z wysypiskiem (w celu opróżnienia śmieci) opisana jest w funkcji <code>astar</code>.
 
