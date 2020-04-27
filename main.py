@@ -67,7 +67,7 @@ clock = pygame.time.Clock()
 
 # know = Knowledge(draw_items, gc)
 model = load_model(
-    'trained_models\\10_moves__-17937.40max_-21538.44avg_-24378.00min__1587939352.model')
+    os.path.join('trained_models', '10_moves__-17937.40max_-21538.44avg_-24378.00min__1587939352.model'))
 # Game Loop
 run_a = False
 running = True
