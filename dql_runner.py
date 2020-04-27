@@ -4,6 +4,7 @@ from tqdm import tqdm
 from Deep_Q_Learning.Deep_Q_Learning import DQNAgent
 from Deep_Q_Learning.GC_Env import GC_Env
 from keras.utils import plot_model
+from keras.models import load_model
 
 MIN_REWARD = -2000  # For model save
 
@@ -25,7 +26,10 @@ env = GC_Env()
 # For stats
 ep_rewards = [-200]
 
-agent = DQNAgent(env=env)
+model = load_model(
+    'trained_models\\10_moves__-17937.40max_-21538.44avg_-24378.00min__1587939352.model')
+
+agent = DQNAgent(env=env, model=model)
 
 for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
 

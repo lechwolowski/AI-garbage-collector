@@ -56,15 +56,20 @@ class ModifiedTensorBoard(TensorBoard):
 
 
 class DQNAgent:
-    def __init__(self, env):
+    def __init__(self, env, model=None):
 
         self.env = env
 
-        # Main model
-        self.model = self.create_model()
+        if model:
+            self.model = model
+            print("nanana")
+            self.target_model = model
+        else:
+            # Main model
+            self.model = self.create_model()
 
-        # Target network
-        self.target_model = self.create_model()
+            # Target network
+            self.target_model = self.create_model()
         self.target_model.set_weights(self.model.get_weights())
 
         # An array with last n steps for training
@@ -82,18 +87,20 @@ class DQNAgent:
 
         model.add(Dense(40, input_shape=self.env.OBSERVATION_SPACE_VALUES))
         model.add(Activation('relu'))
-        
+
         model.add(Dense(30))
         model.add(Activation('relu'))
-        
+
         model.add(Dense(20))
         model.add(Activation('relu'))
 
         model.add(Dense(10))
         model.add(Activation('relu'))
 
-        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='softmax'))  # ACTION_SPACE_SIZE = how many choices (9)
-        model.compile(loss="mse", optimizer=Adam(lr=0.001), metrics=['accuracy'])
+        # ACTION_SPACE_SIZE = how many choices (9)
+        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='softmax'))
+        model.compile(loss="mse", optimizer=Adam(
+            lr=0.001), metrics=['accuracy'])
         return model
 
     # Adds step's data to a memory replay array
