@@ -34,7 +34,7 @@ Model mapy jest skonstruowany oczywiście w taki sposób, aby z każdego domu da
 
 ## Implementacja algorytmu w nasz projekt
 
-Cały algorytm 'A*' zaimplemetnowany jest w pliku o nazwie [a_star.py](a_star.py).  Działa on w następujący sposób:
+Cały algorytm 'A*' zaimplementowany jest w pliku o nazwie [a_star.py](a_star.py).  Działa on w następujący sposób:
 
 Na początku, dbamy o to, żeby wszystkie domy w których znajdują się śmieci, zostały umieszczone na liście o nazwie  <code>houses_with_trash</code>. W momencie, gdy śmieciarka zabierze wszystkie śmieci z danego domu, wtedy dom ten jest usuwany z tej listy.
 
