@@ -8,15 +8,15 @@
 
 **Link do repozytorium projektu:** https://git.wmi.amu.edu.pl/s434810/SZI2020Project
 
-## Wykorzysytwany algorytm przeszkuiwania
+## Wykorzystywany algorytm przeszukiwania
 
-Zdecydowaliśmy się na wybór algorytmy A*.  Jest to heurystyczny algorytm do znajdowania najkrótszej ścieżki w grafie. Jest zupeły i optymalny, zatem zawsze znalezione rozwiązanie jest tym najlepszym. Dodatkowo, wykorzystując algorytm A* mamy pewność, że każdy punkt może zostać odwiedzony. 
+Zdecydowaliśmy się na wybór algorytmy 'A*'.  Jest to heurystyczny algorytm do znajdowania najkrótszej ścieżki w grafie. Jest zupełny i optymalny, zatem zawsze znalezione rozwiązanie jest tym najlepszym. Dodatkowo, wykorzystując algorytm 'A*' mamy pewność, że każdy punkt może zostać odwiedzony. 
 
 ## Przygotowanie środowiska pod algorytm
 
-Śmieciarka (co oczywiste) poruszać może się tylko po powierzchni typu "Road". Dodatkowo, w rzeczywistym świecie, zazwyczaj śmieciarka zbiera smieci, które są wystawione "przed" dom, a nie są w nim, zatem przyjeliśmy założenie, że w odległości 1 kratki od domu, śmieciarka może zebrać śmieci.
+Śmieciarka (co oczywiste) poruszać może się tylko po powierzchni typu "Road". Dodatkowo, w rzeczywistym świecie, zazwyczaj śmieciarka zbiera smieci, które są wystawione "przed" dom, a nie są w nim, zatem przyjęliśmy założenie, że w odległości 1 kratki od domu, śmieciarka może zebrać śmieci.
 
-Postanowiliśmy również zmiejszyć mapę, tak aby było na mapie sześć domów z losowo generowaną ilością śmieci czterech różnych typów (zakres ilości śmieci danego typu określony jest w  [House.py](models/House.py) i jest to losowa liczba od 0 do 9). Pojemość śmieciarki określona w [Garbage_Collector.py](models/[Garbage_Collector.py) wynosi 10 sztuk śmieci danego typu. 
+Postanowiliśmy również zmiejszyć mapę, tak aby było na mapie sześć domów z losowo generowaną ilością śmieci, czterech różnych typów (zakres ilości śmieci danego typu określony jest w  [House.py](models/House.py) i jest to losowa liczba od 0 do 9). Pojemość śmieciarki określona w [Garbage_Collector.py](models/[Garbage_Collector.py) wynosi 10 sztuk śmieci danego typu. 
 
 Nowy model mapy wygląda w następujący sposób (znajduje się w pliku [config.py](config.py)):
 
@@ -34,7 +34,7 @@ Model mapy jest skonstruowany oczywiście w taki sposób, aby z każdego domu da
 
 ## Implementacja algorytmu w nasz projekt
 
-Cały algorytm A* zaimplemetnowany jest w pliku o nazwie [a_star.py](a_star.py).  Działa on w następujący sposób:
+Cały algorytm 'A*' zaimplementowany jest w pliku o nazwie [a_star.py](a_star.py).  Działa on w następujący sposób:
 
 Na początku, dbamy o to, żeby wszystkie domy w których znajdują się śmieci, zostały umieszczone na liście o nazwie  <code>houses_with_trash</code>. W momencie, gdy śmieciarka zabierze wszystkie śmieci z danego domu, wtedy dom ten jest usuwany z tej listy.
 
