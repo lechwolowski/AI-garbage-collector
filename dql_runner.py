@@ -1,25 +1,25 @@
 import time
 import numpy as np
 from tqdm import tqdm
-from Deep_Q_Learning.Deep_Q_Learning import DQNAgent
+from Deep_Q_Learning.Deep_Q_Learning import DQNAgent, MODEL_NAME
 from Deep_Q_Learning.GC_Env import GC_Env
 from keras.utils import plot_model
 from keras.models import load_model
+from datetime import datetime
 
-MIN_REWARD = -2000  # For model save
+MIN_REWARD = 0  # For model save
+STEP_LIMIT = 5_000
 
 # Environment settings
-EPISODES = 20_000
+EPISODES = 2_000
 
 # Exploration settings
 epsilon = 1  # not a constant, going to be decayed
-EPSILON_DECAY = 0.99975
-MIN_EPSILON = 0.001
+EPSILON_DECAY = 0.999
+MIN_EPSILON = 0.01
 
 #  Stats settings
 AGGREGATE_STATS_EVERY = 50  # episodes
-
-MODEL_NAME = '10_moves'
 
 env = GC_Env()
 
@@ -27,7 +27,9 @@ env = GC_Env()
 ep_rewards = [-200]
 
 model = load_model(
-    'trained_models\\10_moves__-17937.40max_-21538.44avg_-24378.00min__1587939352.model')
+    'trained_models\\lr=0.001_gamma=0.5___-35.90max_-1172.30avg_-4394.80min__2020-05-01_23-03.model')
+
+model = None
 
 agent = DQNAgent(env=env, model=model)
 
@@ -42,10 +44,11 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
 
     # Reset environment and get initial state
     current_state = env.reset()
+    old_state = np.zeros(1)
 
     # Reset flag and start iterating until episode ends
     done = False
-    while not done and step < 5000:
+    while not done and step <= STEP_LIMIT:
 
         # This part stays mostly the same, the change is to query a model for Q values
         if np.random.random() > epsilon:
@@ -62,9 +65,10 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
 
         # Every step we update replay memory and train main network
         agent.update_replay_memory(
-            (current_state, action, reward, new_state, done))
-        agent.train(done or step >= 5000, step)
+            (current_state, action, reward, new_state, old_state, done))
+        agent.train(done or step >= STEP_LIMIT, step)
 
+        old_state = current_state
         current_state = new_state
         step += 1
 
@@ -83,11 +87,11 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
         # Save model, but only when min reward is greater or equal a set value
         if min_reward >= MIN_REWARD:
             agent.model.save(
-                f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
+                f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{datetime.now().strftime("%Y-%m-%d_%H-%M")}.model')
 
-    if not episode % 1000:
+    if not episode % EPISODES:
         agent.model.save(
-            f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
+            f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{datetime.now().strftime("%Y-%m-%d_%H-%M")}.model')
 
     # plot_model(agent.model, to_file='model.png')
 

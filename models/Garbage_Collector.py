@@ -23,7 +23,7 @@ class Garbage_Collector(Numbers):
         self.paper = 0
         self.glass = 0
         self.plastic = 0
-        self.limit = 10
+        self.limit = 1000
         self.rotation = 0
         self.mirror = False
         self.draw_items = draw_items

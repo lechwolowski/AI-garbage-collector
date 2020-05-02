@@ -1,9 +1,10 @@
 import numpy as np
-from time import time
+from datetime import datetime
+from time import asctime
 import keras.backend.tensorflow_backend as backend
 from keras import backend as K
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Input, Activation, Flatten
+from keras.layers import Dense, Dropout, Input, Activation, Flatten, Conv2D
 from keras.optimizers import Adam
 from keras.callbacks import TensorBoard
 import tensorflow as tf
@@ -11,13 +12,14 @@ from collections import deque
 import random
 from Deep_Q_Learning.GC_Env import GC_Env
 
-DISCOUNT = 0.5
-REPLAY_MEMORY_SIZE = 50_000  # How many last steps to keep for model training
+DISCOUNT = 0.99
+REPLAY_MEMORY_SIZE = 5_000  # How many last steps to keep for model training
 # Minimum number of steps in a memory to start training
-MIN_REPLAY_MEMORY_SIZE = 1_000
-MINIBATCH_SIZE = 256  # How many steps (samples) to use for training
+MIN_REPLAY_MEMORY_SIZE = 100
+MINIBATCH_SIZE = 64  # How many steps (samples) to use for training
 UPDATE_TARGET_EVERY = 5  # Terminal states (end of episodes)
-MODEL_NAME = 'more-stats'
+LEARNING_RATE = 0.01
+MODEL_NAME = f'lr={LEARNING_RATE}_gamma={DISCOUNT}'
 
 
 # Own Tensorboard class
@@ -77,7 +79,7 @@ class DQNAgent:
 
         # Custom tensorboard object
         self.tensorboard = ModifiedTensorBoard(
-            log_dir="logs/{}-{}".format(MODEL_NAME, int(time())))
+            log_dir=f'logs/{datetime.now().strftime("%Y-%m-%d_%H-%M")}-{MODEL_NAME}')
 
         # Used to count when to update target network with main network's weights
         self.target_update_counter = 0
@@ -87,20 +89,15 @@ class DQNAgent:
 
         model.add(Dense(40, input_shape=self.env.OBSERVATION_SPACE_VALUES))
         model.add(Activation('relu'))
-
-        model.add(Dense(30))
+        model.add(Dense(40))
+        model.add(Activation('relu'))
+        model.add(Dense(40))
         model.add(Activation('relu'))
 
-        model.add(Dense(20))
-        model.add(Activation('relu'))
-
-        model.add(Dense(10))
-        model.add(Activation('relu'))
-
-        # ACTION_SPACE_SIZE = how many choices (9)
-        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='softmax'))
+        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='linear'))
         model.compile(loss="mse", optimizer=Adam(
             lr=0.001), metrics=['accuracy'])
+        print(model.summary())
         return model
 
     # Adds step's data to a memory replay array
@@ -133,11 +130,11 @@ class DQNAgent:
         y = []
 
         # Now we need to enumerate our batches
-        for index, (current_state, action, reward, new_current_state, done) in enumerate(minibatch):
+        for index, (current_state, action, reward, new_current_state, old_state, done) in enumerate(minibatch):
 
             # If not a terminal state, get new q from future states, otherwise set it to 0
             # almost like with Q Learning, but we use just part of equation here
-            if not done:
+            if not done and not np.array_equal(current_state, new_current_state) and not np.array_equal(old_state, new_current_state):
                 max_future_q = np.max(future_qs_list[index])
                 new_q = reward + DISCOUNT * max_future_q
             else:
