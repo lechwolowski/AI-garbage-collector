@@ -1,13 +1,14 @@
 from Deep_Q_Learning.q_gc import Garbage_Collector
 from helpler import Render_Element
 from models.House import House
-from config import MAP_WIDTH, MAP_HEIGHT
+from models.Road import Road
+from config import MAP_WIDTH, MAP_HEIGHT, NUMBER_OF_HOUSES
 import numpy as np
 from timeit import default_timer as timer
 
 
 class GC_Env:
-    OBSERVATION_SPACE_VALUES = (MAP_WIDTH + MAP_HEIGHT + 2 * 4 + 6 * 4,)
+    OBSERVATION_SPACE_VALUES = (36 + NUMBER_OF_HOUSES,)
     ACTION_SPACE_SIZE = 6
 
     def reset(self):
@@ -22,51 +23,41 @@ class GC_Env:
             4: self.gc.pick_trash,
             5: self.gc.leave_trash
         }
-        self.prev_10_moves = np.full(10,-1)
-        houses = list(map(lambda item: self.draw_items[item], list(filter(lambda item: isinstance(
-            self.draw_items[item], House), self.draw_items))))
-        observation = np.zeros((MAP_WIDTH + MAP_HEIGHT,))
-        observation[self.gc.col] = 1
-        observation[MAP_WIDTH + self.gc.row] = 1
-        observation = np.append(observation, int(self.gc.mixed == self.gc.limit))
-        observation = np.append(observation, int(self.gc.paper == self.gc.limit))
-        observation = np.append(observation, int(self.gc.glass == self.gc.limit))
-        observation = np.append(observation, int(self.gc.plastic == self.gc.limit))
-        observation = np.append(observation, int(self.gc.mixed == 0))
-        observation = np.append(observation, int(self.gc.paper == 0))
-        observation = np.append(observation, int(self.gc.glass == 0))
-        observation = np.append(observation, int(self.gc.plastic == 0))
-        for house in houses:
-            for item in ["mixed", "paper", "glass", "plastic"]:
-                observation = np.append(observation, getattr(house, item) == house.limit)
+
+        return self.observe(self.gc, self.draw_items)
+
+    def observe(self, gc, draw_items):
+        roads = list(filter(lambda item: isinstance(
+            draw_items[item], Road), draw_items))
+
+        gc_pos = roads.index((gc.col, gc.row))
+
+        observation = np.full(self.OBSERVATION_SPACE_VALUES, -1)
+        observation[gc_pos] = 1
+
+        houses = list(map(lambda item: draw_items[item], list(filter(lambda item: isinstance(
+            draw_items[item], House), draw_items))))
+
+        houses_trash = [max([(int(getattr(house, item) != 0) - 0.5) * 2 for item in
+                             ["mixed", "paper", "glass", "plastic"]]) for house in houses]
+
+        observation[-NUMBER_OF_HOUSES:] = houses_trash
 
         return observation
+        # gc_trash = [int(getattr(self.gc, item) == self.gc.limit)
+        #             for item in ["mixed", "paper", "glass", "plastic", "limit"]]
+        # new_observation = np.zeros(self.OBSERVATION_SPACE_VALUES)
+
+        # new_observation[self.gc.col, self.gc.row] = gc_trash
 
     def step(self, action):
-        self.prev_10_moves = np.delete(np.append(self.prev_10_moves, action), 0)
-        
         action_result = self.actions[action]()
-        houses = list(map(lambda item: self.draw_items[item], list(filter(lambda item: isinstance(
-            self.draw_items[item], House), self.draw_items))))
 
-        new_observation = np.zeros((MAP_WIDTH + MAP_HEIGHT,))
-        new_observation[self.gc.col] = 1
-        new_observation[MAP_WIDTH + self.gc.row] = 1
-        new_observation = np.append(new_observation, int(self.gc.mixed == self.gc.limit))
-        new_observation = np.append(new_observation, int(self.gc.paper == self.gc.limit))
-        new_observation = np.append(new_observation, int(self.gc.glass == self.gc.limit))
-        new_observation = np.append(new_observation, int(self.gc.plastic == self.gc.limit))
-        new_observation = np.append(new_observation, int(self.gc.mixed == 0))
-        new_observation = np.append(new_observation, int(self.gc.paper == 0))
-        new_observation = np.append(new_observation, int(self.gc.glass == 0))
-        new_observation = np.append(new_observation, int(self.gc.plastic == 0))
-        for house in houses:
-            for item in ["mixed", "paper", "glass", "plastic"]:
-                new_observation = np.append(new_observation, int(getattr(house, item) == 0))
+        new_observation = self.observe(self.gc, self.draw_items)
 
-        if action_result == False:
-            reward = -10
-        elif action_result == True:
+        if action_result is False:
+            reward = -1
+        elif action_result is True:
             reward = -0.1
         else:
             reward = action_result
@@ -80,19 +71,7 @@ class GC_Env:
                     done = False
                     break
 
-        inf_loop = True
-        for move in self.prev_10_moves:
-            if move > 3 and inf_loop == True:
-                inf_loop = False
-        
-        if inf_loop:
-            it = iter(self.prev_10_moves)
-            even,odd = [],[]
-            for ev in it:
-                even.append(ev)
-                odd.append(next(it))
-            if len(set(even)) <= 1 and len(set(odd)) <= 1:
-                # ln = len(self.prev_10_moves)
-                reward = -1000
+        # if sum(new_observation[-NUMBER_OF_HOUSES:]) < NUMBER_OF_HOUSES:
+        #     done = True
 
         return new_observation, reward, done
