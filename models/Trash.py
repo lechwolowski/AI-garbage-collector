@@ -21,6 +21,6 @@ class Trash (Numbers):
                    * 2 / 3), str(self.trash), font=font)
         self.img_save(draw, img)
 
-    def put_trash(self):
-        self.trash += 1
+    def put_trash(self, ammount=1):
+        self.trash += ammount
         self.update()

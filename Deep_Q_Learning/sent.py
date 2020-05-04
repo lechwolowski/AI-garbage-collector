@@ -16,7 +16,8 @@ import cv2
 
 DISCOUNT = 0.99
 REPLAY_MEMORY_SIZE = 50_000  # How many last steps to keep for model training
-MIN_REPLAY_MEMORY_SIZE = 1_000  # Minimum number of steps in a memory to start training
+# Minimum number of steps in a memory to start training
+MIN_REPLAY_MEMORY_SIZE = 1_000
 MINIBATCH_SIZE = 64  # How many steps (samples) to use for training
 UPDATE_TARGET_EVERY = 5  # Terminal states (end of episodes)
 MODEL_NAME = '2x256'
@@ -140,14 +141,15 @@ class BlobEnv:
         self.player.action(action)
 
         #### MAYBE ###
-        #enemy.move()
-        #food.move()
+        # enemy.move()
+        # food.move()
         ##############
 
         if self.RETURN_IMAGES:
             new_observation = np.array(self.get_image())
         else:
-            new_observation = (self.player-self.food) + (self.player-self.enemy)
+            new_observation = (self.player-self.food) + \
+                (self.player-self.enemy)
 
         if self.player == self.enemy:
             reward = -self.ENEMY_PENALTY
@@ -164,17 +166,23 @@ class BlobEnv:
 
     def render(self):
         img = self.get_image()
-        img = img.resize((300, 300))  # resizing so we can see our agent in all its glory.
+        # resizing so we can see our agent in all its glory.
+        img = img.resize((300, 300))
         cv2.imshow("image", np.array(img))  # show it!
         cv2.waitKey(1)
 
     # FOR CNN #
     def get_image(self):
-        env = np.zeros((self.SIZE, self.SIZE, 3), dtype=np.uint8)  # starts an rbg of our size
-        env[self.food.x][self.food.y] = self.d[self.FOOD_N]  # sets the food location tile to green color
-        env[self.enemy.x][self.enemy.y] = self.d[self.ENEMY_N]  # sets the enemy location to red
-        env[self.player.x][self.player.y] = self.d[self.PLAYER_N]  # sets the player tile to blue
-        img = Image.fromarray(env, 'RGB')  # reading to rgb. Apparently. Even tho color definitions are bgr. ???
+        # starts an rbg of our size
+        env = np.zeros((self.SIZE, self.SIZE, 3), dtype=np.uint8)
+        # sets the food location tile to green color
+        env[self.food.x][self.food.y] = self.d[self.FOOD_N]
+        # sets the enemy location to red
+        env[self.enemy.x][self.enemy.y] = self.d[self.ENEMY_N]
+        # sets the player tile to blue
+        env[self.player.x][self.player.y] = self.d[self.PLAYER_N]
+        # reading to rgb. Apparently. Even tho color definitions are bgr. ???
+        img = Image.fromarray(env, 'RGB')
         return img
 
 
@@ -190,7 +198,7 @@ tf.set_random_seed(1)
 
 # Memory fraction, used mostly when trai8ning multiple agents
 #gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=MEMORY_FRACTION)
-#backend.set_session(tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)))
+# backend.set_session(tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)))
 
 # Create models folder
 if not os.path.isdir('models'):
@@ -245,7 +253,8 @@ class DQNAgent:
         self.replay_memory = deque(maxlen=REPLAY_MEMORY_SIZE)
 
         # Custom tensorboard object
-        self.tensorboard = ModifiedTensorBoard(log_dir="logs/{}-{}".format(MODEL_NAME, int(time.time())))
+        self.tensorboard = ModifiedTensorBoard(
+            log_dir="logs/{}-{}".format(MODEL_NAME, int(time.time())))
 
         # Used to count when to update target network with main network's weights
         self.target_update_counter = 0
@@ -253,7 +262,8 @@ class DQNAgent:
     def create_model(self):
         model = Sequential()
 
-        model.add(Conv2D(256, (3, 3), input_shape=env.OBSERVATION_SPACE_VALUES))  # OBSERVATION_SPACE_VALUES = (10, 10, 3) a 10x10 RGB image.
+        # OBSERVATION_SPACE_VALUES = (10, 10, 3) a 10x10 RGB image.
+        model.add(Conv2D(256, (3, 3), input_shape=env.OBSERVATION_SPACE_VALUES))
         model.add(Activation('relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
@@ -263,11 +273,14 @@ class DQNAgent:
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
 
-        model.add(Flatten())  # this converts our 3D feature maps to 1D feature vectors
+        # this converts our 3D feature maps to 1D feature vectors
+        model.add(Flatten())
         model.add(Dense(64))
 
-        model.add(Dense(env.ACTION_SPACE_SIZE, activation='linear'))  # ACTION_SPACE_SIZE = how many choices (9)
-        model.compile(loss="mse", optimizer=Adam(lr=0.001), metrics=['accuracy'])
+        # ACTION_SPACE_SIZE = how many choices (9)
+        model.add(Dense(env.ACTION_SPACE_SIZE, activation='linear'))
+        model.compile(loss="mse", optimizer=Adam(
+            lr=0.001), metrics=['accuracy'])
         print(model.summary())
         return model
 
@@ -287,12 +300,14 @@ class DQNAgent:
         minibatch = random.sample(self.replay_memory, MINIBATCH_SIZE)
 
         # Get current states from minibatch, then query NN model for Q values
-        current_states = np.array([transition[0] for transition in minibatch])/255
+        current_states = np.array([transition[0]
+                                   for transition in minibatch])/255
         current_qs_list = self.model.predict(current_states)
 
         # Get future states from minibatch, then query NN model for Q values
         # When using target network, query it, otherwise main network should be queried
-        new_current_states = np.array([transition[3] for transition in minibatch])/255
+        new_current_states = np.array(
+            [transition[3] for transition in minibatch])/255
         future_qs_list = self.target_model.predict(new_current_states)
 
         X = []
@@ -318,7 +333,8 @@ class DQNAgent:
             y.append(current_qs)
 
         # Fit on all samples as one batch, log only on terminal state
-        self.model.fit(np.array(X)/255, np.array(y), batch_size=MINIBATCH_SIZE, verbose=0, shuffle=False, callbacks=[self.tensorboard] if terminal_state else None)
+        self.model.fit(np.array(X)/255, np.array(y), batch_size=MINIBATCH_SIZE, verbose=0,
+                       shuffle=False, callbacks=[self.tensorboard] if terminal_state else None)
 
         # Update target network counter every episode
         if terminal_state:
@@ -331,7 +347,10 @@ class DQNAgent:
 
     # Queries main network for Q values given current observation space (environment state)
     def get_qs(self, state):
-        return self.model.predict(np.array(state).reshape(-1, *state.shape)/255)[0]
+        arr = np.array(state).reshape(-1, *state.shape)/255
+        rate = self.model.predict(
+            np.array(state).reshape(-1, *state.shape)/255)[0]
+        return rate
 
 
 agent = DQNAgent()
@@ -370,7 +389,8 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
             env.render()
 
         # Every step we update replay memory and train main network
-        agent.update_replay_memory((current_state, action, reward, new_state, done))
+        agent.update_replay_memory(
+            (current_state, action, reward, new_state, done))
         agent.train(done, step)
 
         current_state = new_state
@@ -379,14 +399,17 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
     # Append episode reward to a list and log stats (every given number of episodes)
     ep_rewards.append(episode_reward)
     if not episode % AGGREGATE_STATS_EVERY or episode == 1:
-        average_reward = sum(ep_rewards[-AGGREGATE_STATS_EVERY:])/len(ep_rewards[-AGGREGATE_STATS_EVERY:])
+        average_reward = sum(
+            ep_rewards[-AGGREGATE_STATS_EVERY:])/len(ep_rewards[-AGGREGATE_STATS_EVERY:])
         min_reward = min(ep_rewards[-AGGREGATE_STATS_EVERY:])
         max_reward = max(ep_rewards[-AGGREGATE_STATS_EVERY:])
-        agent.tensorboard.update_stats(reward_avg=average_reward, reward_min=min_reward, reward_max=max_reward, epsilon=epsilon)
+        agent.tensorboard.update_stats(
+            reward_avg=average_reward, reward_min=min_reward, reward_max=max_reward, epsilon=epsilon)
 
         # Save model, but only when min reward is greater or equal a set value
         if min_reward >= MIN_REWARD:
-            agent.model.save(f'models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
+            agent.model.save(
+                f'models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
 
     # Decay epsilon
     if epsilon > MIN_EPSILON:
