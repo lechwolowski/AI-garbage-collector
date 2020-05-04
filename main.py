@@ -2,14 +2,11 @@ import time
 import os
 import pygame
 import numpy as np
-from numpy import genfromtxt
-from models.Garbage_Collector import Garbage_Collector
+from keras.models import load_model
 from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
-from helpler import Render_Element
-from GC_Env import GC_Env
+from __gc_env__ import GcEnv
 from Deep_Q_Learning.GC_Env import GC_Env as dqn_gc_env
 from a_star import A_Star
-from keras.models import load_model
 
 MOVES_DICT = {
     0: "up",
@@ -22,121 +19,123 @@ MOVES_DICT = {
 
 
 def refresh_screen():
-    col, row = gc.col, gc.row
+    col, row = GC.col, GC.row
     for _ in range(4):
         for i in range(-1, 2):
             if row + i >= 0 and row + i < MAP_HEIGHT:
-                WINDOW.blit(draw_items[col, row + i].image,
+                WINDOW.blit(DRAW_ITEMS[col, row + i].image,
                             (col * CELL_SIZE, (row + i) * CELL_SIZE))
             if col + i >= 0 and col + i < MAP_WIDTH:
-                WINDOW.blit(draw_items[col + i, row].image,
+                WINDOW.blit(DRAW_ITEMS[col + i, row].image,
                             ((col + i) * CELL_SIZE, row * CELL_SIZE))
     for _ in range(4):
-        WINDOW.blit(gc.image, (col * CELL_SIZE, row * CELL_SIZE))
+        WINDOW.blit(GC.image, (col * CELL_SIZE, row * CELL_SIZE))
     pygame.display.update()
 
 
 def render_game():
     for _ in range(4):
-        display_group.draw(WINDOW)
+        DISPLAY_GROUP.draw(WINDOW)
     pygame.display.flip()
 
 
 pygame.init()
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
-display_group = pygame.sprite.Group()
+DISPLAY_GROUP = pygame.sprite.Group()
 
-env = GC_Env()
+ENV = GcEnv()
 
-draw_items, gc = env.reset()
+DRAW_ITEMS, GC = ENV.get_env()
 
 # Initialize A*
 
-__a_star__ = A_Star(draw_items, gc, env, refresh_screen)
+__a_star__ = A_Star(DRAW_ITEMS, GC, ENV, refresh_screen)
 __a_star__.houses_with_trash()
 
 # dqn
 
-dqn_env = dqn_gc_env()
+DQN_ENV = dqn_gc_env()
 
-for item in draw_items:
-    display_group.add(draw_items[item])
+for item in DRAW_ITEMS:
+    DISPLAY_GROUP.add(DRAW_ITEMS[item])
 
-display_group.add(gc)
+DISPLAY_GROUP.add(GC)
 
 render_game()
 
-clock = pygame.time.Clock()
+CLOCK = pygame.time.Clock()
 
 
-# know = Knowledge(draw_items, gc)
+# know = Knowledge(DRAW_ITEMS, gc)
 
-model = load_model(os.path.join('trained_models', 'working_one_house.model'))
+MODEL = load_model(os.path.join('trained_models', 'working_one_house.model'))
 
 # Game Loop
-run_a = False
-running = True
-while running:
+RUN_A = False
+RUNNING = True
+while RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            RUNNING = False
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                env.step(2)
+                ENV.step(2)
             if event.key == pygame.K_RIGHT:
-                env.step(3)
+                ENV.step(3)
             if event.key == pygame.K_UP:
-                env.step(0)
+                ENV.step(0)
             if event.key == pygame.K_DOWN:
-                env.step(1)
+                ENV.step(1)
             if event.key == pygame.K_SPACE:
-                env.step(4)
-                env.step(5)
+                ENV.step(4)
+                ENV.step(5)
                 # know.update()
                 # know.show()
             if event.key == pygame.K_a:
-                run_a = True
+                RUN_A = True
             if event.key == pygame.K_q:
-                state = dqn_env.observe(gc=gc, draw_items=draw_items)
-                prediction = model.predict(
+                state = DQN_ENV.observe(gc=GC, draw_items=DRAW_ITEMS)
+                prediction = MODEL.predict(
                     np.array(state).reshape(-1, *state.shape))
-                env.step(np.argmax(prediction))
+                ENV.step(np.argmax(prediction))
                 print(state)
                 print(MOVES_DICT[np.argmax(prediction)], prediction)
 
-            gc.render()
+            GC.render()
 
             refresh_screen()
-    if run_a:
-        houses, trashes = __a_star__.houses_with_trash()
-        if len(houses) == 0 and gc.mixed == 0 and gc.paper == 0 and gc.glass == 0 and gc.plastic == 0:
-            run_a = False
+    if RUN_A:
+        HOUSES, _ = __a_star__.houses_with_trash()
+        if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
+                and GC.glass == 0 and GC.plastic == 0:
+            RUN_A = False
 
         else:
-            route = __a_star__.get_to_dest()
-            if len(route) > 0:
-                x, y = route[0]
-                if x - gc.col != 0:
-                    if x - gc.col < 0:
-                        env.step(2)
+            ROUTE = __a_star__.get_to_dest()
+            if len(ROUTE) > 0:
+                X, Y = ROUTE[0]
+                if X - GC.col != 0:
+                    if X - GC.col < 0:
+                        ENV.step(2)
                     else:
-                        env.step(3)
-                elif y - gc.row != 0:
-                    if y - gc.row < 0:
-                        env.step(0)
+                        ENV.step(3)
+                elif Y - GC.row != 0:
+                    if Y - GC.row < 0:
+                        ENV.step(0)
                     else:
-                        env.step(1)
+                        ENV.step(1)
 
                 time.sleep(0.3)
 
-            elif len(route) == 0:
-                env.step(4)
-                env.step(5)
+            elif len(ROUTE) == 0:
+                ENV.step(4)
+                ENV.step(5)
+                GC.update()
 
-        gc.render()
+        GC.render()
 
         refresh_screen()
 
-    clock.tick(30)
+    CLOCK.tick(30)

@@ -1,10 +1,7 @@
+from random import randint
 import pygame
 from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, FONT, BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE, TRASH_TYPES
-from random import randint
 from models.House import House
-from PIL import Image
-from PIL import ImageFont
-from PIL import ImageDraw
 from models.Numbers import Numbers
 from models.Trash import Trash
 
@@ -23,7 +20,7 @@ class Garbage_Collector(Numbers):
         self.paper = 0
         self.glass = 0
         self.plastic = 0
-        self.limit = 1000
+        self.limit = 10
         self.rotation = 0
         self.mirror = False
         self.draw_items = draw_items
@@ -142,6 +139,7 @@ class Garbage_Collector(Numbers):
                                 house_trash = self.limit - gc_trash
                             item.get_trash(trash_type=trash_type,
                                            queried_ammount=house_trash)
+                            setattr(self, trash_type, gc_trash + house_trash)
                             transfered += house_trash
 
     def leave_trash(self):
