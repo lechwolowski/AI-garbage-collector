@@ -65,7 +65,7 @@ class Garbage_Collector(Numbers):
 
     def pick_trash(self):
         if self.mixed == self.limit and self.glass == self.limit and self.paper == self.limit and self.plastic == self.limit:
-            return - 10
+            return - 1
 
         to_check = [
             {"col": self.col - 1, "row": self.row},
@@ -93,9 +93,9 @@ class Garbage_Collector(Numbers):
                             transfered += house_trash
 
         if houses_around and transfered:
-            return transfered * 10
+            return 1
         else:
-            return -10
+            return -1
 
     def leave_trash(self):
         to_check = [
@@ -120,6 +120,6 @@ class Garbage_Collector(Numbers):
                             break
 
         if trashes_around and transfered:
-            return transfered * 100
+            return 1
         else:
-            return -10
+            return -1

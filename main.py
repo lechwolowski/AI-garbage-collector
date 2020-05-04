@@ -71,8 +71,8 @@ clock = pygame.time.Clock()
 
 
 # know = Knowledge(draw_items, gc)
-model = load_model(
-    'trained_models\\lr=0.001_gamma=0.5___-35.90max_-1172.30avg_-4394.80min__2020-05-01_23-03.model')
+model = load_model(os.path.join('trained_models', 'working_one_trash.model'))
+
 # Game Loop
 run_a = False
 running = True

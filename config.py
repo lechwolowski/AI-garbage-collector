@@ -2,6 +2,7 @@ from platform import system
 CELL_SIZE = 64
 MAP_HEIGHT = 7
 MAP_WIDTH = 9
+NUMBER_OF_HOUSES = 6
 WINDOW_HEIGHT = MAP_HEIGHT * CELL_SIZE
 WINDOW_WIDTH = MAP_WIDTH * CELL_SIZE
 FONT = "./Resources/JetBrainsMono-Regular.ttf"

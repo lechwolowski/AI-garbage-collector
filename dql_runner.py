@@ -8,26 +8,27 @@ from keras.models import load_model
 from datetime import datetime
 
 MIN_REWARD = 0  # For model save
-STEP_LIMIT = 5_000
+STEP_LIMIT = 500
 
 # Environment settings
-EPISODES = 2_000
+EPISODES = 20_000
 
 # Exploration settings
 epsilon = 1  # not a constant, going to be decayed
-EPSILON_DECAY = 0.999
+EPSILON_DECAY = 0.99975
 MIN_EPSILON = 0.01
 
 #  Stats settings
-AGGREGATE_STATS_EVERY = 50  # episodes
+AGGREGATE_STATS_EVERY = 20  # episodes
 
 env = GC_Env()
 
 # For stats
-ep_rewards = [-200]
+ep_rewards = []
+steps = []
 
-model = load_model(
-    'trained_models\\lr=0.001_gamma=0.5___-35.90max_-1172.30avg_-4394.80min__2020-05-01_23-03.model')
+# model = load_model(
+#     'trained_models\\lr=0.001_gamma=0.5___-35.90max_-1172.30avg_-4394.80min__2020-05-01_23-03.model')
 
 model = None
 
@@ -72,17 +73,20 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
         current_state = new_state
         step += 1
 
-    agent.tensorboard.update_stats(steps=step, reward=episode_reward)
+    agent.tensorboard.update_stats(reward=episode_reward)
 
     # Append episode reward to a list and log stats (every given number of episodes)
     ep_rewards.append(episode_reward)
+    steps.append(step)
     if not episode % AGGREGATE_STATS_EVERY or episode == 1:
         average_reward = sum(
-            ep_rewards[-AGGREGATE_STATS_EVERY:])/len(ep_rewards[-AGGREGATE_STATS_EVERY:])
+            ep_rewards[-AGGREGATE_STATS_EVERY:]) / len(ep_rewards[-AGGREGATE_STATS_EVERY:])
         min_reward = min(ep_rewards[-AGGREGATE_STATS_EVERY:])
         max_reward = max(ep_rewards[-AGGREGATE_STATS_EVERY:])
+        average_steps = sum(steps[-AGGREGATE_STATS_EVERY:]) / \
+            len(steps[-AGGREGATE_STATS_EVERY:])
         agent.tensorboard.update_stats(
-            reward_avg=average_reward, reward_min=min_reward, reward_max=max_reward, epsilon=epsilon)
+            reward_avg=average_reward, reward_min=min_reward, reward_max=max_reward, epsilon=epsilon, average_steps=average_steps)
 
         # Save model, but only when min reward is greater or equal a set value
         if min_reward >= MIN_REWARD:

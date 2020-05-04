@@ -12,11 +12,12 @@ from collections import deque
 import random
 from Deep_Q_Learning.GC_Env import GC_Env
 
-DISCOUNT = 0.99
-REPLAY_MEMORY_SIZE = 5_000  # How many last steps to keep for model training
+DISCOUNT = 0.9
+REPLAY_MEMORY_SIZE = 500_000  # How many last steps to keep for model training
 # Minimum number of steps in a memory to start training
-MIN_REPLAY_MEMORY_SIZE = 100
+MIN_REPLAY_MEMORY_SIZE = 200
 MINIBATCH_SIZE = 64  # How many steps (samples) to use for training
+HALF_MINIBATCH = int(MINIBATCH_SIZE / 2)
 UPDATE_TARGET_EVERY = 5  # Terminal states (end of episodes)
 LEARNING_RATE = 0.01
 MODEL_NAME = f'lr={LEARNING_RATE}_gamma={DISCOUNT}'
@@ -76,6 +77,8 @@ class DQNAgent:
 
         # An array with last n steps for training
         self.replay_memory = deque(maxlen=REPLAY_MEMORY_SIZE)
+        # self.negative_memory = deque(maxlen=REPLAY_MEMORY_SIZE)
+        # self.positive_memory = deque(maxlen=REPLAY_MEMORY_SIZE)
 
         # Custom tensorboard object
         self.tensorboard = ModifiedTensorBoard(
@@ -87,16 +90,16 @@ class DQNAgent:
     def create_model(self):
         model = Sequential()
 
-        model.add(Dense(40, input_shape=self.env.OBSERVATION_SPACE_VALUES))
-        model.add(Activation('relu'))
-        model.add(Dense(40))
-        model.add(Activation('relu'))
-        model.add(Dense(40))
-        model.add(Activation('relu'))
+        model.add(
+            Dense(40, input_shape=self.env.OBSERVATION_SPACE_VALUES, activation='tanh'))
+        model.add(Dense(40, activation='tanh'))
+        model.add(Dense(40, activation='tanh'))
+        model.add(Dense(40, activation='tanh'))
+        model.add(Dense(40, activation='tanh'))
 
-        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='linear'))
-        model.compile(loss="mse", optimizer=Adam(
-            lr=0.001), metrics=['accuracy'])
+        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='softmax'))
+        model.compile(loss='huber_loss',
+                      optimizer='SGD', metrics=['accuracy'])
         print(model.summary())
         return model
 
@@ -104,6 +107,10 @@ class DQNAgent:
     # (observation space, action, reward, new observation space, done)
     def update_replay_memory(self, transition):
         self.replay_memory.append(transition)
+        # if transition[2] > 0:
+        #     self.positive_memory.append(transition)
+        # else:
+        #     self.negative_memory.append(transition)
 
     # Trains main network every step during episode
     def train(self, terminal_state, step):

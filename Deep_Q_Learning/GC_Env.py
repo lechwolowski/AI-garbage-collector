@@ -2,13 +2,13 @@ from Deep_Q_Learning.q_gc import Garbage_Collector
 from helpler import Render_Element
 from models.House import House
 from models.Road import Road
-from config import MAP_WIDTH, MAP_HEIGHT
+from config import MAP_WIDTH, MAP_HEIGHT, NUMBER_OF_HOUSES
 import numpy as np
 from timeit import default_timer as timer
 
 
 class GC_Env:
-    OBSERVATION_SPACE_VALUES = (36 + 6,)
+    OBSERVATION_SPACE_VALUES = (36 + NUMBER_OF_HOUSES,)
     ACTION_SPACE_SIZE = 6
 
     def reset(self):
@@ -38,10 +38,10 @@ class GC_Env:
         houses = list(map(lambda item: draw_items[item], list(filter(lambda item: isinstance(
             draw_items[item], House), draw_items))))
 
-        houses_trash = max([[(int(getattr(house, item) != 0) - 0.5) * 2 for item in
-                             ["mixed", "paper", "glass", "plastic"]] for house in houses])
+        houses_trash = [max([(int(getattr(house, item) != 0) - 0.5) * 2 for item in
+                             ["mixed", "paper", "glass", "plastic"]]) for house in houses]
 
-        observation[-4:] = houses_trash
+        observation[-NUMBER_OF_HOUSES:] = houses_trash
 
         return observation
         # gc_trash = [int(getattr(self.gc, item) == self.gc.limit)
@@ -55,9 +55,9 @@ class GC_Env:
 
         new_observation = self.observe(self.gc, self.draw_items)
 
-        if action_result == False:
-            reward = -10
-        elif action_result == True:
+        if action_result is False:
+            reward = -1
+        elif action_result is True:
             reward = -0.1
         else:
             reward = action_result
@@ -70,5 +70,8 @@ class GC_Env:
                 if isinstance(self.draw_items[item], House) and not self.draw_items[item].is_empty():
                     done = False
                     break
+
+        # if sum(new_observation[-NUMBER_OF_HOUSES:]) < NUMBER_OF_HOUSES:
+        #     done = True
 
         return new_observation, reward, done
