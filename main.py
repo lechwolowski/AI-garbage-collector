@@ -72,7 +72,7 @@ clock = pygame.time.Clock()
 
 # know = Knowledge(draw_items, gc)
 
-model = load_model(os.path.join('trained_models', 'working_one_trash.model'))
+model = load_model(os.path.join('trained_models', 'working_one_house.model'))
 
 # Game Loop
 run_a = False
