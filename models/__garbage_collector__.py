@@ -2,7 +2,7 @@ from random import randint
 import pygame
 from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, \
     BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE, TRASH_TYPES
-from models.House import House
+from models.__house__ import House
 from models.Numbers import Numbers
 from models.Trash import Trash
 

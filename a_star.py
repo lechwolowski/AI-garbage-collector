@@ -1,4 +1,4 @@
-from models.House import House
+from models.__house__ import House
 from math import fabs
 from models.Trash import Trash
 from config import MAP_HEIGHT, MAP_WIDTH, MAP

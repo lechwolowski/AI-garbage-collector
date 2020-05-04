@@ -1,6 +1,6 @@
 from models.Road import Road
-from models.Grass import Grass
-from models.House import House
+from models.__grass__ import Grass
+from models.__house__ import House
 from models.Trash import Trash
 from config import MAP_HEIGHT, MAP_WIDTH, MAP
 

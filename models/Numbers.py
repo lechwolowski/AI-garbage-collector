@@ -5,7 +5,7 @@ import pygame
 from config import CELL_SIZE, BLACK, BLUE, GREEN, YELLOW, FONT
 
 
-class Numbers (pygame.sprite.Sprite):
+class Numbers(pygame.sprite.Sprite):
     def __init__(self, x, y):
         self.col = x
         self.row = y

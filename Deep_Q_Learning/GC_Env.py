@@ -1,6 +1,6 @@
 from Deep_Q_Learning.q_gc import Garbage_Collector
-from helpler import Render_Element
-from models.House import House
+from helpler import __render_element__
+from models.__house__ import House
 from models.Road import Road
 from config import MAP_WIDTH, MAP_HEIGHT, NUMBER_OF_HOUSES
 import numpy as np
@@ -12,7 +12,7 @@ class GC_Env:
     ACTION_SPACE_SIZE = 6
 
     def reset(self):
-        self.draw_items = {(x, y): Render_Element(x, y)
+        self.draw_items = {(x, y): __render_element__(x, y)
                            for x in range(MAP_WIDTH) for y in range(MAP_HEIGHT)}
         self.gc = Garbage_Collector(self.draw_items)
         self.actions = {
