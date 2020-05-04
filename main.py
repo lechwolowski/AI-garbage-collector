@@ -7,6 +7,7 @@ from models.Garbage_Collector import Garbage_Collector
 from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from helpler import Render_Element
 from GC_Env import GC_Env
+from Deep_Q_Learning.GC_Env import GC_Env as dqn_gc_env
 from a_star import A_Star
 from keras.models import load_model
 
@@ -48,12 +49,16 @@ display_group = pygame.sprite.Group()
 
 env = GC_Env()
 
-state, draw_items, gc = env.reset()
+draw_items, gc = env.reset()
 
 # Initialize A*
 
 __a_star__ = A_Star(draw_items, gc, env, refresh_screen)
 __a_star__.houses_with_trash()
+
+# dqn
+
+dqn_env = dqn_gc_env()
 
 for item in draw_items:
     display_group.add(draw_items[item])
@@ -66,8 +71,9 @@ clock = pygame.time.Clock()
 
 
 # know = Knowledge(draw_items, gc)
-model = load_model(
-    os.path.join('trained_models', '10_moves__-17937.40max_-21538.44avg_-24378.00min__1587939352.model'))
+
+model = load_model(os.path.join('trained_models', 'working_one_trash.model'))
+
 # Game Loop
 run_a = False
 running = True
@@ -78,25 +84,27 @@ while running:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                state, _, _ = env.step(2)
+                env.step(2)
             if event.key == pygame.K_RIGHT:
-                state, _, _ = env.step(3)
+                env.step(3)
             if event.key == pygame.K_UP:
-                state, _, _ = env.step(0)
+                env.step(0)
             if event.key == pygame.K_DOWN:
-                state, _, _ = env.step(1)
+                env.step(1)
             if event.key == pygame.K_SPACE:
-                state, _, _ = env.step(4)
-                state, _, _ = env.step(5)
+                env.step(4)
+                env.step(5)
                 # know.update()
                 # know.show()
             if event.key == pygame.K_a:
                 run_a = True
             if event.key == pygame.K_q:
+                state = dqn_env.observe(gc=gc, draw_items=draw_items)
                 prediction = model.predict(
                     np.array(state).reshape(-1, *state.shape))
-
-                print(MOVES_DICT[np.argmax(prediction)])
+                env.step(np.argmax(prediction))
+                print(state)
+                print(MOVES_DICT[np.argmax(prediction)], prediction)
 
             gc.render()
 

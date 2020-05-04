@@ -1,5 +1,5 @@
 import pygame
-from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, FONT, BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE
+from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, FONT, BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE, TRASH_TYPES
 from random import randint
 from models.House import House
 from PIL import Image
@@ -23,7 +23,7 @@ class Garbage_Collector(Numbers):
         self.paper = 0
         self.glass = 0
         self.plastic = 0
-        self.limit = 10
+        self.limit = 1000
         self.rotation = 0
         self.mirror = False
         self.draw_items = draw_items
@@ -116,6 +116,9 @@ class Garbage_Collector(Numbers):
         return result
 
     def pick_trash(self):
+        if self.mixed == self.limit and self.glass == self.limit and self.paper == self.limit and self.plastic == self.limit:
+            return - 10
+
         to_check = [
             {"col": self.col - 1, "row": self.row},
             {"col": self.col + 1, "row": self.row},
@@ -125,42 +128,21 @@ class Garbage_Collector(Numbers):
         houses_around = False
         transfered = 0
         for field in to_check:
-            if 0 <= field["row"] < MAP_HEIGHT and 0 <= field["col"] < MAP_WIDTH:
+            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
                 item = self.draw_items[(field["col"], field["row"])]
                 if isinstance(item, House):
                     houses_around = True
 
-                    mixed = True
-                    while mixed and self.mixed < self.limit:
-                        mixed = item.get_mixed()
-                        if mixed:
-                            self.mixed += 1
-                            transfered += 1
-
-                    paper = True
-                    while paper and self.paper < self.limit:
-                        paper = item.get_paper()
-                        if paper:
-                            self.paper += 1
-                            transfered += 1
-
-                    glass = True
-                    while glass and self.glass < self.limit:
-                        glass = item.get_glass()
-                        if glass:
-                            self.glass += 1
-                            transfered += 1
-
-                    plastic = True
-                    while plastic and self.plastic < self.limit:
-                        plastic = item.get_plastic()
-                        if plastic:
-                            self.plastic += 1
-                            transfered += 1
-        if houses_around:
-            return transfered * 10
-        else:
-            return -10
+                    # debug - unit test
+                    for trash_type in TRASH_TYPES:
+                        gc_trash, house_trash = getattr(
+                            self, trash_type), getattr(item, trash_type)
+                        if house_trash and gc_trash < self.limit:
+                            if gc_trash + house_trash > self.limit:
+                                house_trash = self.limit - gc_trash
+                            item.get_trash(trash_type=trash_type,
+                                           queried_ammount=house_trash)
+                            transfered += house_trash
 
     def leave_trash(self):
         to_check = [
@@ -172,32 +154,14 @@ class Garbage_Collector(Numbers):
         transfered = 0
         trashes_around = False
         for field in to_check:
-            if 0 <= field["row"] < MAP_HEIGHT and 0 <= field["col"] < MAP_WIDTH:
+            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
                 item = self.draw_items[(field["col"], field["row"])]
                 if isinstance(item, Trash):
                     trashes_around = True
-                    if item.trash_type == "mixed":
-                        while self.mixed > 0:
-                            item.put_trash()
-                            self.mixed -= 1
-                            transfered += 1
-                    elif item.trash_type == "paper":
-                        while self.paper > 0:
-                            item.put_trash()
-                            self.paper -= 1
-                            transfered += 1
-                    elif item.trash_type == "glass":
-                        while self.glass > 0:
-                            item.put_trash()
-                            self.glass -= 1
-                            transfered += 1
-                    elif item.trash_type == "plastic":
-                        while self.plastic > 0:
-                            item.put_trash()
-                            self.plastic -= 1
-                            transfered += 1
-
-        if trashes_around:
-            return transfered * 100
-        else:
-            return -10
+                    if item.trash_type in TRASH_TYPES:
+                        trash_ammount = getattr(self, item.trash_type)
+                        if trash_ammount:
+                            item.put_trash(trash_ammount)
+                            setattr(self, item.trash_type, 0)
+                            transfered += trash_ammount
+                            break

@@ -2,6 +2,7 @@ from platform import system
 CELL_SIZE = 64
 MAP_HEIGHT = 7
 MAP_WIDTH = 9
+NUMBER_OF_HOUSES = 6
 WINDOW_HEIGHT = MAP_HEIGHT * CELL_SIZE
 WINDOW_WIDTH = MAP_WIDTH * CELL_SIZE
 FONT = "./Resources/JetBrainsMono-Regular.ttf"
@@ -9,6 +10,8 @@ BLACK = (0, 0, 0)
 BLUE = (0, 77, 147)
 GREEN = (11, 131, 44)
 YELLOW = (224, 125, 16)
+
+TRASH_TYPES = ["mixed", "paper", "glass", "plastic"]
 
 HOUSE_IMAGE = "house.png"
 TRASH_GLASS_IMAGE = "trash-glass.png"
