@@ -2,8 +2,8 @@ import pygame
 from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, FONT, BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE, TRASH_TYPES
 from random import randint
 from models.__house__ import House
-from models.Numbers import Numbers
-from models.Trash import Trash
+from models.__numbers__ import Numbers
+from models.__trash__ import Trash
 
 
 class Garbage_Collector(Numbers):

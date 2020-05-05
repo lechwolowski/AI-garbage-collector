@@ -3,8 +3,8 @@ import pygame
 from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, \
     BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE, TRASH_TYPES
 from models.__house__ import House
-from models.Numbers import Numbers
-from models.Trash import Trash
+from models.__numbers__ import Numbers
+from models.__trash__ import Trash
 
 
 class GarbageCollector(Numbers):
@@ -52,7 +52,7 @@ class GarbageCollector(Numbers):
                   (28, 40), (GREEN), 10)
         draw.line((39, self.get_fill(12, 40, self.plastic)) +
                   (39, 40), (YELLOW), 10)
-        self.img_save(draw, img, self.rotation, self.mirror)
+        self.img_save(img, self.rotation, self.mirror)
 
     def is_empty(self):
         if self.mixed == 0 and self.glass == 0 and self.paper == 0 and self.plastic == 0:

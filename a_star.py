@@ -1,32 +1,31 @@
-from models.__house__ import House
-from math import fabs
-from models.Trash import Trash
-from config import MAP_HEIGHT, MAP_WIDTH, MAP
-from models.Road import Road
-import numpy as np
-from helpler import is_within_height, is_within_width
 import heapq
-import time
+from math import fabs
+import numpy as np
+from models.__house__ import House
+from models.__trash__ import Trash
+from config import MAP_HEIGHT, MAP_WIDTH, MAP
 
 
-class A_Star:
+class AStar:
     TRASH_TYPES = ["mixed", "paper", "glass", "plastic"]
 
     def __init__(self, draw_items, gc, env, refresh_screen):
         super().__init__()
-        self.draw_items, self.gc, self.env, self.refresh_screen = draw_items, gc, env, refresh_screen
-        self.houses = list(map(lambda item: self.draw_items[item], list(filter(lambda item: isinstance(
-            self.draw_items[item], House), self.draw_items))))
+        self.__draw_items__, self.__gc__, self.__env__, self.__refresh_screen__ = \
+            draw_items, gc, env, refresh_screen
+        self.__houses__ = list(map(lambda item: self.__draw_items__[item],
+                                   list(filter(lambda item: isinstance(
+                                       self.__draw_items__[item], House), self.__draw_items__))))
 
     def houses_with_trash(self):
-        houses = list(map(lambda item: self.draw_items[item], list(filter(lambda item: isinstance(
-            self.draw_items[item], House), self.draw_items))))
+        houses = list(map(lambda item: self.__draw_items__[item],
+                          list(filter(lambda item: isinstance(
+                              self.__draw_items__[item], House), self.__draw_items__))))
 
-        trashes = list(map(lambda item: self.draw_items[item], list(filter(lambda item: isinstance(
-            self.draw_items[item], Trash), self.draw_items))))
-        # houses = filter(lambda house: (lambda trash_type: getattr(
-        #     house, trash_type) > 5, trash_types), houses)
-        # houses = filter(lambda house: getattr(house, "mixed") > 5, houses)
+        trashes = list(map(lambda item: self.__draw_items__[item],
+                           list(filter(lambda item: isinstance(
+                               self.__draw_items__[item], Trash), self.__draw_items__))))
+
         filtered_houses = []
         for house in houses:
             empty = True
@@ -43,30 +42,30 @@ class A_Star:
 
         score = []
         for t_type in self.TRASH_TYPES:
-            if getattr(self.gc, t_type) == self.gc.limit or len(houses) == 0:
+            if getattr(self.__gc__, t_type) == self.__gc__.limit or len(houses) == 0:
                 for trash in trashes:
-                    if trash.trash_type == t_type and getattr(self.gc, t_type) != 0:
+                    if trash.trash_type == t_type and getattr(self.__gc__, t_type) != 0:
                         return (trash.col, trash.row)
 
         for house in houses:
             house_trash_ammount = 0
             for trash in self.TRASH_TYPES:
                 house_trash_ammount += getattr(house, trash)
-            distance = fabs(self.gc.col - house.col) + \
-                fabs(self.gc.row - house.row)
-            score.append({"score": house_trash_ammount /
-                          distance, "position": (house.col, house.row)})
+            distance = fabs(self.__gc__.col - house.col) + \
+                fabs(self.__gc__.row - house.row)
+            score.append({"score": house_trash_ammount / distance,
+                          "position": (house.col, house.row)})
 
         return sorted(score, key=lambda i: i['score'], reverse=True)[0]["position"]
 
     def get_to_dest(self):
         road_pos_array = np.zeros((MAP_HEIGHT, MAP_WIDTH))
 
-        for x, y in self.draw_items:
-            if MAP[y][x] == "Road":
-                road_pos_array[y, x] = 1
+        for __x__, __y__ in self.__draw_items__:
+            if MAP[__y__][__x__] == "Road":
+                road_pos_array[__y__, __x__] = 1
 
-        start = (self.gc.col, self.gc.row)
+        start = (self.__gc__.col, self.__gc__.row)
 
         route = astar(array=road_pos_array, start=start,
                       goal=self.best_move())
@@ -75,8 +74,8 @@ class A_Star:
 
 
 def astar(array, start, goal):
-    def heuristic(a, b):
-        return fabs((b[0] - a[0])) + fabs((b[1] - a[1]))
+    def heuristic(__a__, __b__):
+        return fabs((__b__[0] - __a__[0])) + fabs((__b__[1] - __a__[1]))
 
     neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 

@@ -1,12 +1,8 @@
-import pygame
 from config import CELL_SIZE
-from PIL import Image
-from PIL import ImageFont
-from PIL import ImageDraw
-from models.Numbers import Numbers
+from models.__numbers__ import Numbers
 
 
-class Trash (Numbers):
+class Trash(Numbers):
     def __init__(self, x, y, trash_type):
         Numbers.__init__(self, x, y)
         self.trash_type = trash_type.lower()
@@ -16,10 +12,10 @@ class Trash (Numbers):
 
     def update(self):
         draw, font, img = self.img_load(self.image_name, 32)
-        w, h = draw.textsize(str(self.trash), font=font)
-        draw.text(((CELL_SIZE - w) / 2, (CELL_SIZE - h)
+        __w__, __h__ = draw.textsize(str(self.trash), font=font)
+        draw.text(((CELL_SIZE - __w__) / 2, (CELL_SIZE - __h__)
                    * 2 / 3), str(self.trash), font=font)
-        self.img_save(draw, img)
+        self.img_save(img)
 
     def put_trash(self, ammount=1):
         self.trash += ammount

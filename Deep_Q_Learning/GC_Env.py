@@ -1,7 +1,7 @@
 from Deep_Q_Learning.q_gc import Garbage_Collector
 from helpler import __render_element__
 from models.__house__ import House
-from models.Road import Road
+from models.__road__ import Road
 from config import MAP_WIDTH, MAP_HEIGHT, NUMBER_OF_HOUSES
 import numpy as np
 from timeit import default_timer as timer

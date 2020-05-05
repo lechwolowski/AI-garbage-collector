@@ -1,7 +1,7 @@
 from random import randint
 from PIL import ImageFont
 from config import FONT, BLACK, BLUE, GREEN, YELLOW, HOUSE_IMAGE
-from models.Numbers import Numbers
+from models.__numbers__ import Numbers
 
 
 class House(Numbers):
@@ -22,7 +22,7 @@ class House(Numbers):
         draw.text((37, 24), str(self.paper), BLUE, font=font)
         draw.text((19, 42), str(self.glass), GREEN, font=font)
         draw.text((37, 42), str(self.plastic), YELLOW, font=font)
-        self.img_save(draw, img)
+        self.img_save(img)
 
     def is_empty(self):
         if self.mixed == 0 and self.glass == 0 and self.paper == 0 and self.plastic == 0:
