@@ -5,8 +5,8 @@ import numpy as np
 from keras.models import load_model
 from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from __gc_env__ import GcEnv
-from Deep_Q_Learning.GC_Env import GC_Env as dqn_gc_env
-from a_star import A_Star
+from Deep_Q_Learning.__gc_env__ import GcEnv as dqn_gc_env
+from a_star import AStar
 
 MOVES_DICT = {
     0: "up",
@@ -51,7 +51,7 @@ DRAW_ITEMS, GC = ENV.get_env()
 
 # Initialize A*
 
-__a_star__ = A_Star(DRAW_ITEMS, GC, ENV, refresh_screen)
+__a_star__ = AStar(DRAW_ITEMS, GC, ENV, refresh_screen)
 __a_star__.houses_with_trash()
 
 # dqn
@@ -97,7 +97,7 @@ while RUNNING:
             if event.key == pygame.K_a:
                 RUN_A = True
             if event.key == pygame.K_q:
-                state = DQN_ENV.observe(gc=GC, draw_items=DRAW_ITEMS)
+                state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
                 prediction = MODEL.predict(
                     np.array(state).reshape(-1, *state.shape))
                 ENV.step(np.argmax(prediction))
