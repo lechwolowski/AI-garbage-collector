@@ -2,6 +2,7 @@ from datetime import datetime
 import numpy as np
 from numpy.random import random
 from tqdm import tqdm
+from keras.models import load_model
 from Deep_Q_Learning.Deep_Q_Learning import DQNAgent, MODEL_NAME
 from Deep_Q_Learning.__gc_env__ import GcEnv
 
@@ -13,8 +14,8 @@ EPISODES = 20_000
 
 # Exploration settings
 EPSILON = 1  # not a constant, going to be decayed
-EPSILON_DECAY = 0.99975
-MIN_EPSILON = 0.01
+EPSILON_DECAY = 0.99
+MIN_EPSILON = 0.05
 
 #  Stats settings
 AGGREGATE_STATS_EVERY = 20  # episodes
@@ -25,10 +26,10 @@ ENV = GcEnv()
 EP_REWARDS = []
 STEPS = []
 
-# model = load_model(
-#     '')
+MODEL = load_model(
+    'trained_models\\lr=0.01_gamma=0.9_____4.20max____3.54avg____1.10min__2020-05-05_12-01.model')
 
-MODEL = None
+# MODEL = None
 
 AGENT = DQNAgent(env=ENV, model=MODEL)
 
