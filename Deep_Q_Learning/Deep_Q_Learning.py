@@ -1,16 +1,11 @@
-import numpy as np
+import random
+from collections import deque
 from datetime import datetime
-from time import asctime
-import keras.backend.tensorflow_backend as backend
-from keras import backend as K
+import numpy as np
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Input, Activation, Flatten, Conv2D
-from keras.optimizers import Adam
+from keras.layers import Dense
 from keras.callbacks import TensorBoard
 import tensorflow as tf
-from collections import deque
-import random
-from Deep_Q_Learning.GC_Env import GC_Env
 
 DISCOUNT = 0.9
 REPLAY_MEMORY_SIZE = 500_000  # How many last steps to keep for model training
@@ -40,7 +35,7 @@ class ModifiedTensorBoard(TensorBoard):
 
     # Overrided, saves logs with our step number
     # (otherwise every .fit() will start writing from 0th step)
-    def on_epoch_end(self, epoch, logs=None):
+    def on_epoch_end(self, _, logs=None):
         self.update_stats(**logs)
 
     # Overrided
@@ -113,7 +108,7 @@ class DQNAgent:
         #     self.negative_memory.append(transition)
 
     # Trains main network every step during episode
-    def train(self, terminal_state, step):
+    def train(self, terminal_state):
 
         # Start training only if certain number of samples is already saved
         if len(self.replay_memory) < MIN_REPLAY_MEMORY_SIZE:
@@ -133,15 +128,17 @@ class DQNAgent:
             [transition[3] for transition in minibatch])
         future_qs_list = self.target_model.predict(new_current_states)
 
-        X = []
-        y = []
+        __x__ = []
+        __y__ = []
 
         # Now we need to enumerate our batches
-        for index, (current_state, action, reward, new_current_state, old_state, done) in enumerate(minibatch):
+        for index, (current_state, action, reward, new_current_state, old_state, done) \
+                in enumerate(minibatch):
 
             # If not a terminal state, get new q from future states, otherwise set it to 0
             # almost like with Q Learning, but we use just part of equation here
-            if not done and not np.array_equal(current_state, new_current_state) and not np.array_equal(old_state, new_current_state):
+            if not done and not np.array_equal(current_state, new_current_state) and \
+                    not np.array_equal(old_state, new_current_state):
                 max_future_q = np.max(future_qs_list[index])
                 new_q = reward + DISCOUNT * max_future_q
             else:
@@ -152,11 +149,11 @@ class DQNAgent:
             current_qs[action] = new_q
 
             # And append to our training data
-            X.append(current_state)
-            y.append(current_qs)
+            __x__.append(current_state)
+            __y__.append(current_qs)
 
         # Fit on all samples as one batch, log only on terminal state
-        self.model.fit(np.array(X), np.array(y), batch_size=MINIBATCH_SIZE, verbose=0,
+        self.model.fit(np.array(__x__), np.array(__y__), batch_size=MINIBATCH_SIZE, verbose=0,
                        shuffle=False, callbacks=[self.tensorboard] if terminal_state else None)
 
         # Update target network counter every episode

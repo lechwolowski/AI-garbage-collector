@@ -39,6 +39,7 @@ def render_game():
     pygame.display.flip()
 
 
+# pylint: disable=no-member
 pygame.init()
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 

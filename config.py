@@ -1,4 +1,3 @@
-from platform import system
 CELL_SIZE = 64
 MAP_HEIGHT = 7
 MAP_WIDTH = 9

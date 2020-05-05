@@ -1,14 +1,14 @@
-from models.Garbage_Collector import Garbage_Collector
-from helpler import Render_Element
+from models.__garbage_collector__ import GarbageCollector
+from helpler import __render_element__
 from config import MAP_WIDTH, MAP_HEIGHT
 
 
 class GcEnv:
 
     def __init__(self):
-        self.draw_items = {(x, y): Render_Element(x, y)
+        self.draw_items = {(x, y): __render_element__(x, y)
                            for x in range(MAP_WIDTH) for y in range(MAP_HEIGHT)}
-        self.__gc__ = Garbage_Collector(self.draw_items)
+        self.__gc__ = GarbageCollector(self.draw_items)
         self.actions = {
             0: self.__gc__.move_up,
             1: self.__gc__.move_down,
