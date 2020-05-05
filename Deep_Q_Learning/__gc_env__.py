@@ -1,36 +1,40 @@
-from Deep_Q_Learning.q_gc import Garbage_Collector
+import numpy as np
+from Deep_Q_Learning.__gc__ import GarbageCollector
 from helpler import __render_element__
 from models.__house__ import House
 from models.__road__ import Road
 from config import MAP_WIDTH, MAP_HEIGHT, NUMBER_OF_HOUSES
-import numpy as np
-from timeit import default_timer as timer
 
 
-class GC_Env:
+class GcEnv:
     OBSERVATION_SPACE_VALUES = (36 + NUMBER_OF_HOUSES,)
     ACTION_SPACE_SIZE = 6
+
+    def __init__(self):
+        self.draw_items = None
+        self.__gc__ = None
+        self.actions = None
 
     def reset(self):
         self.draw_items = {(x, y): __render_element__(x, y)
                            for x in range(MAP_WIDTH) for y in range(MAP_HEIGHT)}
-        self.gc = Garbage_Collector(self.draw_items)
+        self.__gc__ = GarbageCollector(self.draw_items)
         self.actions = {
-            0: self.gc.move_up,
-            1: self.gc.move_down,
-            2: self.gc.move_left,
-            3: self.gc.move_right,
-            4: self.gc.pick_trash,
-            5: self.gc.leave_trash
+            0: self.__gc__.move_up,
+            1: self.__gc__.move_down,
+            2: self.__gc__.move_left,
+            3: self.__gc__.move_right,
+            4: self.__gc__.pick_trash,
+            5: self.__gc__.leave_trash
         }
 
-        return self.observe(self.gc, self.draw_items)
+        return self.observe(self.__gc__, self.draw_items)
 
-    def observe(self, gc, draw_items):
+    def observe(self, __gc__, draw_items):
         roads = list(filter(lambda item: isinstance(
             draw_items[item], Road), draw_items))
 
-        gc_pos = roads.index((gc.col, gc.row))
+        gc_pos = roads.index((__gc__.col, __gc__.row))
 
         observation = np.full(self.OBSERVATION_SPACE_VALUES, -1)
         observation[gc_pos] = 1
@@ -53,7 +57,7 @@ class GC_Env:
     def step(self, action):
         action_result = self.actions[action]()
 
-        new_observation = self.observe(self.gc, self.draw_items)
+        new_observation = self.observe(self.__gc__, self.draw_items)
 
         if action_result is False:
             reward = -1
@@ -63,7 +67,7 @@ class GC_Env:
             reward = action_result
 
         done = True
-        if not self.gc.is_empty():
+        if not self.__gc__.is_empty():
             done = False
         else:
             for item in self.draw_items:

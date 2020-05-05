@@ -1,12 +1,11 @@
-import pygame
-from config import CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP, FONT, BLACK, BLUE, GREEN, YELLOW, GARBAGE_COLLECTOR_IMAGE, TRASH_TYPES
 from random import randint
+from config import MAP_HEIGHT, MAP_WIDTH, MAP, TRASH_TYPES
 from models.__house__ import House
 from models.__numbers__ import Numbers
 from models.__trash__ import Trash
 
 
-class Garbage_Collector(Numbers):
+class GarbageCollector(Numbers):
     def __init__(self, draw_items):
         self.road_positions = {row_index: {
             col_index: (True if MAP[row_index][col_index] == "Road" else False)
@@ -64,7 +63,8 @@ class Garbage_Collector(Numbers):
         return False
 
     def pick_trash(self):
-        if self.mixed == self.limit and self.glass == self.limit and self.paper == self.limit and self.plastic == self.limit:
+        if self.mixed == self.limit and self.glass == self.limit and \
+                self.paper == self.limit and self.plastic == self.limit:
             return - 1
 
         to_check = [
@@ -76,7 +76,8 @@ class Garbage_Collector(Numbers):
         houses_around = False
         transfered = 0
         for field in to_check:
-            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
+            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and \
+                    field["col"] >= 0 and field["col"] < MAP_WIDTH:
                 item = self.draw_items[(field["col"], field["row"])]
                 if isinstance(item, House):
                     houses_around = True
@@ -94,8 +95,7 @@ class Garbage_Collector(Numbers):
 
         if houses_around and transfered:
             return 1
-        else:
-            return -1
+        return -1
 
     def leave_trash(self):
         to_check = [
@@ -107,7 +107,8 @@ class Garbage_Collector(Numbers):
         transfered = 0
         trashes_around = False
         for field in to_check:
-            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and field["col"] >= 0 and field["col"] < MAP_WIDTH:
+            if field["row"] >= 0 and field["row"] < MAP_HEIGHT and \
+                    field["col"] >= 0 and field["col"] < MAP_WIDTH:
                 item = self.draw_items[(field["col"], field["row"])]
                 if isinstance(item, Trash):
                     trashes_around = True
@@ -121,5 +122,4 @@ class Garbage_Collector(Numbers):
 
         if trashes_around and transfered:
             return 1
-        else:
-            return -1
+        return -1
