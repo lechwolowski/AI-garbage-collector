@@ -67,10 +67,8 @@ render_game()
 
 CLOCK = pygame.time.Clock()
 
-
-# know = Knowledge(DRAW_ITEMS, gc)
-
-MODEL = load_model(os.path.join('trained_models', 'working_one_house.model'))
+MODEL = load_model(os.path.join(
+    'trained_models', 'half_trained_unlimited.model'))
 
 # Game Loop
 RUN_A = False
@@ -92,11 +90,10 @@ while RUNNING:
             if event.key == pygame.K_SPACE:
                 ENV.step(4)
                 ENV.step(5)
-                # know.update()
-                # know.show()
             if event.key == pygame.K_a:
                 RUN_A = True
             if event.key == pygame.K_q:
+                GC.set_limit(100)
                 state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
                 prediction = MODEL.predict(
                     np.array(state).reshape(-1, *state.shape))
