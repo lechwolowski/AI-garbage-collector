@@ -57,8 +57,10 @@ class GarbageCollector(Numbers):
     def is_empty(self):
         if self.mixed == 0 and self.glass == 0 and self.paper == 0 and self.plastic == 0:
             return True
-        else:
-            return False
+        return False
+
+    def set_limit(self, limit):
+        self.limit = limit
 
     def get_fill(self, base, full_val, trash):
         addable_range = full_val - base
