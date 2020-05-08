@@ -3,11 +3,12 @@ import numpy as np
 from numpy.random import random
 from tqdm import tqdm
 from keras.models import load_model
-from Deep_Q_Learning.Deep_Q_Learning import DQNAgent, MODEL_NAME
+from Deep_Q_Learning.deep_q_learning import DQNAgent
 from Deep_Q_Learning.__gc_env__ import GcEnv
 
 MIN_REWARD = 0  # For model save
 STEP_LIMIT = 500
+MODEL_NAME = 'Limited-20k'
 
 # Environment settings
 EPISODES = 20_000
@@ -26,12 +27,12 @@ ENV = GcEnv()
 EP_REWARDS = []
 STEPS = []
 
-MODEL = load_model(
-    'trained_models\\lr=0.01_gamma=0.9_____4.20max____3.54avg____1.10min__2020-05-05_12-01.model')
+# MODEL = load_model(
+#     'trained_models\\lr=0.01_gamma=0.9_____4.20max____3.54avg____1.10min__2020-05-05_12-01.model')
 
-# MODEL = None
+MODEL = None
 
-AGENT = DQNAgent(env=ENV, model=MODEL)
+AGENT = DQNAgent(env=ENV, model=MODEL, model_name=MODEL_NAME)
 
 for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
 

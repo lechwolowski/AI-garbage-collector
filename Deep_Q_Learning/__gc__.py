@@ -19,7 +19,7 @@ class GarbageCollector(Numbers):
         self.paper = 0
         self.glass = 0
         self.plastic = 0
-        self.limit = 1000
+        self.limit = 10
         self.draw_items = draw_items
 
         Numbers.__init__(self, self.col, self.row)
