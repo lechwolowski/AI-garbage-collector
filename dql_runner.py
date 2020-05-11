@@ -1,4 +1,5 @@
-from datetime import datetime
+# from datetime import datetime
+import os
 import numpy as np
 from numpy.random import random
 from tqdm import tqdm
@@ -8,18 +9,20 @@ from Deep_Q_Learning.__gc_env__ import GcEnv
 
 MIN_REWARD = 0  # For model save
 STEP_LIMIT = 500
-MODEL_NAME = 'Limited-20k'
+CURRENT_RUN_COUNT = 60
+DELTA = 40
+MODEL_NAME = f'Limited-{CURRENT_RUN_COUNT + DELTA}k'
 
 # Environment settings
-EPISODES = 20_000
+EPISODES = DELTA * 1_000
 
 # Exploration settings
 EPSILON = 1  # not a constant, going to be decayed
-EPSILON_DECAY = 0.99
-MIN_EPSILON = 0.05
+EPSILON_DECAY = 0.99975
+MIN_EPSILON = 0.01
 
 #  Stats settings
-AGGREGATE_STATS_EVERY = 20  # episodes
+AGGREGATE_STATS_EVERY = 50  # episodes
 
 ENV = GcEnv()
 
@@ -27,10 +30,10 @@ ENV = GcEnv()
 EP_REWARDS = []
 STEPS = []
 
-# MODEL = load_model(
-#     'trained_models\\lr=0.01_gamma=0.9_____4.20max____3.54avg____1.10min__2020-05-05_12-01.model')
+MODEL = load_model(os.path.join(
+    'trained_models', f'limited-{CURRENT_RUN_COUNT}k'))
 
-MODEL = None
+# MODEL = None
 
 AGENT = DQNAgent(env=ENV, model=MODEL, model_name=MODEL_NAME)
 
@@ -90,15 +93,13 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
             reward_max=max_reward, epsilon=EPSILON, average_steps=average_steps)
 
         # Save model, but only when min reward is greater or equal a set value
-        if min_reward >= MIN_REWARD:
-            AGENT.model.save(
-                f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f} \
-                    avg_{min_reward:_>7.2f}min__{datetime.now().strftime("%Y-%m-%d_%H-%M")}.model')
+        # if min_reward >= MIN_REWARD:
+        #     AGENT.model.save(
+        #         f'trained_models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f} \
+        #             avg_{min_reward:_>7.2f}min__{datetime.now().strftime("%Y-%m-%d_%H-%M")}.model')
 
     if not episode % EPISODES:
-        AGENT.model.save(
-            f'trained_models/{MODEL_NAME}__{max_reward: _ > 7.2f}max_{average_reward: _ > 7.2f} \
-            avg_{min_reward: _ > 7.2f}min__{datetime.now().strftime("%Y-%m-%d_%H-%M")}.model')
+        AGENT.model.save(f'trained_models/{MODEL_NAME}')
 
     # plot_model(agent.model, to_file='model.png')
 

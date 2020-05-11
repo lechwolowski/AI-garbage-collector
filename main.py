@@ -68,7 +68,7 @@ render_game()
 CLOCK = pygame.time.Clock()
 
 MODEL = load_model(os.path.join(
-    'trained_models', 'half_trained_unlimited.model'))
+    'trained_models', 'Limited-60k'))
 
 # Game Loop
 RUN_A = False
@@ -93,7 +93,6 @@ while RUNNING:
             if event.key == pygame.K_a:
                 RUN_A = True
             if event.key == pygame.K_q:
-                GC.set_limit(100)
                 state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
                 prediction = MODEL.predict(
                     np.array(state).reshape(-1, *state.shape))
