@@ -68,7 +68,7 @@ render_game()
 CLOCK = pygame.time.Clock()
 
 MODEL = load_model(os.path.join(
-    'trained_models', 'Limited-30k'))
+    'trained_models', 'Limited-60k'))
 
 # Game Loop
 RUN_A = False
