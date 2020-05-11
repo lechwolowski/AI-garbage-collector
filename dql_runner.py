@@ -9,20 +9,20 @@ from Deep_Q_Learning.__gc_env__ import GcEnv
 
 MIN_REWARD = 0  # For model save
 STEP_LIMIT = 500
-CURRENT_RUN_COUNT = 2
-DELTA = 2
+CURRENT_RUN_COUNT = 60
+DELTA = 40
 MODEL_NAME = f'Limited-{CURRENT_RUN_COUNT + DELTA}k'
 
 # Environment settings
-EPISODES = 2_000
+EPISODES = DELTA * 1_000
 
 # Exploration settings
 EPSILON = 1  # not a constant, going to be decayed
-EPSILON_DECAY = 0.999
-MIN_EPSILON = 0.05
+EPSILON_DECAY = 0.99975
+MIN_EPSILON = 0.01
 
 #  Stats settings
-AGGREGATE_STATS_EVERY = 20  # episodes
+AGGREGATE_STATS_EVERY = 50  # episodes
 
 ENV = GcEnv()
 
@@ -33,7 +33,7 @@ STEPS = []
 MODEL = load_model(os.path.join(
     'trained_models', f'limited-{CURRENT_RUN_COUNT}k'))
 
-MODEL = None
+# MODEL = None
 
 AGENT = DQNAgent(env=ENV, model=MODEL, model_name=MODEL_NAME)
 
