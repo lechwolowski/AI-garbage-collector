@@ -9,6 +9,8 @@ from Deep_Q_Learning.__gc_env__ import GcEnv as dqn_gc_env
 from a_star import AStar
 from Tree.part_map import part_map
 from Tree.part_map import save_to_file
+from Tree.part_map import save_to_file_1
+from Tree.part_map import read_table
 
 
 MOVES_DICT = {
@@ -22,6 +24,8 @@ MOVES_DICT = {
 
 x_list = []  # lista otoczeń
 y_list = []  # lista ruchów
+maps = []
+actions = []
 
 
 def refresh_screen():
@@ -188,6 +192,9 @@ while RUNNING:
 
         refresh_screen()
     CLOCK.tick(30)
-print("X=", x_list)
-print("Y=", y_list)
-save_to_file('learn.txt', x_list)
+
+save_to_file('Xlearn.txt', x_list)
+save_to_file_1('Ylearn.txt', y_list)
+
+read_table(maps, 'Xlearn.txt', 0)
+read_table(actions, 'Ylearn.txt', 1)

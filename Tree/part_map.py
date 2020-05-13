@@ -41,8 +41,38 @@ def part_map(MAP, y, x):
 
 
 def save_to_file(plik, lista):
-    plik = open('learn.txt', 'a')
-    for element in lista:
-        plik.writelines(*str(element), end="\n")
+    strList = []
+    for row in lista:
+        lista = [str(item) for item in row]
+        strList.append(lista)
+    plik = open('Xlearn.txt', 'a')
+    for row in strList:
+        list1 = [(item+" ") for item in row]
+        plik.writelines(list1)
+        plik.write('\n')
 
     plik.close()
+
+
+def save_to_file_1(plik, lista):
+    strList = []
+    for i in lista:
+        strList.append(str(i))
+    plik = open('Ylearn.txt', 'a')
+    list1 = [(item+" ") for item in strList]
+    plik.writelines(list1)
+    plik.write('\n')
+    plik.close()
+
+
+def read_table(table, file_name, param):
+    f = open(file_name)
+    if param == 0:
+        for linia in f:
+            table += [linia.split()]
+        print("tablicaX=", table)
+    elif param == 1:
+        for linia in f:
+            table += linia.split()
+        print("tablicaY=", table)
+    f.close
