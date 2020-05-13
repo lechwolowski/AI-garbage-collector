@@ -2,6 +2,7 @@ import time
 import os
 import pygame
 import numpy as np
+from sklearn import tree
 from keras.models import load_model
 from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP
 from __gc_env__ import GcEnv
@@ -11,6 +12,7 @@ from Tree.part_map import part_map
 from Tree.part_map import save_to_file
 from Tree.part_map import save_to_file_1
 from Tree.part_map import read_table
+from Tree.decision_tree import make_tree
 
 
 MOVES_DICT = {
@@ -84,6 +86,7 @@ MODEL = load_model(os.path.join(
 RUN_A = False
 RUN_A_LEARN = False
 RUNNING = True
+tree_loaded = False
 while RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -103,8 +106,26 @@ while RUNNING:
                 ENV.step(5)
             if event.key == pygame.K_a:
                 RUN_A = True
-            if event.key == pygame.K_t:
+            if event.key == pygame.K_t:  # zbieranie danych z A* do tablic
                 RUN_A_LEARN = True
+            if event.key == pygame.K_o:  # odpalenie z drzewa decyzyjnego
+                if not tree_loaded:
+                    read_table(maps, 'Xlearn.txt', 0)
+                    read_table(actions, 'Ylearn.txt', 1)
+                    print("przed maketree")
+                    clf = make_tree(maps, actions)
+                    tree_loaded = True
+                    print("po maketree")
+                state_map = []
+                state_map = part_map(MAP, GC.row, GC.col)
+                print("state_map=", state_map)
+                step = clf.predict([state_map])
+                print("STEP=", step)
+                if step[0] == 6:
+                    ENV.step(4)
+                    ENV.step(5)
+                else:
+                    ENV.step(step[0])
             if event.key == pygame.K_q:
                 GC.set_limit(100)
                 state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
@@ -154,13 +175,13 @@ while RUNNING:
         if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
                 and GC.glass == 0 and GC.plastic == 0:
             RUN_A_LEARN = False
-            # otwarcie pliku, zapisanie, tabel x,y....
+            save_to_file('Xlearn.txt', x_list)
+            save_to_file_1('Ylearn.txt', y_list)
+           # read_table(maps, 'Xlearn.txt', 0)
+           # read_table(actions, 'Ylearn.txt', 1)
 
         else:
             ROUTE = __a_star__.get_to_dest()
-            #print("col1=", GC.col)
-            #print("ROW1=", GC.row)
-            # time.sleep()
             x_list.append(part_map(MAP, GC.row, GC.col))
             if len(ROUTE) > 0:
                 X, Y = ROUTE[0]
@@ -186,15 +207,7 @@ while RUNNING:
                 ENV.step(5)
                 y_list.append(6)
                 GC.update()
-            #print("col=", GC.col)
-            #print("ROW=", GC.row)
         GC.render()
 
         refresh_screen()
     CLOCK.tick(30)
-
-save_to_file('Xlearn.txt', x_list)
-save_to_file_1('Ylearn.txt', y_list)
-
-read_table(maps, 'Xlearn.txt', 0)
-read_table(actions, 'Ylearn.txt', 1)

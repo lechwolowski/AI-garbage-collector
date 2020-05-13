@@ -70,9 +70,17 @@ def read_table(table, file_name, param):
     if param == 0:
         for linia in f:
             table += [linia.split()]
-        print("tablicaX=", table)
+        for x in range(len(table)):
+            w = table[x]
+            for y in range(len(w)):
+                w[y] = int(w[y])
+
     elif param == 1:
         for linia in f:
             table += linia.split()
-        print("tablicaY=", table)
+        for x in range(len(table)):
+            table[x] = int(table[x])
+
+        #print("tablicaY=", table)
     f.close
+
