@@ -67,8 +67,8 @@ render_game()
 
 CLOCK = pygame.time.Clock()
 
-MODEL = load_model(os.path.join(
-    'trained_models', 'half_trained_unlimited.model'))
+MODEL = None
+done = False
 
 # Game Loop
 RUN_A = False
@@ -93,13 +93,19 @@ while RUNNING:
             if event.key == pygame.K_a:
                 RUN_A = True
             if event.key == pygame.K_q:
-                GC.set_limit(100)
-                state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
-                prediction = MODEL.predict(
-                    np.array(state).reshape(-1, *state.shape))
-                ENV.step(np.argmax(prediction))
-                print(state)
-                print(MOVES_DICT[np.argmax(prediction)], prediction)
+                if DQN_ENV.is_done(__gc__=GC, draw_items=DRAW_ITEMS):
+                    print('Done')
+                else:
+                    if not MODEL:
+                        MODEL = load_model(os.path.join(
+                            'trained_models', 'Runs-16k-Step_limit-5000'))
+                    state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
+                    prediction = MODEL.predict(
+                        np.array(state).reshape(-1, *state.shape))
+                    ENV.step(np.argmax(prediction))
+                    print(state)
+                    print(MOVES_DICT[np.argmax(prediction)], prediction)
+
 
             GC.render()
 

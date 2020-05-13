@@ -3,11 +3,14 @@ from Deep_Q_Learning.__gc__ import GarbageCollector
 from helpler import __render_element__
 from models.__house__ import House
 from models.__road__ import Road
-from config import MAP_WIDTH, MAP_HEIGHT, NUMBER_OF_HOUSES
+from config import MAP_WIDTH, MAP_HEIGHT, NUMBER_OF_HOUSES, TRASH_TYPES
 
 
 class GcEnv:
-    OBSERVATION_SPACE_VALUES = (36 + NUMBER_OF_HOUSES,)
+    TRASH_INFO_LEN = 2 * len(TRASH_TYPES) + NUMBER_OF_HOUSES * len(TRASH_TYPES)
+    GC_TRASH_LEN = 2 * len(TRASH_TYPES)
+    OBSERVATION_SPACE_VALUES = (
+        36 + TRASH_INFO_LEN,)
     ACTION_SPACE_SIZE = 6
 
     def __init__(self):
@@ -42,17 +45,28 @@ class GcEnv:
         houses = list(map(lambda item: draw_items[item], list(filter(lambda item: isinstance(
             draw_items[item], House), draw_items))))
 
-        houses_trash = [max([(int(getattr(house, item) != 0) - 0.5) * 2 for item in
-                             ["mixed", "paper", "glass", "plastic"]]) for house in houses]
+        houses_trash = [(int(getattr(house, item) != 0) - 0.5)
+                        * 2 for item in TRASH_TYPES for house in houses]
 
-        observation[-NUMBER_OF_HOUSES:] = houses_trash
+        gc_trash = [(int(getattr(__gc__, item) != 0) - 0.5) * 2 for item in TRASH_TYPES] + \
+            [(int(getattr(__gc__, item) != __gc__.limit) - 0.5)
+             * 2 for item in TRASH_TYPES]
+
+        observation[-self.TRASH_INFO_LEN: -self.GC_TRASH_LEN] = houses_trash
+        observation[-self.GC_TRASH_LEN:] = gc_trash
 
         return observation
-        # gc_trash = [int(getattr(self.gc, item) == self.gc.limit)
-        #             for item in ["mixed", "paper", "glass", "plastic", "limit"]]
-        # new_observation = np.zeros(self.OBSERVATION_SPACE_VALUES)
 
-        # new_observation[self.gc.col, self.gc.row] = gc_trash
+    def is_done(self, __gc__, draw_items):
+        done = True
+        if not __gc__.is_empty():
+            done = False
+        else:
+            for item in draw_items:
+                if isinstance(draw_items[item], House) and not draw_items[item].is_empty():
+                    done = False
+                    break
+        return done
 
     def step(self, action):
         action_result = self.actions[action]()
