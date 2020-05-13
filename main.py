@@ -110,6 +110,7 @@ while RUNNING:
                 RUN_A_LEARN = True
             if event.key == pygame.K_o:  # odpalenie z drzewa decyzyjnego
                 if not tree_loaded:
+                    GC.set_limit(100000)
                     read_table(maps, 'Xlearn.txt', 0)
                     read_table(actions, 'Ylearn.txt', 1)
                     print("przed maketree")
@@ -117,13 +118,14 @@ while RUNNING:
                     tree_loaded = True
                     print("po maketree")
                 state_map = []
-                state_map = part_map(MAP, GC.row, GC.col)
+                state_map = part_map(MAP, GC.draw_items, GC.row, GC.col)
                 print("state_map=", state_map)
                 step = clf.predict([state_map])
                 print("STEP=", step)
                 if step[0] == 6:
                     ENV.step(4)
                     ENV.step(5)
+                    ENV.step(0)
                 else:
                     ENV.step(step[0])
             if event.key == pygame.K_q:
@@ -182,7 +184,7 @@ while RUNNING:
 
         else:
             ROUTE = __a_star__.get_to_dest()
-            x_list.append(part_map(MAP, GC.row, GC.col))
+            x_list.append(part_map(MAP, GC.draw_items, GC.row, GC.col))
             if len(ROUTE) > 0:
                 X, Y = ROUTE[0]
                 if X - GC.col != 0:

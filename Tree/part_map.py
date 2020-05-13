@@ -1,4 +1,5 @@
 from config import MAP_HEIGHT, MAP_WIDTH, MAP
+from models.__house__ import House
 
 
 def map2int(MAP, __y__, __x__):
@@ -13,7 +14,7 @@ def map2int(MAP, __y__, __x__):
     return 4  # trash
 
 
-def part_map(MAP, y, x):
+def part_map(MAP, draw_items, y, x):
     map_part = []
     coords = [
         [x-3, y-3], [x-2, y-3], [x-1, y-3], [x+0,
@@ -37,6 +38,16 @@ def part_map(MAP, y, x):
             map_part.append(map2int(MAP, coord[1], coord[0]))
         else:
             map_part.append(2)
+
+    for x in range(MAP_HEIGHT-1):
+        for y in range(MAP_WIDTH-1):
+            object = draw_items[(y, x)]
+            if type(object) == House:
+                if object.is_empty():
+                    map_part.append(0)
+                else:
+                    map_part.append(1)
+
     return map_part
 
 
@@ -83,4 +94,3 @@ def read_table(table, file_name, param):
 
         #print("tablicaY=", table)
     f.close
-
