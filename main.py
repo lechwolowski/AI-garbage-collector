@@ -7,6 +7,9 @@ from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from __gc_env__ import GcEnv
 from Deep_Q_Learning.__gc_env__ import GcEnv as dqn_gc_env
 from a_star import AStar
+import joblib
+from tkinter import messagebox
+
 
 MOVES_DICT = {
     0: "up",
@@ -92,6 +95,11 @@ while RUNNING:
                 ENV.step(5)
             if event.key == pygame.K_a:
                 RUN_A = True
+            if event.key == pygame.K_d:
+                loaded_model = joblib.load('finalized_model.sav')
+                messagebox.showinfo("zaczynamy", "Zaczynamy!")
+                messagebox.showinfo("Informacja końcowa", "Zakończono")
+                pygame.quit()
             if event.key == pygame.K_q:
                 if DQN_ENV.is_done(__gc__=GC, draw_items=DRAW_ITEMS):
                     print('Done')

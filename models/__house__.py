@@ -14,6 +14,8 @@ class House(Numbers):
         self.glass = randint(0, self.limit)
         self.plastic = randint(0, self.limit)
         self.update()
+        self.data = [120, 20, 20, 10]
+        self.size = None
 
     def update(self):
         draw, font, img = self.img_load(HOUSE_IMAGE, 32)
