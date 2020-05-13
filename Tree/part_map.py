@@ -15,6 +15,7 @@ def map2int(MAP, __y__, __x__):
 
 
 def part_map(MAP, draw_items, y, x):
+
     map_part = []
     coords = [
         [x-3, y-3], [x-2, y-3], [x-1, y-3], [x+0,
@@ -39,11 +40,11 @@ def part_map(MAP, draw_items, y, x):
         else:
             map_part.append(2)
 
-    for x in range(MAP_HEIGHT-1):
-        for y in range(MAP_WIDTH-1):
-            object = draw_items[(y, x)]
-            if type(object) == House:
-                if object.is_empty():
+    for x in range(MAP_WIDTH):
+        for y in range(MAP_HEIGHT):
+            objectt = draw_items[(x, y)]
+            if type(objectt) == House:
+                if objectt.is_empty():
                     map_part.append(0)
                 else:
                     map_part.append(1)
@@ -92,5 +93,4 @@ def read_table(table, file_name, param):
         for x in range(len(table)):
             table[x] = int(table[x])
 
-        #print("tablicaY=", table)
     f.close

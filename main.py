@@ -87,6 +87,7 @@ RUN_A = False
 RUN_A_LEARN = False
 RUNNING = True
 tree_loaded = False
+licznik = 0
 while RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -110,7 +111,7 @@ while RUNNING:
                 RUN_A_LEARN = True
             if event.key == pygame.K_o:  # odpalenie z drzewa decyzyjnego
                 if not tree_loaded:
-                    GC.set_limit(100000)
+                    # GC.set_limit(100000)
                     read_table(maps, 'Xlearn.txt', 0)
                     read_table(actions, 'Ylearn.txt', 1)
                     print("przed maketree")
@@ -122,12 +123,13 @@ while RUNNING:
                 print("state_map=", state_map)
                 step = clf.predict([state_map])
                 print("STEP=", step)
-                if step[0] == 6:
+                ENV.step(step[0])
+                '''if step[0] == 6:
                     ENV.step(4)
                     ENV.step(5)
                     ENV.step(0)
                 else:
-                    ENV.step(step[0])
+                    ENV.step(step[0])'''
             if event.key == pygame.K_q:
                 GC.set_limit(100)
                 state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
@@ -161,7 +163,7 @@ while RUNNING:
                     else:
                         ENV.step(1)
 
-                time.sleep(0.3)
+                # time.sleep(0.3)
 
             elif len(ROUTE) == 0:
                 ENV.step(4)
@@ -172,20 +174,29 @@ while RUNNING:
         refresh_screen()
 
     if RUN_A_LEARN:
-        GC.set_limit(100000)
+        # GC.set_limit(100000)
         HOUSES, _ = __a_star__.houses_with_trash()
         if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
                 and GC.glass == 0 and GC.plastic == 0:
-            RUN_A_LEARN = False
-            save_to_file('Xlearn.txt', x_list)
-            save_to_file_1('Ylearn.txt', y_list)
+            if licznik > 10:
+                RUN_A_LEARN = False
+            else:
+                licznik = licznik+1
+                save_to_file('Xlearn.txt', x_list)
+                save_to_file_1('Ylearn.txt', y_list)
+                ENV = GcEnv()
+                DRAW_ITEMS, GC = ENV.get_env()
+                GC.render()
+
+                refresh_screen()
            # read_table(maps, 'Xlearn.txt', 0)
            # read_table(actions, 'Ylearn.txt', 1)
 
         else:
             ROUTE = __a_star__.get_to_dest()
-            x_list.append(part_map(MAP, GC.draw_items, GC.row, GC.col))
+           # x_list.append(part_map(MAP, GC.draw_items, GC.row, GC.col))
             if len(ROUTE) > 0:
+                x_list.append(part_map(MAP, GC.draw_items, GC.row, GC.col))
                 X, Y = ROUTE[0]
                 if X - GC.col != 0:
                     if X - GC.col < 0:
@@ -202,12 +213,12 @@ while RUNNING:
                         ENV.step(1)
                         y_list.append(1)
 
-                time.sleep(0.3)
+                # time.sleep(0.3)
 
             elif len(ROUTE) == 0:
                 ENV.step(4)
                 ENV.step(5)
-                y_list.append(6)
+                # y_list.append(6)
                 GC.update()
         GC.render()
 
