@@ -68,10 +68,10 @@ render_game()
 CLOCK = pygame.time.Clock()
 
 MODEL = None
-done = False
 
 # Game Loop
 RUN_A = False
+RUN_Q = False
 RUNNING = True
 while RUNNING:
     for event in pygame.event.get():
@@ -98,18 +98,29 @@ while RUNNING:
                 else:
                     if not MODEL:
                         MODEL = load_model(os.path.join(
-                            'trained_models', 'Runs-16k-Step_limit-5000'))
-                    state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
-                    prediction = MODEL.predict(
-                        np.array(state).reshape(-1, *state.shape))
-                    ENV.step(np.argmax(prediction))
-                    print(state)
-                    print(MOVES_DICT[np.argmax(prediction)], prediction)
+                            'trained_models', 'Runs-17k-Step_limit-5000'))
+                    RUN_Q = True
 
 
             GC.render()
 
             refresh_screen()
+
+    if RUN_Q and not DQN_ENV.is_done(__gc__=GC, draw_items=DRAW_ITEMS):
+        state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
+        prediction = MODEL.predict(
+            np.array(state).reshape(-1, *state.shape))
+        ENV.step(np.argmax(prediction))
+        print(state)
+        print(MOVES_DICT[np.argmax(prediction)], prediction)
+
+        time.sleep(0.2)
+        GC.render()
+
+        refresh_screen()
+    else:
+        RUN_Q = False
+
     if RUN_A:
         HOUSES, _ = __a_star__.houses_with_trash()
         if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
