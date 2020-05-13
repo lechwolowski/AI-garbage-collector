@@ -65,7 +65,7 @@ class GarbageCollector(Numbers):
     def pick_trash(self):
         if self.mixed == self.limit and self.glass == self.limit and \
                 self.paper == self.limit and self.plastic == self.limit:
-            return - 1
+            return -1
 
         to_check = [
             {"col": self.col - 1, "row": self.row},
@@ -74,7 +74,7 @@ class GarbageCollector(Numbers):
             {"col": self.col, "row": self.row + 1},
         ]
         houses_around = False
-        transfered = 0
+        transfered = False
         for field in to_check:
             if field["row"] >= 0 and field["row"] < MAP_HEIGHT and \
                     field["col"] >= 0 and field["col"] < MAP_WIDTH:
@@ -91,7 +91,8 @@ class GarbageCollector(Numbers):
                                 house_trash = self.limit - gc_trash
                             item.get_trash(trash_type=trash_type,
                                            queried_ammount=house_trash)
-                            transfered += house_trash
+                            setattr(self, trash_type, getattr(self, trash_type) + house_trash)
+                            transfered = True
 
         if houses_around and transfered:
             return 1

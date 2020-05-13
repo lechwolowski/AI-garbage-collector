@@ -7,10 +7,10 @@ from keras.layers import Dense
 from keras.callbacks import TensorBoard
 import tensorflow as tf
 
-DISCOUNT = 0.99
+DISCOUNT = 0.9
 REPLAY_MEMORY_SIZE = 50_000  # How many last steps to keep for model training
 # Minimum number of steps in a memory to start training
-MIN_REPLAY_MEMORY_SIZE = 5000
+MIN_REPLAY_MEMORY_SIZE = 1000
 MINIBATCH_SIZE = 64  # How many steps (samples) to use for training
 UPDATE_TARGET_EVERY = 5  # Terminal states (end of episodes)
 LEARNING_RATE = 0.01
@@ -91,7 +91,7 @@ class DQNAgent:
         model.add(Dense(60, activation='tanh'))
         model.add(Dense(60, activation='tanh'))
 
-        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='softmax'))
+        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='linear'))
         model.compile(loss='huber_loss',
                       optimizer='SGD', metrics=['accuracy'])
         print(model.summary())
@@ -127,13 +127,12 @@ class DQNAgent:
         __y__ = []
 
         # Now we need to enumerate our batches
-        for index, (current_state, action, reward, new_current_state, old_state, done) \
+        for index, (current_state, action, reward, _, done) \
                 in enumerate(minibatch):
 
             # If not a terminal state, get new q from future states, otherwise set it to 0
             # almost like with Q Learning, but we use just part of equation here
-            if not done and not np.array_equal(current_state, new_current_state) and \
-                    not np.array_equal(old_state, new_current_state):
+            if not done:
                 max_future_q = np.max(future_qs_list[index])
                 new_q = reward + DISCOUNT * max_future_q
             else:

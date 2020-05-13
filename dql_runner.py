@@ -8,21 +8,22 @@ from Deep_Q_Learning.deep_q_learning import DQNAgent
 from Deep_Q_Learning.__gc_env__ import GcEnv
 
 MIN_REWARD = 0  # For model save
-STEP_LIMIT = 500
-CURRENT_RUN_COUNT = 60
-DELTA = 40
-MODEL_NAME = f'Limited-{CURRENT_RUN_COUNT + DELTA}k'
+STEP_LIMIT = 5000
+CURRENT_RUN_COUNT = 16
+DELTA = 1
+MODEL_NAME = f'Runs-{CURRENT_RUN_COUNT + DELTA}k-Step_limit-{STEP_LIMIT}'
+# MODEL_NAME = f'Runs-{CURRENT_RUN_COUNT + DELTA}k-Step_limit-{STEP_LIMIT}'
 
 # Environment settings
 EPISODES = DELTA * 1_000
 
 # Exploration settings
-EPSILON = 1  # not a constant, going to be decayed
-EPSILON_DECAY = 0.99975
-MIN_EPSILON = 0.01
+EPSILON = 0.2  # not a constant, going to be decayed
+EPSILON_DECAY = 0.999
+MIN_EPSILON = 0.05
 
 #  Stats settings
-AGGREGATE_STATS_EVERY = 50  # episodes
+AGGREGATE_STATS_EVERY = 10  # episodes
 
 ENV = GcEnv()
 
@@ -31,7 +32,10 @@ EP_REWARDS = []
 STEPS = []
 
 MODEL = load_model(os.path.join(
-    'trained_models', f'limited-{CURRENT_RUN_COUNT}k'))
+    'trained_models', f'Runs-{CURRENT_RUN_COUNT}k-Step_limit-{5000}'))
+
+# MODEL = load_model(os.path.join(
+#     'trained_models', f'limited-{CURRENT_RUN_COUNT}k'))
 
 # MODEL = None
 
@@ -48,7 +52,6 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
 
     # Reset environment and get initial state
     current_state = ENV.reset()
-    old_state = np.zeros(1)
 
     # Reset flag and start iterating until episode ends
     done = False
@@ -69,10 +72,9 @@ for episode in tqdm(range(1, EPISODES + 1), ascii=True, unit='episodes'):
 
         # Every step we update replay memory and train main network
         AGENT.update_replay_memory(
-            (current_state, action, reward, new_state, old_state, done))
+            (current_state, action, reward, new_state, done))
         AGENT.train(done or step >= STEP_LIMIT)
 
-        old_state = current_state
         current_state = new_state
         step += 1
 

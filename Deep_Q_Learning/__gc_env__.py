@@ -57,6 +57,17 @@ class GcEnv:
 
         return observation
 
+    def is_done(self, __gc__, draw_items):
+        done = True
+        if not __gc__.is_empty():
+            done = False
+        else:
+            for item in draw_items:
+                if isinstance(draw_items[item], House) and not draw_items[item].is_empty():
+                    done = False
+                    break
+        return done
+
     def step(self, action):
         action_result = self.actions[action]()
 
