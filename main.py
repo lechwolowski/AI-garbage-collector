@@ -3,10 +3,13 @@ import os
 import pygame
 import numpy as np
 from keras.models import load_model
-from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
+from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH, MAP
 from __gc_env__ import GcEnv
 from Deep_Q_Learning.__gc_env__ import GcEnv as dqn_gc_env
 from a_star import AStar
+from Tree.part_map import part_map
+from Tree.part_map import save_to_file
+
 
 MOVES_DICT = {
     0: "up",
@@ -16,6 +19,9 @@ MOVES_DICT = {
     4: "pick_trash",
     5: "leave_trash"
 }
+
+x_list = []  # lista otoczeń
+y_list = []  # lista ruchów
 
 
 def refresh_screen():
@@ -72,6 +78,7 @@ MODEL = load_model(os.path.join(
 
 # Game Loop
 RUN_A = False
+RUN_A_LEARN = False
 RUNNING = True
 while RUNNING:
     for event in pygame.event.get():
@@ -92,6 +99,8 @@ while RUNNING:
                 ENV.step(5)
             if event.key == pygame.K_a:
                 RUN_A = True
+            if event.key == pygame.K_t:
+                RUN_A_LEARN = True
             if event.key == pygame.K_q:
                 GC.set_limit(100)
                 state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
@@ -131,9 +140,54 @@ while RUNNING:
                 ENV.step(4)
                 ENV.step(5)
                 GC.update()
-
         GC.render()
 
         refresh_screen()
 
+    if RUN_A_LEARN:
+        GC.set_limit(100000)
+        HOUSES, _ = __a_star__.houses_with_trash()
+        if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
+                and GC.glass == 0 and GC.plastic == 0:
+            RUN_A_LEARN = False
+            # otwarcie pliku, zapisanie, tabel x,y....
+
+        else:
+            ROUTE = __a_star__.get_to_dest()
+            #print("col1=", GC.col)
+            #print("ROW1=", GC.row)
+            # time.sleep()
+            x_list.append(part_map(MAP, GC.row, GC.col))
+            if len(ROUTE) > 0:
+                X, Y = ROUTE[0]
+                if X - GC.col != 0:
+                    if X - GC.col < 0:
+                        ENV.step(2)
+                        y_list.append(2)
+                    else:
+                        ENV.step(3)
+                        y_list.append(3)
+                elif Y - GC.row != 0:
+                    if Y - GC.row < 0:
+                        ENV.step(0)
+                        y_list.append(0)
+                    else:
+                        ENV.step(1)
+                        y_list.append(1)
+
+                time.sleep(0.3)
+
+            elif len(ROUTE) == 0:
+                ENV.step(4)
+                ENV.step(5)
+                y_list.append(6)
+                GC.update()
+            #print("col=", GC.col)
+            #print("ROW=", GC.row)
+        GC.render()
+
+        refresh_screen()
     CLOCK.tick(30)
+print("X=", x_list)
+print("Y=", y_list)
+save_to_file('learn.txt', x_list)
