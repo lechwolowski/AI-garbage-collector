@@ -98,7 +98,7 @@ while RUNNING:
                 else:
                     if not MODEL:
                         MODEL = load_model(os.path.join(
-                            'trained_models', 'Runs-16k-Step_limit-5000'))
+                            'trained_models', 'Runs-17k-Step_limit-5000'))
                     RUN_Q = True
 
 
