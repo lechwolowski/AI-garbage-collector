@@ -88,6 +88,7 @@ RUN_A_LEARN = False
 RUNNING = True
 tree_loaded = False
 licznik = 0
+ROUTE = []
 while RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -114,10 +115,10 @@ while RUNNING:
                     # GC.set_limit(100000)
                     read_table(maps, 'Xlearn.txt', 0)
                     read_table(actions, 'Ylearn.txt', 1)
-                    print("przed maketree")
+                    #print("przed maketree")
                     clf = make_tree(maps, actions)
                     tree_loaded = True
-                    print("po maketree")
+                    #print("po maketree")
                 state_map = []
                 state_map = part_map(MAP, GC.draw_items, GC.row, GC.col)
                 print("state_map=", state_map)
@@ -149,9 +150,10 @@ while RUNNING:
             RUN_A = False
 
         else:
-            ROUTE = __a_star__.get_to_dest()
+            if not ROUTE:
+                ROUTE = __a_star__.get_to_dest()
             if len(ROUTE) > 0:
-                X, Y = ROUTE[0]
+                X, Y = ROUTE.pop(0)
                 if X - GC.col != 0:
                     if X - GC.col < 0:
                         ENV.step(2)
@@ -178,26 +180,38 @@ while RUNNING:
         HOUSES, _ = __a_star__.houses_with_trash()
         if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
                 and GC.glass == 0 and GC.plastic == 0:
-            if licznik > 10:
+            if licznik >= 100:
                 RUN_A_LEARN = False
             else:
+                # TO tu musi być coś zepsute
                 licznik = licznik+1
+                print("Powtorzenie=", licznik)
                 save_to_file('Xlearn.txt', x_list)
                 save_to_file_1('Ylearn.txt', y_list)
+                x_list = []
+                y_list = []
+
                 ENV = GcEnv()
                 DRAW_ITEMS, GC = ENV.get_env()
+                render_game()
                 GC.render()
-
                 refresh_screen()
+
+                __a_star__ = AStar(DRAW_ITEMS, GC, ENV, refresh_screen)
+                __a_star__.houses_with_trash()
            # read_table(maps, 'Xlearn.txt', 0)
            # read_table(actions, 'Ylearn.txt', 1)
 
         else:
-            ROUTE = __a_star__.get_to_dest()
+            if not ROUTE:
+                ROUTE = __a_star__.get_to_dest()
+                # print(ROUTE)
            # x_list.append(part_map(MAP, GC.draw_items, GC.row, GC.col))
             if len(ROUTE) > 0:
+
                 x_list.append(part_map(MAP, GC.draw_items, GC.row, GC.col))
-                X, Y = ROUTE[0]
+                X, Y = ROUTE.pop(0)
+
                 if X - GC.col != 0:
                     if X - GC.col < 0:
                         ENV.step(2)
@@ -213,7 +227,7 @@ while RUNNING:
                         ENV.step(1)
                         y_list.append(1)
 
-                # time.sleep(0.3)
+                # time.sleep(0.1)
 
             elif len(ROUTE) == 0:
                 ENV.step(4)
