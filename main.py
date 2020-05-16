@@ -26,11 +26,6 @@ MOVES_DICT = {
     5: "leave_trash"
 }
 
-x_list = []  # lista otoczeń
-y_list = []  # lista ruchów
-maps = []
-actions = []
-
 
 def refresh_screen():
     col, row = GC.col, GC.row
@@ -91,8 +86,14 @@ RUN_TREE = False
 RUNNING = True
 tree_loaded = False
 counter = 0
-ROUTE = []
 prv_move = -1
+ROUTE = []
+x_list = []  # lista otoczeń 7x7
+y_list = []  # lista ruchów
+maps = []
+actions = []
+
+
 while RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -112,14 +113,12 @@ while RUNNING:
                 ENV.step(5)
             if event.key == pygame.K_a:
                 RUN_A = True
-            if event.key == pygame.K_t:  # zbieranie danych z A* do tablic
+            if event.key == pygame.K_t:  # zbieranie danych dla drzewa
                 RUN_A_LEARN = True
             if event.key == pygame.K_o:  # odpalenie z drzewa decyzyjnego
                 if tree_loaded == False:
-                    # GC.set_limit(100000)
                     read_table(maps, 'Xlearn.txt', 0)
                     read_table(actions, 'Ylearn.txt', 1)
-                    # print("przed maketree")
                     clf = make_tree(maps, actions)
                     RUN_TREE = True
 
@@ -168,7 +167,6 @@ while RUNNING:
         refresh_screen()
 
     if RUN_A_LEARN:
-        # GC.set_limit(100000)
         HOUSES, _ = __a_star__.houses_with_trash()
         if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
                 and GC.glass == 0 and GC.plastic == 0:
@@ -191,14 +189,10 @@ while RUNNING:
 
                 __a_star__ = AStar(DRAW_ITEMS, GC, ENV, refresh_screen)
                 __a_star__.houses_with_trash()
-           # read_table(maps, 'Xlearn.txt', 0)
-           # read_table(actions, 'Ylearn.txt', 1)
 
         else:
             if not ROUTE:
                 ROUTE = __a_star__.get_to_dest()
-                # print(ROUTE)
-           # x_list.append(part_map(MAP, GC.draw_items, GC.row, GC.col))
             if len(ROUTE) > 0:
                 x_list.append(part_map(MAP, GC.draw_items,
                                        GC.row, GC.col, prv_move))
@@ -223,12 +217,9 @@ while RUNNING:
                         ENV.step(1)
                         y_list.append(1)
 
-                # time.sleep(0.1)
-
             elif len(ROUTE) == 0:
                 ENV.step(4)
                 ENV.step(5)
-                # y_list.append(6)
                 GC.update()
         GC.render()
 
@@ -246,12 +237,12 @@ while RUNNING:
             print("STEP=", step)
             prv_move = step[0]
             if check_house_trash(GC.col, GC.row, GC.draw_items):
-                print("akcja smieci")
+                print("Pobranie/oddanie smieci")
                 ENV.step(4)
                 ENV.step(5)
                 GC.update()
             ENV.step(step[0])
-            time.sleep(0.2)
+            time.sleep(0.3)
             GC.render()
             refresh_screen()
     CLOCK.tick(30)
