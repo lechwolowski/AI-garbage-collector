@@ -86,10 +86,11 @@ MODEL = load_model(os.path.join(
 # Game Loop
 RUN_A = False
 RUN_A_LEARN = False
+RUN_TREE = False
 RUNNING = True
-tree_loaded = False
 licznik = 0
 ROUTE = []
+tree_loaded = False
 prv_move = -1
 while RUNNING:
     for event in pygame.event.get():
@@ -113,27 +114,13 @@ while RUNNING:
             if event.key == pygame.K_t:  # zbieranie danych z A* do tablic
                 RUN_A_LEARN = True
             if event.key == pygame.K_o:  # odpalenie z drzewa decyzyjnego
-                if not tree_loaded:
+                if tree_loaded == False:
                     # GC.set_limit(100000)
                     read_table(maps, 'Xlearn.txt', 0)
                     read_table(actions, 'Ylearn.txt', 1)
-                    #print("przed maketree")
+                    # print("przed maketree")
                     clf = make_tree(maps, actions)
-                    tree_loaded = True
-                    #print("po maketree")
-                state_map = []
-                state_map = part_map(MAP, GC.draw_items,
-                                     GC.row, GC.col, prv_move)
-                print("state_map=", state_map)
-                step = clf.predict([state_map])
-                print("STEP=", step)
-                prv_move = step[0]
-                if check_house_trash(GC.col, GC.row, GC.draw_items):
-                    print("akcja smieci")
-                    ENV.step(4)
-                    ENV.step(5)
-                    GC.update()
-                ENV.step(step[0])
+                    RUN_TREE = True
 
             if event.key == pygame.K_q:
                 GC.set_limit(100)
@@ -244,5 +231,23 @@ while RUNNING:
                 GC.update()
         GC.render()
 
+        refresh_screen()
+
+    if RUN_TREE:
+        state_map = []
+        state_map = part_map(MAP, GC.draw_items,
+                             GC.row, GC.col, prv_move)
+        print("state_map=", state_map)
+        step = clf.predict([state_map])
+        print("STEP=", step)
+        prv_move = step[0]
+        if check_house_trash(GC.col, GC.row, GC.draw_items):
+            print("akcja smieci")
+            ENV.step(4)
+            ENV.step(5)
+            GC.update()
+        ENV.step(step[0])
+        time.sleep(0.2)
+        GC.render()
         refresh_screen()
     CLOCK.tick(30)
