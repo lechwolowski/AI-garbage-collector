@@ -14,6 +14,7 @@ from Tree.part_map import save_to_file_1
 from Tree.part_map import read_table
 from Tree.decision_tree import make_tree
 from Tree.part_map import check_house_trash
+from Tree.part_map import empty_houses
 
 
 MOVES_DICT = {
@@ -88,9 +89,9 @@ RUN_A = False
 RUN_A_LEARN = False
 RUN_TREE = False
 RUNNING = True
-licznik = 0
-ROUTE = []
 tree_loaded = False
+counter = 0
+ROUTE = []
 prv_move = -1
 while RUNNING:
     for event in pygame.event.get():
@@ -171,12 +172,12 @@ while RUNNING:
         HOUSES, _ = __a_star__.houses_with_trash()
         if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
                 and GC.glass == 0 and GC.plastic == 0:
-            if licznik >= 500:
+            if counter >= 500:
                 RUN_A_LEARN = False
             else:
-                licznik = licznik+1
+                counter = counter+1
                 prv_move = -1
-                print("Powtorzenie=", licznik)
+                print("Powtorzenie=", counter)
                 save_to_file('Xlearn.txt', x_list)
                 save_to_file_1('Ylearn.txt', y_list)
                 x_list = []
@@ -234,20 +235,23 @@ while RUNNING:
         refresh_screen()
 
     if RUN_TREE:
-        state_map = []
-        state_map = part_map(MAP, GC.draw_items,
-                             GC.row, GC.col, prv_move)
-        print("state_map=", state_map)
-        step = clf.predict([state_map])
-        print("STEP=", step)
-        prv_move = step[0]
-        if check_house_trash(GC.col, GC.row, GC.draw_items):
-            print("akcja smieci")
-            ENV.step(4)
-            ENV.step(5)
-            GC.update()
-        ENV.step(step[0])
-        time.sleep(0.2)
-        GC.render()
-        refresh_screen()
+        if empty_houses(DRAW_ITEMS) == 0:
+            RUN_TREE = False
+        else:
+            state_map = []
+            state_map = part_map(MAP, GC.draw_items,
+                                 GC.row, GC.col, prv_move)
+            print("state_map=", state_map)
+            step = clf.predict([state_map])
+            print("STEP=", step)
+            prv_move = step[0]
+            if check_house_trash(GC.col, GC.row, GC.draw_items):
+                print("akcja smieci")
+                ENV.step(4)
+                ENV.step(5)
+                GC.update()
+            ENV.step(step[0])
+            time.sleep(0.2)
+            GC.render()
+            refresh_screen()
     CLOCK.tick(30)

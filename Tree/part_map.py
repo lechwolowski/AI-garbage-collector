@@ -66,12 +66,6 @@ def part_map(MAP, draw_items, y, x, prev):
                     map_part.append(0)
                 else:
                     map_part.append(1)
-                '''
-                if objectt.is_empty():
-                    map_part.append(0)
-                else:
-                    map_part.append(1)
-'''
 
     return map_part
 
@@ -138,3 +132,13 @@ def check_house_trash(x, y, draw_items):
             return True
         else:
             return False
+
+
+def empty_houses(draw_items):
+    sum = 0
+    for x in range(MAP_WIDTH):
+        for y in range(MAP_HEIGHT):
+            objectt = draw_items[(x, y)]
+            if type(objectt) == House:
+                sum = sum+objectt.plastic+objectt.mixed+objectt.glass+objectt.paper
+    return sum
