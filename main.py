@@ -13,6 +13,7 @@ from Tree.part_map import save_to_file
 from Tree.part_map import save_to_file_1
 from Tree.part_map import read_table
 from Tree.decision_tree import make_tree
+from Tree.part_map import check_house_trash
 
 
 MOVES_DICT = {
@@ -89,6 +90,7 @@ RUNNING = True
 tree_loaded = False
 licznik = 0
 ROUTE = []
+prv_move = -1
 while RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -120,17 +122,19 @@ while RUNNING:
                     tree_loaded = True
                     #print("po maketree")
                 state_map = []
-                state_map = part_map(MAP, GC.draw_items, GC.row, GC.col)
+                state_map = part_map(MAP, GC.draw_items,
+                                     GC.row, GC.col, prv_move)
                 print("state_map=", state_map)
                 step = clf.predict([state_map])
                 print("STEP=", step)
-                ENV.step(step[0])
-                '''if step[0] == 6:
+                prv_move = step[0]
+                if check_house_trash(GC.col, GC.row, GC.draw_items):
+                    print("akcja smieci")
                     ENV.step(4)
                     ENV.step(5)
-                    ENV.step(0)
-                else:
-                    ENV.step(step[0])'''
+                    GC.update()
+                ENV.step(step[0])
+
             if event.key == pygame.K_q:
                 GC.set_limit(100)
                 state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
@@ -180,11 +184,11 @@ while RUNNING:
         HOUSES, _ = __a_star__.houses_with_trash()
         if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
                 and GC.glass == 0 and GC.plastic == 0:
-            if licznik >= 100:
+            if licznik >= 500:
                 RUN_A_LEARN = False
             else:
-                # TO tu musi być coś zepsute
                 licznik = licznik+1
+                prv_move = -1
                 print("Powtorzenie=", licznik)
                 save_to_file('Xlearn.txt', x_list)
                 save_to_file_1('Ylearn.txt', y_list)
@@ -208,22 +212,26 @@ while RUNNING:
                 # print(ROUTE)
            # x_list.append(part_map(MAP, GC.draw_items, GC.row, GC.col))
             if len(ROUTE) > 0:
-
-                x_list.append(part_map(MAP, GC.draw_items, GC.row, GC.col))
+                x_list.append(part_map(MAP, GC.draw_items,
+                                       GC.row, GC.col, prv_move))
                 X, Y = ROUTE.pop(0)
 
                 if X - GC.col != 0:
                     if X - GC.col < 0:
+                        prv_move = 2
                         ENV.step(2)
                         y_list.append(2)
                     else:
+                        prv_move = 3
                         ENV.step(3)
                         y_list.append(3)
                 elif Y - GC.row != 0:
                     if Y - GC.row < 0:
+                        prv_move = 0
                         ENV.step(0)
                         y_list.append(0)
                     else:
+                        prv_move = 1
                         ENV.step(1)
                         y_list.append(1)
 

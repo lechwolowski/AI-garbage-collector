@@ -1,5 +1,6 @@
 from config import MAP_HEIGHT, MAP_WIDTH, MAP
 from models.__house__ import House
+from models.__trash__ import Trash
 
 
 def map2int(MAP, __y__, __x__):
@@ -14,7 +15,7 @@ def map2int(MAP, __y__, __x__):
     return 4  # trash
 
 
-def part_map(MAP, draw_items, y, x):
+def part_map(MAP, draw_items, y, x, prev):
 
     map_part = []
     coords = [
@@ -34,6 +35,8 @@ def part_map(MAP, draw_items, y, x):
                                              y+3], [x+1, y+3], [x+2, y+3], [x+3, y+3]
     ]
 
+    map_part.append(prev)
+
     for coord in coords:
         if(0 <= coord[1] < MAP_HEIGHT and 0 <= coord[0] < MAP_WIDTH):
             map_part.append(map2int(MAP, coord[1], coord[0]))
@@ -44,10 +47,31 @@ def part_map(MAP, draw_items, y, x):
         for y in range(MAP_HEIGHT):
             objectt = draw_items[(x, y)]
             if type(objectt) == House:
+                if objectt.plastic == 0:
+                    map_part.append(0)
+                else:
+                    map_part.append(1)
+
+                if objectt.mixed == 0:
+                    map_part.append(0)
+                else:
+                    map_part.append(1)
+
+                if objectt.glass == 0:
+                    map_part.append(0)
+                else:
+                    map_part.append(1)
+
+                if objectt.paper == 0:
+                    map_part.append(0)
+                else:
+                    map_part.append(1)
+                '''
                 if objectt.is_empty():
                     map_part.append(0)
                 else:
                     map_part.append(1)
+'''
 
     return map_part
 
@@ -94,3 +118,23 @@ def read_table(table, file_name, param):
             table[x] = int(table[x])
 
     f.close
+
+# y-row
+
+
+def check_house_trash(x, y, draw_items):
+    if y > 0 and y < 6:
+        if (type(draw_items[(x-1, y)]) == House or type(draw_items[(x+1, y)]) == House or type(draw_items[(x, y-1)]) == House or type(draw_items[(x, y+1)]) == House or type(draw_items[(x-1, y)]) == Trash or type(draw_items[(x+1, y)]) == Trash or type(draw_items[(x, y-1)]) == Trash or type(draw_items[(x, y+1)]) == Trash):
+            return True
+        else:
+            return False
+    elif y == 0:
+        if (type(draw_items[(x-1, y)]) == House or type(draw_items[(x+1, y)]) == House or type(draw_items[(x, y+1)]) == House or type(draw_items[(x-1, y)]) == Trash or type(draw_items[(x+1, y)]) == Trash or type(draw_items[(x, y+1)]) == Trash):
+            return True
+        else:
+            return False
+    elif y == 6:
+        if (type(draw_items[(x-1, y)]) == House or type(draw_items[(x+1, y)]) == House or type(draw_items[(x, y-1)]) == House or type(draw_items[(x-1, y)]) == Trash or type(draw_items[(x+1, y)]) == Trash or type(draw_items[(x, y-1)]) == Trash):
+            return True
+        else:
+            return False
