@@ -1,3 +1,4 @@
+from models.__trash__ import Trash
 import time
 import os
 import pygame
@@ -83,7 +84,7 @@ tree_loaded = False
 counter = 0
 prv_move = -1
 ROUTE = []
-x_list = []  # lista otoczeń 7x7
+x_list = []  # lista otoczeń 7x7/5x5/3x3
 y_list = []  # lista ruchów
 maps = []
 actions = []
