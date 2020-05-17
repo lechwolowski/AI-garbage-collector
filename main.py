@@ -8,13 +8,8 @@ from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from __gc_env__ import GcEnv
 from Deep_Q_Learning.__gc_env__ import GcEnv as dqn_gc_env
 from a_star import AStar
-from Tree.part_map import part_map
-from Tree.part_map import save_to_file
-from Tree.part_map import save_to_file_1
-from Tree.part_map import read_table
+from Tree.part_map import part_map, save_to_file, save_to_file_1, read_table, check_house_trash, empty_houses
 from Tree.decision_tree import make_tree
-from Tree.part_map import check_house_trash
-from Tree.part_map import empty_houses
 
 
 MOVES_DICT = {
@@ -226,7 +221,7 @@ while RUNNING:
         refresh_screen()
 
     if RUN_TREE:
-        if empty_houses(DRAW_ITEMS) == 0:
+        if empty_houses(DRAW_ITEMS) == 0 and GC.is_empty():
             RUN_TREE = False
         else:
             state_map = []

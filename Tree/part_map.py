@@ -18,6 +18,26 @@ def map2int(MAP, __y__, __x__):
 def part_map(MAP, draw_items, y, x, prev):
 
     map_part = []
+    '''
+    # 3x3
+    coords = [
+        [x-1, y-1], [x+0, y-1], [x+1, y-1],
+        [x-1, y+0], [x+0, y+0], [x+1, y+0],
+        [x-1, y+1], [x+0, y+1], [x+1, y+1]
+    ]
+    '''
+
+    # 5x5
+    coords = [
+        [x-2, y-2], [x-1, y-2], [x+0, y-2], [x+1, y-2], [x+2, y-2],
+        [x-2, y-1], [x-1, y-1], [x+0, y-1], [x+1, y-1], [x+2, y-1],
+        [x-2, y+0], [x-1, y+0], [x+0, y+0], [x+1, y+0], [x+2, y+0],
+        [x-2, y+1], [x-1, y+1], [x+0, y+1], [x+1, y+1], [x+2, y+1],
+        [x-2, y+2], [x-1, y+2], [x+0, y+2], [x+1, y+2], [x+2, y+2]
+    ]
+
+    '''
+    # 7x7
     coords = [
         [x-3, y-3], [x-2, y-3], [x-1, y-3], [x+0,
                                              y-3], [x+1, y-3], [x+2, y-3], [x+3, y-3],
@@ -34,7 +54,7 @@ def part_map(MAP, draw_items, y, x, prev):
         [x-3, y+3], [x-2, y+3], [x-1, y+3], [x+0,
                                              y+3], [x+1, y+3], [x+2, y+3], [x+3, y+3]
     ]
-
+    '''
     map_part.append(prev)
 
     for coord in coords:
@@ -112,8 +132,6 @@ def read_table(table, file_name, param):
             table[x] = int(table[x])
 
     f.close
-
-# y-row
 
 
 def check_house_trash(x, y, draw_items):
