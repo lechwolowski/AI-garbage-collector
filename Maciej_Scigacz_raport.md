@@ -13,8 +13,8 @@
 
 Do tworzenia zbioru uczącego wykorzystałem zaimplementowany w projekcie grupowym algorytm A*.
 
-Podczas każdego przejścia przez algorytm, zbierałem informacje o tym, jaki krok wykonuje śmieciarka w danym otoczeniu.
-Każde otoczenie zostawało dopisane do tablicy "x_list", a ruch do tablicy "y_list".
+Podczas każdego przejścia przez algorytm, były zbierane informacje o tym jaki krok wykonuje śmieciarka w danym otoczeniu.
+Każde otoczenie było dopisywane do tablicy "x_list", a ruch do tablicy "y_list".
 Następnie otoczenia zostały zapisane do plików Xlearn.txt, a ruchy do Ylearn.txt.
 
 x_list=[[1,2,4,1,2,1,3,3,1],[3,3,3,1,1,1,4,1,4]]
@@ -50,20 +50,13 @@ R H T
 ```Python
    # 7x7
     coords = [
-        [x-3, y-3], [x-2, y-3], [x-1, y-3], [x+0,
-                                             y-3], [x+1, y-3], [x+2, y-3], [x+3, y-3],
-        [x-3, y-2], [x-2, y-2], [x-1, y-2], [x+0,
-                                             y-2], [x+1, y-2], [x+2, y-2], [x+3, y-2],
-        [x-3, y-1], [x-2, y-1], [x-1, y-1], [x+0,
-                                             y-1], [x+1, y-1], [x+2, y-1], [x+3, y-1],
-        [x-3, y+0], [x-2, y+0], [x-1, y+0], [x+0,
-                                             y+0], [x+1, y+0], [x+2, y+0], [x+3, y+0],
-        [x-3, y+1], [x-2, y+1], [x-1, y+1], [x+0,
-                                             y+1], [x+1, y+1], [x+2, y+1], [x+3, y+1],
-        [x-3, y+2], [x-2, y+2], [x-1, y+2], [x+0,
-                                             y+2], [x+1, y+2], [x+2, y+2], [x+3, y+2],
-        [x-3, y+3], [x-2, y+3], [x-1, y+3], [x+0,
-                                             y+3], [x+1, y+3], [x+2, y+3], [x+3, y+3]
+        [x-3, y-3], [x-2, y-3], [x-1, y-3], [x+0, y-3], [x+1, y-3], [x+2, y-3], [x+3, y-3],
+        [x-3, y-2], [x-2, y-2], [x-1, y-2], [x+0, y-2], [x+1, y-2], [x+2, y-2], [x+3, y-2],
+        [x-3, y-1], [x-2, y-1], [x-1, y-1], [x+0, y-1], [x+1, y-1], [x+2, y-1], [x+3, y-1],
+        [x-3, y+0], [x-2, y+0], [x-1, y+0], [x+0, y+0], [x+1, y+0], [x+2, y+0], [x+3, y+0],
+        [x-3, y+1], [x-2, y+1], [x-1, y+1], [x+0, y+1], [x+1, y+1], [x+2, y+1], [x+3, y+1],
+        [x-3, y+2], [x-2, y+2], [x-1, y+2], [x+0, y+2], [x+1, y+2], [x+2, y+2], [x+3, y+2],
+        [x-3, y+3], [x-2, y+3], [x-1, y+3], [x+0, y+3], [x+1, y+3], [x+2, y+3], [x+3, y+3]
     ]
 ```
 W momencie gdy danego otoczenia nie da się zaczytać, gdyż obszar wychodzi poza wymiary mapy, nie mieszczące się pola wypełniane są trawą. Nie wpływa to bowiem na poruszanie się śmieciarki, gdyż trawa jest dla niej neutralna.
@@ -89,11 +82,11 @@ Legenda:
 ---
 ## Implementacja
 
-Do implementacji uczenia poprzez drzewo decyzyjne użyłem bibiliotekę **scikit learn** dostępną w języku **python**.
-Przekazując do funkcji budującej drzewo odpowiednio przygotowane dane, zwróci ona model zdolny do poruszania się po mapie.
+Do implementacji uczenia poprzez drzewo decyzyjne użyłem bibiliotekę **scikit learn** dostępnej w języku **python**.
+Wypełniając drzewo odpowiednio przygotowanymi danymi, funkcja **predict** zwróci odpowiedni dla otoczenia ruch śmieciarki.
 
 ```python
-#Trenowanie modelu
+#Uczenie modelu
 from sklearn import tree
 X = [Otoczenia 7x7 w danym kroku]
 Y = [Kolejne ruchy odpowiadające danemu otoczeniu]
@@ -104,14 +97,15 @@ clf = clf.fit(X, Y)
 clf.predict([Otoczenie agenta])
 ```
 
-Wszystkie potrzebne funkcje, które były potrzebne do implementacji projektu znajdują się w folderze **Tree**. 
+Wszystkie funkcje potrzebne do implementacji projektu znajdują się w folderze **Tree**. 
+
 ---
 ## Problemy
-Po przekazaniu zebranych danych, opisanych powyżej, śmieciarka nie radziła sobie wcalę. Wykonywała nieskończone naprzemienne ruchy w prawo/lewo lub góra/dół.
+Po przekazaniu zebranych danych, opisanych powyżej, śmieciarka sobie nie radziła. Wykonywała nieskończone, naprzemienne ruchy w prawo/lewo lub góra/dół.
 Momentem przełomowym okazało się zapamiętywanie i dopisywanie na początku każdego "otoczenia" poprzedniego ruchu śmieciarki. Po tej implementacji, ruch śmieciarki stał się bardziej uporządkowany.
-W celu zróżnicowania zestawu uczącego na końcu każdego "otoczenia" dopisywane są 24-elementowe kombinacje 0 i 1, które oznaczają aktualny stan danego typu śmieci w danym domu.
+W celu zróżnicowania zestawu uczącego na końcu każdego "otoczenia" dopisywane są 24-elementowe kombinacje 0 i 1, które oznaczają aktualny stan danego typu śmieci w danym domu z całej mapy (0-brak/1-jest).
 Te operacje znacznie polepszyły samodzielne poruszanie się śmieciarki po mapie, choć i tak nie jest ono idealne.
 
 ---
 ## Wnioski
-Po przygotowaniu około 500 próbek śmieciarka radziła sobie na mapie różnorako. Czasami udało się oczyścić całą mapę, czasami nie. Ewidentnie poprawność działania śmieciarki na mapie, była związana z miejscem w którym śmieciarka rozpoczęła pracę (została wyrenderowana). Nie potrafię stwierdzić, dlaczego śmieciarka wpada czasami w pętle tj. jeździ tą samą drogą w nieskończoność, co uniemożliwia spełnienie warunku kończącego jej pracę.
+Po przygotowaniu około 500 próbek śmieciarka radziła sobie na mapie różnorako. Czasami udało się oczyścić prawie całą mapę. Ewidentnie poprawność działania śmieciarki na mapie, była związana z miejscem w którym śmieciarka rozpoczęła pracę (została wyrenderowana). Nie potrafię stwierdzić, dlaczego śmieciarka wpada czasami w pętle tj. jeździ tą samą drogą w nieskończoność, co uniemożliwia spełnienie warunku kończącego jej pracę (odebranie śmieci z domów + odwiezienie śmieci na wysypisko)
