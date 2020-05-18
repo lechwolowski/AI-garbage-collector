@@ -8,14 +8,12 @@ from keras.callbacks import TensorBoard
 import tensorflow as tf
 
 DISCOUNT = 0.9
-REPLAY_MEMORY_SIZE = 500_000  # How many last steps to keep for model training
+REPLAY_MEMORY_SIZE = 50_000  # How many last steps to keep for model training
 # Minimum number of steps in a memory to start training
-MIN_REPLAY_MEMORY_SIZE = 200
+MIN_REPLAY_MEMORY_SIZE = 1000
 MINIBATCH_SIZE = 64  # How many steps (samples) to use for training
-HALF_MINIBATCH = int(MINIBATCH_SIZE / 2)
 UPDATE_TARGET_EVERY = 5  # Terminal states (end of episodes)
 LEARNING_RATE = 0.01
-MODEL_NAME = f'lr={LEARNING_RATE}_gamma={DISCOUNT}'
 
 
 # Own Tensorboard class
@@ -54,13 +52,13 @@ class ModifiedTensorBoard(TensorBoard):
 
 
 class DQNAgent:
-    def __init__(self, env, model=None):
+    def __init__(self, env, model_name, model=None):
 
         self.env = env
 
         if model:
             self.model = model
-            print("nanana")
+            print(f"")
             self.target_model = model
         else:
             # Main model
@@ -77,7 +75,7 @@ class DQNAgent:
 
         # Custom tensorboard object
         self.tensorboard = ModifiedTensorBoard(
-            log_dir=f'logs/{datetime.now().strftime("%Y-%m-%d_%H-%M")}-{MODEL_NAME}')
+            log_dir=f'logs/{datetime.now().strftime("%Y-%m-%d_%H-%M")}-{model_name}')
 
         # Used to count when to update target network with main network's weights
         self.target_update_counter = 0
@@ -86,13 +84,14 @@ class DQNAgent:
         model = Sequential()
 
         model.add(
-            Dense(40, input_shape=self.env.OBSERVATION_SPACE_VALUES, activation='tanh'))
-        model.add(Dense(40, activation='tanh'))
-        model.add(Dense(40, activation='tanh'))
-        model.add(Dense(40, activation='tanh'))
-        model.add(Dense(40, activation='tanh'))
+            Dense(60, input_shape=self.env.OBSERVATION_SPACE_VALUES, activation='tanh'))
+        model.add(Dense(60, activation='tanh'))
+        model.add(Dense(60, activation='tanh'))
+        model.add(Dense(60, activation='tanh'))
+        model.add(Dense(60, activation='tanh'))
+        model.add(Dense(60, activation='tanh'))
 
-        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='softmax'))
+        model.add(Dense(self.env.ACTION_SPACE_SIZE, activation='linear'))
         model.compile(loss='huber_loss',
                       optimizer='SGD', metrics=['accuracy'])
         print(model.summary())
@@ -102,10 +101,6 @@ class DQNAgent:
     # (observation space, action, reward, new observation space, done)
     def update_replay_memory(self, transition):
         self.replay_memory.append(transition)
-        # if transition[2] > 0:
-        #     self.positive_memory.append(transition)
-        # else:
-        #     self.negative_memory.append(transition)
 
     # Trains main network every step during episode
     def train(self, terminal_state):
@@ -132,13 +127,12 @@ class DQNAgent:
         __y__ = []
 
         # Now we need to enumerate our batches
-        for index, (current_state, action, reward, new_current_state, old_state, done) \
+        for index, (current_state, action, reward, _, done) \
                 in enumerate(minibatch):
 
             # If not a terminal state, get new q from future states, otherwise set it to 0
             # almost like with Q Learning, but we use just part of equation here
-            if not done and not np.array_equal(current_state, new_current_state) and \
-                    not np.array_equal(old_state, new_current_state):
+            if not done:
                 max_future_q = np.max(future_qs_list[index])
                 new_q = reward + DISCOUNT * max_future_q
             else:

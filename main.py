@@ -11,6 +11,8 @@ from Deep_Q_Learning.__gc_env__ import GcEnv as dqn_gc_env
 from a_star import AStar
 from Tree.part_map import part_map, save_to_file, save_to_file_1, read_table, check_house_trash, empty_houses
 from Tree.decision_tree import make_tree
+import joblib
+from tkinter import messagebox
 
 
 MOVES_DICT = {
@@ -72,13 +74,13 @@ render_game()
 
 CLOCK = pygame.time.Clock()
 
-MODEL = load_model(os.path.join(
-    'trained_models', 'half_trained_unlimited.model'))
+MODEL = None
 
 # Game Loop
 RUN_A = False
 RUN_A_LEARN = False
 RUN_TREE = False
+RUN_Q = False
 RUNNING = True
 tree_loaded = False
 counter = 0
@@ -118,18 +120,39 @@ while RUNNING:
                     clf = make_tree(maps, actions)
                     RUN_TREE = True
 
+            if event.key == pygame.K_d:
+                loaded_model = joblib.load('finalized_model.sav')
+                messagebox.showinfo("zaczynamy", "Zaczynamy!")
+                messagebox.showinfo("Informacja końcowa", "Zakończono")
+                pygame.quit()
             if event.key == pygame.K_q:
-                GC.set_limit(100)
-                state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
-                prediction = MODEL.predict(
-                    np.array(state).reshape(-1, *state.shape))
-                ENV.step(np.argmax(prediction))
-                print(state)
-                print(MOVES_DICT[np.argmax(prediction)], prediction)
+                if DQN_ENV.is_done(__gc__=GC, draw_items=DRAW_ITEMS):
+                    print('Done')
+                else:
+                    if not MODEL:
+                        MODEL = load_model(os.path.join(
+                            'trained_models', 'Runs-17k-Step_limit-5000'))
+                    RUN_Q = True
 
             GC.render()
 
             refresh_screen()
+
+    if RUN_Q and not DQN_ENV.is_done(__gc__=GC, draw_items=DRAW_ITEMS):
+        state = DQN_ENV.observe(__gc__=GC, draw_items=DRAW_ITEMS)
+        prediction = MODEL.predict(
+            np.array(state).reshape(-1, *state.shape))
+        ENV.step(np.argmax(prediction))
+        print(state)
+        print(MOVES_DICT[np.argmax(prediction)], prediction)
+
+        time.sleep(0.2)
+        GC.render()
+
+        refresh_screen()
+    else:
+        RUN_Q = False
+
     if RUN_A:
         HOUSES, _ = __a_star__.houses_with_trash()
         if len(HOUSES) == 0 and GC.mixed == 0 and GC.paper == 0 \
