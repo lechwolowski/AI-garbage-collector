@@ -26,7 +26,7 @@ def part_map(MAP, draw_items, y, x, prev):
         [x-1, y+1], [x+0, y+1], [x+1, y+1]
     ]
     '''
-
+    '''
     # 5x5
     coords = [
         [x-2, y-2], [x-1, y-2], [x+0, y-2], [x+1, y-2], [x+2, y-2],
@@ -35,8 +35,8 @@ def part_map(MAP, draw_items, y, x, prev):
         [x-2, y+1], [x-1, y+1], [x+0, y+1], [x+1, y+1], [x+2, y+1],
         [x-2, y+2], [x-1, y+2], [x+0, y+2], [x+1, y+2], [x+2, y+2]
     ]
-
     '''
+
     # 7x7
     coords = [
         [x-3, y-3], [x-2, y-3], [x-1, y-3], [x+0,
@@ -54,7 +54,7 @@ def part_map(MAP, draw_items, y, x, prev):
         [x-3, y+3], [x-2, y+3], [x-1, y+3], [x+0,
                                              y+3], [x+1, y+3], [x+2, y+3], [x+3, y+3]
     ]
-    '''
+
     map_part.append(prev)
 
     for coord in coords:
