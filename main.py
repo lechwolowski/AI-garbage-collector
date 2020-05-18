@@ -237,6 +237,7 @@ while RUNNING:
                 print("Pobranie/oddanie smieci")
                 ENV.step(4)
                 ENV.step(5)
+                refresh_screen()
                 GC.update()
             ENV.step(step[0])
             time.sleep(0.3)
