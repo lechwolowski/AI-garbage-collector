@@ -36,7 +36,8 @@ Legenda:
 
 Dla przykładu w otoczeniu 3x3, poniższy wpis w tablicy:
 
-x_list=[1,1,4,
+x_list=
+        [1,1,4,
         1,3,2,
         1,3,4]
 
@@ -81,6 +82,7 @@ Legenda:
 - 1 - Dół
 - 2 - Lewo
 - 3 - Prawo
+
 ---
 ## Implementacja
 
