@@ -37,7 +37,7 @@ Legenda:
 Dla przykładu w otoczeniu 3x3, poniższy wpis w tablicy:
 
 x_list=
-        [1,1,4,
+       [1,1,4,
         1,3,2,
         1,3,4]
 
@@ -107,10 +107,10 @@ Wszystkie funkcje potrzebne do implementacji projektu znajdują się w folderze 
 ## Problemy
 1. Na początku przekazywałem do drzewa otoczenie(bez poprzedniego ruchu i informacji o stanie śmieci na mapie), lecz nie przyniosło to porządanych efektów. Śmieciarka sobie nie radziła. Wykonywała nieskończone, naprzemienne ruchy w prawo/lewo lub góra/dół.
 
-2. Następnie przekazałem do drzewa otoczenie z dodaną na początku informacją jaki był poprzednik ruch śmieciarki. Sytuacja uległa poprawie, śmieciarka zaczęła poruszać się w sposób naturalny, jednakże robiła ciągle tą samą pętlę. 
+2. Następnie przekazałem do drzewa otoczenie z dodaną na początku informacją jaki był poprzedni ruch śmieciarki. Sytuacja uległa poprawie, śmieciarka zaczęła poruszać się w sposób naturalny, jednakże robiła ciągle tą samą pętlę. 
 
 3. Ostatnią próbą jeszcze większego zróżnicowania zestawu uczącego było dodanie na końcu każdego "otoczenia" stanu śmieci w domach znajdujacych się na mapie.
-Ta operacje znacznie polepszyła samodzielne poruszanie się śmieciarki po mapie, przestała ona jeździć tą samą trasą, choć i tak problem z zapętlaniem nie minął, tylko, że teraz pętle które robiła śmieciarka były różne.
+Ta operacje znacznie polepszyła samodzielne poruszanie się śmieciarki po mapie, przestała ona jeździć tą samą trasą, choć i tak problem z zapętlaniem nie minął, ale pętle, które robiła śmieciarka różniły się od siebie, przy kolejnym uruchomieniu programu.
 
 ---
 ## Wnioski
