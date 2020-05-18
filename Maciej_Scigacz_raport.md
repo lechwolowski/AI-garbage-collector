@@ -68,6 +68,8 @@ W momencie gdy danego otoczenia nie da się zaczytać, gdyż obszar wychodzi poz
         else:
             map_part.append(2)
 ```
+Dodatkowo na początku "otoczenia" dopisywany jest ruch jaki śmieciarka wykonała uprzednio. Na końcu dopisywane są 24-elementowe kombinacje 0 i 1, które oznaczają aktualny stan danego typu śmieci w danym domu z całej mapy (0-brak/1-jest).
+
 ---
 ## y_list
 
@@ -101,11 +103,13 @@ Wszystkie funkcje potrzebne do implementacji projektu znajdują się w folderze 
 
 ---
 ## Problemy
-Po przekazaniu zebranych danych, opisanych powyżej, śmieciarka sobie nie radziła. Wykonywała nieskończone, naprzemienne ruchy w prawo/lewo lub góra/dół.
-Momentem przełomowym okazało się zapamiętywanie i dopisywanie na początku każdego "otoczenia" poprzedniego ruchu śmieciarki. Po tej implementacji, ruch śmieciarki stał się bardziej uporządkowany.
-W celu zróżnicowania zestawu uczącego na końcu każdego "otoczenia" dopisywane są 24-elementowe kombinacje 0 i 1, które oznaczają aktualny stan danego typu śmieci w danym domu z całej mapy (0-brak/1-jest).
-Te operacje znacznie polepszyły samodzielne poruszanie się śmieciarki po mapie, choć i tak nie jest ono idealne.
+1. Na początku przekazywałem do drzewa otoczenie(bez poprzedniego ruchu i informacji o stanie śmieci na mapie), lecz nie przyniosło to porządanych efektów. Śmieciarka sobie nie radziła. Wykonywała nieskończone, naprzemienne ruchy w prawo/lewo lub góra/dół.
+
+2. Następnie przekazałem do drzewa otoczenie z dodaną na początku informacją jaki był poprzednik ruch śmieciarki. Sytuacja uległa poprawie, śmieciarka zaczęła poruszać się w sposób naturalny, jednakże robiła ciągle tą samą pętlę. 
+
+3. Ostatnią próbą jeszcze większego zróżnicowania zestawu uczącego było dodanie na końcu każdego "otoczenia" stanu śmieci w domach znajdujacych się na mapie.
+Ta operacje znacznie polepszyła samodzielne poruszanie się śmieciarki po mapie, przestała ona jeździć tą samą trasą, choć i tak problem z zapętlaniem nie minął, tylko, że teraz pętle które robiła śmieciarka były różne.
 
 ---
 ## Wnioski
-Po przygotowaniu około 500 próbek śmieciarka radziła sobie na mapie różnorako. Czasami udało się oczyścić prawie całą mapę. Ewidentnie poprawność działania śmieciarki na mapie, była związana z miejscem w którym śmieciarka rozpoczęła pracę (została wyrenderowana). Nie potrafię stwierdzić, dlaczego śmieciarka wpada czasami w pętle tj. jeździ tą samą drogą w nieskończoność, co uniemożliwia spełnienie warunku kończącego jej pracę (odebranie śmieci z domów + odwiezienie śmieci na wysypisko)
+Po przygotowaniu około 500 próbek śmieciarka radziła sobie na mapie różnorako. Czasami udało się oczyścić prawie całą mapę. Ewidentnie poprawność działania śmieciarki na mapie, była związana z miejscem w którym śmieciarka rozpoczęła pracę (została wyrenderowana). Nie potrafię stwierdzić, dlaczego śmieciarka wpada czasami w pętle tj. jeździ tą samą drogą w nieskończoność, co uniemożliwia spełnienie warunku kończącego jej pracę (odebranie śmieci z domów + odwiezienie śmieci na wysypisko).
