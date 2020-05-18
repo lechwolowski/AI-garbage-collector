@@ -222,7 +222,6 @@ while RUNNING:
         refresh_screen()
 
     if RUN_TREE:
-        # GC.set_limit(100)
         if empty_houses(DRAW_ITEMS) == 0 and GC.is_empty():
             RUN_TREE = False
         else:
