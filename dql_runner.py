@@ -9,8 +9,8 @@ from Deep_Q_Learning.__gc_env__ import GcEnv
 
 MIN_REWARD = 0  # For model save
 STEP_LIMIT = 5000
-CURRENT_RUN_COUNT = 16
-DELTA = 1
+CURRENT_RUN_COUNT = 30
+DELTA = 20
 MODEL_NAME = f'Runs-{CURRENT_RUN_COUNT + DELTA}k-Step_limit-{STEP_LIMIT}'
 # MODEL_NAME = f'Runs-{CURRENT_RUN_COUNT + DELTA}k-Step_limit-{STEP_LIMIT}'
 
@@ -18,9 +18,9 @@ MODEL_NAME = f'Runs-{CURRENT_RUN_COUNT + DELTA}k-Step_limit-{STEP_LIMIT}'
 EPISODES = DELTA * 1_000
 
 # Exploration settings
-EPSILON = 0.2  # not a constant, going to be decayed
-EPSILON_DECAY = 0.999
-MIN_EPSILON = 0.05
+EPSILON = 0.4  # not a constant, going to be decayed
+EPSILON_DECAY = 0.9999
+MIN_EPSILON = 0.1
 
 #  Stats settings
 AGGREGATE_STATS_EVERY = 10  # episodes
