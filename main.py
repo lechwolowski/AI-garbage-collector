@@ -131,7 +131,7 @@ while RUNNING:
                 else:
                     if not MODEL:
                         MODEL = load_model(os.path.join(
-                            'trained_models', 'Runs-30k-Step_limit-5000'))
+                            'trained_models', 'Runs-50k-Step_limit-5000'))
                     RUN_Q = True
 
             GC.render()

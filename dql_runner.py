@@ -23,7 +23,7 @@ EPSILON_DECAY = 0.9999
 MIN_EPSILON = 0.1
 
 #  Stats settings
-AGGREGATE_STATS_EVERY = 10  # episodes
+AGGREGATE_STATS_EVERY = 200  # episodes
 
 ENV = GcEnv()
 
