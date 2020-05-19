@@ -1,4 +1,3 @@
-from models.__trash__ import Trash
 import time
 import os
 import pygame
@@ -9,6 +8,7 @@ from config import WINDOW_HEIGHT, WINDOW_WIDTH, CELL_SIZE, MAP_HEIGHT, MAP_WIDTH
 from __gc_env__ import GcEnv
 from Deep_Q_Learning.__gc_env__ import GcEnv as dqn_gc_env
 from a_star import AStar
+from models.__trash__ import Trash
 from Tree.part_map import part_map, save_to_file, save_to_file_1, read_table, check_house_trash, empty_houses
 from Tree.decision_tree import make_tree
 import joblib
@@ -131,7 +131,7 @@ while RUNNING:
                 else:
                     if not MODEL:
                         MODEL = load_model(os.path.join(
-                            'trained_models', 'Runs-17k-Step_limit-5000'))
+                            'trained_models', 'Runs-50k-Step_limit-5000'))
                     RUN_Q = True
 
             GC.render()
