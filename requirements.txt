@@ -45,5 +45,5 @@ termcolor==1.1.0
 tqdm==4.66.3
 typed-ast==1.4.1
 urllib3==2.7.0
-Werkzeug==1.0.1
+Werkzeug==3.1.6
 wrapt==1.11.2
